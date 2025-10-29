@@ -24,3 +24,24 @@ def enum_to_bit(enum_value: Enum) -> int:
     members = list(type(enum_value).__members__.values())
     position = members.index(enum_value)
     return 1 << position
+
+
+def build_mask(enum_values: Iterable[Enum]) -> int:
+    """Combine multiple enum values into a bitmask.
+
+    Args:
+        enum_values: Iterable of enum members to combine
+
+    Returns:
+        Integer bitmask with bits set for each enum value
+
+    Examples:
+        >>> build_mask([Number.SINGULAR, Number.PLURAL])
+        3  # 1 | 2
+        >>> build_mask([Case.NOMINATIVE, Case.ACCUSATIVE])
+        5  # 1 | 4
+    """
+    mask = 0
+    for value in enum_values:
+        mask |= enum_to_bit(value)
+    return mask

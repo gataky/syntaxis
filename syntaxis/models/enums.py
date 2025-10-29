@@ -11,6 +11,8 @@ class PartOfSpeech(Enum):
     ADVERB = "adv"
     ARTICLE = "article"
     ADJECTIVE = "adj"
+    PREPOSITION = "prep"
+    CONJUNCTION = "conj"
 
 
 class Gender(Enum):

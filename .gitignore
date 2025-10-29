@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+.direnv/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# uv
+uv.lock
+.uv/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Documentation
+docs/_build/
+
+# Environment variables
+.env
+.envrc.local
+
+# Git worktrees
+.worktrees/

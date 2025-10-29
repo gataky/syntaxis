@@ -45,3 +45,25 @@ def test_build_mask_empty_list():
     """Empty list should produce 0."""
     result = build_mask([])
     assert result == 0
+
+
+def test_has_feature_returns_true_when_present():
+    """Should return True if feature bit is set."""
+    mask = 3  # SINGULAR | PLURAL
+    assert has_feature(mask, Number.SINGULAR) is True
+    assert has_feature(mask, Number.PLURAL) is True
+
+
+def test_has_feature_returns_false_when_absent():
+    """Should return False if feature bit is not set."""
+    mask = 1  # Only SINGULAR
+    assert has_feature(mask, Number.PLURAL) is False
+
+
+def test_has_feature_with_case_values():
+    """Should work with Case enums."""
+    mask = 13  # NOMINATIVE | ACCUSATIVE | GENITIVE
+    assert has_feature(mask, Case.NOMINATIVE) is True
+    assert has_feature(mask, Case.ACCUSATIVE) is True
+    assert has_feature(mask, Case.GENITIVE) is True
+    assert has_feature(mask, Case.VOCATIVE) is False

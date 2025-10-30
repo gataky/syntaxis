@@ -1,9 +1,15 @@
 import sqlite3
+from typing import Any
 
 from syntaxis.database.schema import create_schema
 from syntaxis.models.enums import PartOfSpeech
 from syntaxis.morpheus import Morpheus
 from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
+from syntaxis.database.bitmasks import (
+    enum_to_bit,
+    VALID_FEATURES,
+    POS_TO_TABLE_MAP,
+)
 
 
 class LexicalManager:
@@ -33,17 +39,74 @@ class LexicalManager:
     # Storage methods
     # Random selection methods
 
-    def get_random_word(self, pos: PartOfSpeech, **features) -> object | None:
+    def get_random_word(
+        self,
+        pos: PartOfSpeech,
+        **features: Any
+    ) -> PartOfSpeechBase | None:
         """Get a random word of the specified part of speech.
 
         Args:
-            pos: Part of speech
-            **features: Optional filtering features (gender, case, tense, etc.)
+            pos: Part of speech enum (PartOfSpeech.NOUN, PartOfSpeech.VERB, etc.)
+            **features: Feature filters as enum values
+                        (gender=Gender.MASCULINE, case=Case.NOMINATIVE, etc.)
 
         Returns:
-            Random word object matching criteria, or None if no matches
+            Instance of appropriate PartOfSpeech subclass with forms and
+            translations, or None if no matches
+
+        Raises:
+            ValueError: If invalid features provided for the POS type
+
+        Examples:
+            >>> manager.get_random_word(PartOfSpeech.NOUN, number=Number.SINGULAR)
+            Noun(lemma="άνθρωπος", ...)
         """
-        return None
+        # Validate features
+        valid_features = VALID_FEATURES.get(pos, set())
+        invalid_features = set(features.keys()) - valid_features
+
+        if invalid_features:
+            raise ValueError(
+                f"Invalid features {invalid_features} for {pos.name}. "
+                f"Valid features are: {valid_features}"
+            )
+
+        cursor = self._conn.cursor()
+        table = POS_TO_TABLE_MAP[pos]
+
+        # Build WHERE conditions for bitmask features
+        conditions = []
+        params = [pos.name]  # For JOIN condition
+
+        for feature_name, feature_value in features.items():
+            bit = enum_to_bit(feature_value)
+            conditions.append(f"(g.{feature_name}_mask & ?) != 0")
+            params.append(bit)
+
+        where_clause = " AND ".join(conditions) if conditions else "1=1"
+
+        # Single query with JOIN to get lemma and translations
+        query = f"""
+            SELECT
+                g.id,
+                g.lemma,
+                GROUP_CONCAT(e.word, '|') as translations
+            FROM {table} g
+            LEFT JOIN translations t ON t.greek_word_id = g.id
+                AND t.greek_pos_type = ?
+            LEFT JOIN english_words e ON e.id = t.english_word_id
+            WHERE {where_clause}
+            GROUP BY g.id
+            ORDER BY RANDOM()
+            LIMIT 1
+        """
+
+        row = cursor.execute(query, params).fetchone()
+        if not row:
+            return None
+
+        return self._create_word_from_row(row, pos)
 
     # Helper methods
 

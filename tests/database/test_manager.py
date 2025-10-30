@@ -307,3 +307,51 @@ def test_add_word_raises_error_for_duplicate_lemma():
 
     assert "already exists" in str(exc_info.value)
     assert "άνθρωπος" in str(exc_info.value)
+
+
+def test_add_word_successfully_adds_noun_with_single_translation():
+    """Should add noun with translation and return Word object."""
+    manager = LexicalManager()
+
+    result = manager.add_word(
+        lemma="άνθρωπος",
+        translations=["person"],
+        pos=POSEnum.NOUN
+    )
+
+    # Verify return value
+    assert isinstance(result, Noun)
+    assert result.lemma == "άνθρωπος"
+    assert result.translations == ["person"]
+    assert result.forms is not None  # Morpheus generated forms
+
+    # Verify database state
+    cursor = manager._conn.cursor()
+
+    # Check Greek word inserted
+    row = cursor.execute(
+        "SELECT lemma, gender, number_mask, case_mask, validation_status FROM greek_nouns WHERE lemma = ?",
+        ("άνθρωπος",)
+    ).fetchone()
+    assert row is not None
+    assert row[0] == "άνθρωπος"
+    assert row[1] == "MASCULINE"  # Inferred from forms
+    assert row[2] > 0  # number_mask calculated
+    assert row[3] > 0  # case_mask calculated
+    assert row[4] == "VALID"
+
+    # Check English word inserted
+    eng_row = cursor.execute(
+        "SELECT word, pos_type FROM english_words WHERE word = ?",
+        ("person",)
+    ).fetchone()
+    assert eng_row is not None
+    assert eng_row[0] == "person"
+    assert eng_row[1] == "NOUN"
+
+    # Check translation link created
+    trans_row = cursor.execute(
+        "SELECT * FROM translations WHERE greek_pos_type = ?",
+        ("NOUN",)
+    ).fetchone()
+    assert trans_row is not None

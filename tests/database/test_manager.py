@@ -241,3 +241,45 @@ def test_get_random_word_raises_error_for_invalid_feature():
 
     assert "Invalid features" in str(exc_info.value)
     assert "tense" in str(exc_info.value)
+
+
+def test_add_word_raises_error_for_empty_translations():
+    """Should raise ValueError when translations list is empty."""
+    manager = LexicalManager()
+
+    with pytest.raises(ValueError) as exc_info:
+        manager.add_word(
+            lemma="άνθρωπος",
+            translations=[],
+            pos=POSEnum.NOUN
+        )
+
+    assert "At least one translation required" in str(exc_info.value)
+
+
+def test_add_word_raises_error_for_none_translations():
+    """Should raise ValueError when translations is None."""
+    manager = LexicalManager()
+
+    with pytest.raises(ValueError) as exc_info:
+        manager.add_word(
+            lemma="άνθρωπος",
+            translations=None,
+            pos=POSEnum.NOUN
+        )
+
+    assert "At least one translation required" in str(exc_info.value)
+
+
+def test_add_word_raises_error_for_empty_lemma():
+    """Should raise ValueError when lemma is empty string."""
+    manager = LexicalManager()
+
+    with pytest.raises(ValueError) as exc_info:
+        manager.add_word(
+            lemma="",
+            translations=["person"],
+            pos=POSEnum.NOUN
+        )
+
+    assert "Lemma cannot be empty" in str(exc_info.value)

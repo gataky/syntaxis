@@ -2,6 +2,8 @@ import sqlite3
 
 from syntaxis.database.schema import create_schema
 from syntaxis.models.enums import PartOfSpeech
+from syntaxis.morpheus import Morpheus
+from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
 
 
 class LexicalManager:
@@ -24,6 +26,7 @@ class LexicalManager:
         else:
             self._conn = sqlite3.connect(db_path)
 
+        self._conn.row_factory = sqlite3.Row  # Enable column access by name
         create_schema(self._conn)
         self._morphology_adapter = None
 
@@ -128,3 +131,29 @@ class LexicalManager:
         """
         _ = self._conn.cursor()
         return None
+
+    def _create_word_from_row(
+        self,
+        row: sqlite3.Row,
+        pos: PartOfSpeech
+    ) -> PartOfSpeechBase:
+        """Create PartOfSpeech object with translations from query result.
+
+        Args:
+            row: Database row with id, lemma, and translations columns
+            pos: Part of speech enum
+
+        Returns:
+            Complete PartOfSpeech object with forms and translations
+        """
+        lemma = row["lemma"]
+        translations_str = row["translations"]
+
+        # Parse translations (GROUP_CONCAT returns pipe-delimited string)
+        translations = translations_str.split("|") if translations_str else None
+
+        # Create word with inflected forms using Morpheus
+        word = Morpheus.create(lemma, pos)
+        word.translations = translations
+
+        return word

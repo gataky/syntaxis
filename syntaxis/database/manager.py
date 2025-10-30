@@ -68,7 +68,7 @@ class LexicalManager:
 
         if invalid_features:
             raise ValueError(
-                f"Invalid features {invalid_features} for {pos.name}. "
+                f"Invalid features {invalid_features} for {pos.name}. " +
                 f"Valid features are: {valid_features}"
             )
 

@@ -1,4 +1,4 @@
-from typing import Type, TypeVar
+from typing import TypeVar
 
 import modern_greek_inflexion as mgi
 
@@ -49,7 +49,7 @@ class Morpheus:
         return method_map[pos](lemma)
 
     @staticmethod
-    def _get_inflected_forms(lemma: str, pos_class: Type[T]) -> T:
+    def _get_inflected_forms(lemma: str, pos_class: type[T]) -> T:
         """Generic method to get inflected forms for any part of speech."""
         # Map our classes to the mgi classes
         mgi_class = getattr(mgi, pos_class.__name__)

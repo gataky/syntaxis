@@ -1,6 +1,8 @@
 import pytest
+
 from syntaxis.database.mask_calculator import calculate_masks_for_word
-from syntaxis.models.enums import PartOfSpeech as POSEnum, Number, Case
+from syntaxis.models.enums import Case, Number
+from syntaxis.models.enums import PartOfSpeech as POSEnum
 
 
 def test_calculate_masks_for_noun():
@@ -18,8 +20,12 @@ def test_calculate_masks_for_verb():
     masks = calculate_masks_for_word("τρώω", POSEnum.VERB)
 
     expected_keys = {
-        "tense_mask", "voice_mask", "mood_mask",
-        "number_mask", "person_mask", "case_mask"
+        "tense_mask",
+        "voice_mask",
+        "mood_mask",
+        "number_mask",
+        "person_mask",
+        "case_mask",
     }
     assert set(masks.keys()) == expected_keys
 

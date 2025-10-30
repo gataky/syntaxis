@@ -1,7 +1,8 @@
 import pytest
-from syntaxis.morpheus import Morpheus
+
 from syntaxis.models.enums import PartOfSpeech as POSEnum
-from syntaxis.models.part_of_speech import Noun, Verb, Adjective, Article
+from syntaxis.models.part_of_speech import Adjective, Article, Noun, Verb
+from syntaxis.morpheus import Morpheus
 
 
 def test_morpheus_create_returns_noun_for_noun_pos():

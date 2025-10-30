@@ -1,13 +1,16 @@
 """Integration tests for get_random_word with real Greek words."""
 
 import pytest
+
 from syntaxis.database.manager import LexicalManager
 from syntaxis.database.mask_calculator import calculate_masks_for_word
 from syntaxis.models.enums import (
-    PartOfSpeech as POSEnum,
-    Number,
     Case,
     Gender,
+    Number,
+)
+from syntaxis.models.enums import PartOfSpeech as POSEnum
+from syntaxis.models.enums import (
     Tense,
     Voice,
 )
@@ -30,25 +33,22 @@ def test_full_workflow_noun():
         (lemma, gender, number_mask, case_mask, validation_status)
         VALUES (?, ?, ?, ?, ?)
         """,
-        (lemma, "MASCULINE", masks["number_mask"], masks["case_mask"], "validated")
+        (lemma, "MASCULINE", masks["number_mask"], masks["case_mask"], "validated"),
     )
 
     # Add English translation
     cursor.execute(
-        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)",
-        ("person", "NOUN")
+        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("person", "NOUN")
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type) VALUES (?, ?, ?)",
-        (1, 1, "NOUN")
+        (1, 1, "NOUN"),
     )
     conn.commit()
 
     # Retrieve with features
     result = manager.get_random_word(
-        POSEnum.NOUN,
-        number=Number.SINGULAR,
-        case=Case.NOMINATIVE
+        POSEnum.NOUN, number=Number.SINGULAR, case=Case.NOMINATIVE
     )
 
     assert result is not None
@@ -85,25 +85,22 @@ def test_full_workflow_verb():
             masks["number_mask"],
             masks["person_mask"],
             masks["case_mask"],
-            "validated"
-        )
+            "validated",
+        ),
     )
 
     cursor.execute(
-        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)",
-        ("eat", "VERB")
+        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("eat", "VERB")
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type) VALUES (?, ?, ?)",
-        (1, 1, "VERB")
+        (1, 1, "VERB"),
     )
     conn.commit()
 
     # Retrieve with verb features
     result = manager.get_random_word(
-        POSEnum.VERB,
-        tense=Tense.PRESENT,
-        voice=Voice.ACTIVE
+        POSEnum.VERB, tense=Tense.PRESENT, voice=Voice.ACTIVE
     )
 
     assert result is not None
@@ -125,7 +122,7 @@ def test_no_match_returns_none():
         (lemma, gender, number_mask, case_mask, validation_status)
         VALUES (?, ?, ?, ?, ?)
         """,
-        (lemma, "NEUTER", 2, 15, "validated")  # number_mask=2 is only PLURAL
+        (lemma, "NEUTER", 2, 15, "validated"),  # number_mask=2 is only PLURAL
     )
     conn.commit()
 

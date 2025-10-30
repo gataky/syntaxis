@@ -1,6 +1,7 @@
 import pytest
-from syntaxis.database.bitmasks import enum_to_bit, build_mask, has_feature
-from syntaxis.models.enums import Number, Case, Gender
+
+from syntaxis.database.bitmasks import build_mask, enum_to_bit, has_feature
+from syntaxis.models.enums import Case, Gender, Number
 
 
 def test_enum_to_bit_converts_first_enum_to_one():

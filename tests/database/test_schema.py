@@ -1,5 +1,7 @@
 import sqlite3
+
 import pytest
+
 from syntaxis.database.schema import create_schema
 
 
@@ -35,7 +37,14 @@ def test_schema_creates_greek_verbs_with_bitmask_columns():
     assert "number_mask" in columns
     assert "person_mask" in columns
     assert "case_mask" in columns
-    for col in ["tense_mask", "voice_mask", "mood_mask", "number_mask", "person_mask", "case_mask"]:
+    for col in [
+        "tense_mask",
+        "voice_mask",
+        "mood_mask",
+        "number_mask",
+        "person_mask",
+        "case_mask",
+    ]:
         assert columns[col] == "INTEGER"
 
 

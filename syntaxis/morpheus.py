@@ -2,6 +2,7 @@ from typing import TypeVar
 
 import modern_greek_inflexion as mgi
 
+from syntaxis.models.enums import PartOfSpeech as POSEnum
 from syntaxis.models.part_of_speech import (
     Adjective,
     Adverb,
@@ -11,7 +12,6 @@ from syntaxis.models.part_of_speech import (
     Pronoun,
     Verb,
 )
-from syntaxis.models.enums import PartOfSpeech as POSEnum
 
 # TypeVar for part of speech classes
 T = TypeVar("T", Adjective, Adverb, Article, Noun, Numberal, Pronoun, Verb)

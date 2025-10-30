@@ -355,3 +355,107 @@ def test_add_word_successfully_adds_noun_with_single_translation():
         ("NOUN",)
     ).fetchone()
     assert trans_row is not None
+
+
+def test_get_words_by_english_returns_empty_list_for_nonexistent_word():
+    """Should return empty list when English word not found."""
+    manager = LexicalManager()
+
+    result = manager.get_words_by_english("nonexistent")
+
+    assert result == []
+
+
+def test_get_words_by_english_finds_single_noun():
+    """Should find Greek noun by English translation."""
+    manager = LexicalManager()
+
+    # Add a word using add_word
+    manager.add_word(
+        lemma="άνθρωπος",
+        translations=["person"],
+        pos=POSEnum.NOUN
+    )
+
+    result = manager.get_words_by_english("person")
+
+    assert len(result) == 1
+    assert isinstance(result[0], Noun)
+    assert result[0].lemma == "άνθρωπος"
+    assert "person" in result[0].translations
+
+
+def test_get_words_by_english_finds_multiple_greek_words():
+    """Should find multiple Greek words that share same English translation."""
+    manager = LexicalManager()
+
+    # Add two different Greek words with the same English translation
+    manager.add_word(
+        lemma="άνθρωπος",
+        translations=["person", "human"],
+        pos=POSEnum.NOUN
+    )
+    manager.add_word(
+        lemma="άνδρας",
+        translations=["man", "person"],
+        pos=POSEnum.NOUN
+    )
+
+    result = manager.get_words_by_english("person")
+
+    assert len(result) == 2
+    lemmas = {word.lemma for word in result}
+    assert lemmas == {"άνθρωπος", "άνδρας"}
+
+    # Both should have "person" in their translations
+    for word in result:
+        assert "person" in word.translations
+
+
+def test_get_words_by_english_filters_by_pos():
+    """Should filter results by part of speech when specified."""
+    manager = LexicalManager()
+
+    # Add a noun and verb with same English translation
+    manager.add_word(
+        lemma="άνθρωπος",
+        translations=["person"],
+        pos=POSEnum.NOUN
+    )
+    manager.add_word(
+        lemma="τρώω",
+        translations=["eat"],
+        pos=POSEnum.VERB
+    )
+
+    # Search without POS filter
+    result_all = manager.get_words_by_english("person")
+    assert len(result_all) == 1
+    assert isinstance(result_all[0], Noun)
+
+    # Search with NOUN filter
+    result_noun = manager.get_words_by_english("person", pos=POSEnum.NOUN)
+    assert len(result_noun) == 1
+    assert isinstance(result_noun[0], Noun)
+
+    # Search with VERB filter (should find nothing)
+    result_verb = manager.get_words_by_english("person", pos=POSEnum.VERB)
+    assert len(result_verb) == 0
+
+
+def test_get_words_by_english_handles_word_with_multiple_translations():
+    """Should find word even when it has multiple English translations."""
+    manager = LexicalManager()
+
+    manager.add_word(
+        lemma="άνθρωπος",
+        translations=["person", "human", "man"],
+        pos=POSEnum.NOUN
+    )
+
+    # Search by each translation
+    for english in ["person", "human", "man"]:
+        result = manager.get_words_by_english(english)
+        assert len(result) == 1
+        assert result[0].lemma == "άνθρωπος"
+        assert set(result[0].translations) == {"person", "human", "man"}

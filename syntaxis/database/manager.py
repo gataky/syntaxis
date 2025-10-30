@@ -193,8 +193,28 @@ class LexicalManager:
         Returns:
             Word object or None if not found
         """
-        _ = self._conn.cursor()
-        return None
+        cursor = self._conn.cursor()
+        table = POS_TO_TABLE_MAP[pos]
+
+        # Query with JOIN to get lemma and translations
+        query = f"""
+            SELECT
+                g.id,
+                g.lemma,
+                GROUP_CONCAT(e.word, '|') as translations
+            FROM {table} g
+            LEFT JOIN translations t ON t.greek_word_id = g.id
+                AND t.greek_pos_type = ?
+            LEFT JOIN english_words e ON e.id = t.english_word_id
+            WHERE g.id = ?
+            GROUP BY g.id
+        """
+
+        row = cursor.execute(query, (pos.name, word_id)).fetchone()
+        if not row:
+            return None
+
+        return self._create_word_from_row(row, pos)
 
     def _create_word_from_row(
         self,
@@ -399,6 +419,6 @@ class LexicalManager:
 
             return self._create_word_from_row(row, pos)
 
-        except Exception as e:
+        except Exception:
             self._conn.rollback()
             raise

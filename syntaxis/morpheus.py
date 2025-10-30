@@ -11,12 +11,42 @@ from syntaxis.models.part_of_speech import (
     Pronoun,
     Verb,
 )
+from syntaxis.models.enums import PartOfSpeech as POSEnum
 
 # TypeVar for part of speech classes
 T = TypeVar("T", Adjective, Adverb, Article, Noun, Numberal, Pronoun, Verb)
 
 
 class Morpheus:
+
+    @staticmethod
+    def create(lemma: str, pos: POSEnum) -> T:
+        """Generic method to create any POS type from lemma.
+
+        Args:
+            lemma: The base form of the word
+            pos: Part of speech enum value
+
+        Returns:
+            Appropriate PartOfSpeech subclass instance with forms populated
+
+        Raises:
+            KeyError: If pos is not in the method map
+
+        Examples:
+            >>> Morpheus.create("άνθρωπος", POSEnum.NOUN)
+            Noun(lemma="άνθρωπος", forms={...})
+        """
+        method_map = {
+            POSEnum.NOUN: Morpheus.noun,
+            POSEnum.VERB: Morpheus.verb,
+            POSEnum.ADJECTIVE: Morpheus.adjective,
+            POSEnum.ARTICLE: Morpheus.article,
+            POSEnum.PRONOUN: Morpheus.pronoun,
+            POSEnum.ADVERB: Morpheus.adverb,
+            POSEnum.NUMERAL: Morpheus.numeral,
+        }
+        return method_map[pos](lemma)
 
     @staticmethod
     def _get_inflected_forms(lemma: str, pos_class: Type[T]) -> T:

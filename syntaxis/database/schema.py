@@ -29,6 +29,8 @@ def create_schema(conn: sqlite3.Connection) -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
             gender TEXT NOT NULL,
+            number_mask INTEGER,
+            case_mask INTEGER,
             validation_status TEXT NOT NULL
         )
     """
@@ -41,6 +43,12 @@ def create_schema(conn: sqlite3.Connection) -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
             verb_group TEXT,
+            tense_mask INTEGER,
+            voice_mask INTEGER,
+            mood_mask INTEGER,
+            number_mask INTEGER,
+            person_mask INTEGER,
+            case_mask INTEGER,
             validation_status TEXT NOT NULL
         )
     """
@@ -52,6 +60,8 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS greek_adjectives (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
+            number_mask INTEGER,
+            case_mask INTEGER,
             validation_status TEXT NOT NULL
         )
     """
@@ -63,6 +73,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS greek_articles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
+            gender_mask INTEGER,
+            number_mask INTEGER,
+            case_mask INTEGER,
             validation_status TEXT NOT NULL
         )
     """
@@ -75,6 +88,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
             person TEXT,
+            gender_mask INTEGER,
+            number_mask INTEGER,
+            case_mask INTEGER,
             validation_status TEXT NOT NULL
         )
     """

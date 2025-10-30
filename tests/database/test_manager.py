@@ -283,3 +283,27 @@ def test_add_word_raises_error_for_empty_lemma():
         )
 
     assert "Lemma cannot be empty" in str(exc_info.value)
+
+
+def test_add_word_raises_error_for_duplicate_lemma():
+    """Should raise ValueError when word already exists."""
+    manager = LexicalManager()
+
+    # Manually insert a word
+    cursor = manager._conn.cursor()
+    cursor.execute(
+        "INSERT INTO greek_nouns (lemma, gender, validation_status) VALUES (?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "VALID")
+    )
+    manager._conn.commit()
+
+    # Try to add the same word
+    with pytest.raises(ValueError) as exc_info:
+        manager.add_word(
+            lemma="άνθρωπος",
+            translations=["person"],
+            pos=POSEnum.NOUN
+        )
+
+    assert "already exists" in str(exc_info.value)
+    assert "άνθρωπος" in str(exc_info.value)

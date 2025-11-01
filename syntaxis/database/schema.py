@@ -16,7 +16,7 @@ def create_schema(conn: sqlite3.Connection) -> None:
         """
         CREATE TABLE IF NOT EXISTS english_words (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            word TEXT NOT NULL UNIQUE,
+            word     TEXT NOT NULL,
             pos_type TEXT NOT NULL
         )
     """

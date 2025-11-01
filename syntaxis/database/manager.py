@@ -379,6 +379,7 @@ class LexicalManager:
             # Step 2: Insert/retrieve English words
             english_word_ids = []
             for translation in translations:
+                translation = translation.strip()
                 cursor.execute(
                     """
                     INSERT OR IGNORE INTO english_words (word, pos_type)

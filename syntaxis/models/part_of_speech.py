@@ -61,6 +61,15 @@ class Pronoun(PartOfSpeech[types.Pronoun]):
     ) -> set[str]:
         return self.forms[number][gender][case]
 
+@dataclass
+class Preposition(PartOfSpeech[types.Preposition]):
+    def get_form(self) -> set[str]:
+        return self.forms["prep"]
+
+@dataclass
+class Conjunction(PartOfSpeech[types.Conjunction]):
+    def get_form(self) -> set[str]:
+        return self.forms["conj"]
 
 @dataclass
 class Verb(PartOfSpeech[types.Verb]):

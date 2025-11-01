@@ -18,3 +18,6 @@ type Pronoun = dict[Number, dict[Gender, dict[Case, set[str]]]]
 type Verb = dict[
     Tense, dict[Voice, dict[Mood, dict[Number, dict[Person, dict[Case, set[str]]]]]]
 ]
+
+type Preposition = dict[str, set[str]]
+type Conjunction = dict[str, set[str]]

@@ -11,10 +11,12 @@ from syntaxis.models.part_of_speech import (
     Numberal,
     Pronoun,
     Verb,
+    Preposition,
+    Conjunction
 )
 
 # TypeVar for part of speech classes
-T = TypeVar("T", Adjective, Adverb, Article, Noun, Numberal, Pronoun, Verb)
+T = TypeVar("T", Adjective, Adverb, Article, Noun, Numberal, Pronoun, Verb, Preposition)
 
 
 class Morpheus:
@@ -45,6 +47,8 @@ class Morpheus:
             POSEnum.PRONOUN: Morpheus.pronoun,
             POSEnum.ADVERB: Morpheus.adverb,
             POSEnum.NUMERAL: Morpheus.numeral,
+            POSEnum.PREPOSITION: Morpheus.preposition,
+            POSEnum.CONJUNCTION: Morpheus.conjunction,
         }
         return method_map[pos](lemma)
 
@@ -79,6 +83,14 @@ class Morpheus:
     @staticmethod
     def pronoun(lemma: str) -> Pronoun:
         return Morpheus._get_inflected_forms(lemma, Pronoun)
+
+    @staticmethod
+    def preposition(lemma: str) -> Preposition:
+        return Preposition(lemma, forms={"prep": set([lemma])})
+
+    @staticmethod
+    def conjunction(lemma: str) -> Conjunction:
+        return Conjunction(lemma, forms={"conj": set([lemma])})
 
     @staticmethod
     def verb(lemma: str) -> Verb:

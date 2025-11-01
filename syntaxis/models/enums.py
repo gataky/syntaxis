@@ -15,6 +15,18 @@ class PartOfSpeech(Enum):
     CONJUNCTION = "conj"
 
 
+PartOfSpeechMap = {
+     "noun"    : PartOfSpeech.NOUN,
+     "verb"    : PartOfSpeech.VERB,
+     "pronoun" : PartOfSpeech.PRONOUN,
+     "numeral" : PartOfSpeech.NUMERAL,
+     "adverb"     : PartOfSpeech.ADVERB,
+     "article" : PartOfSpeech.ARTICLE,
+     "adjective"     : PartOfSpeech.ADJECTIVE,
+     "preposition"    : PartOfSpeech.PREPOSITION,
+     "conjunction"    : PartOfSpeech.CONJUNCTION,
+ }
+
 class Gender(Enum):
     MASCULINE = resources.MASC
     FEMININE = resources.FEM

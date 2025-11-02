@@ -19,8 +19,6 @@ from .models import (
 class TemplateParseError(Exception):
     """Raised when a template cannot be parsed."""
 
-    pass
-
 
 class TemplateParser:
     """Parses template strings into structured TokenFeatures.

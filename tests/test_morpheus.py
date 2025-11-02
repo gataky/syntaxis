@@ -1,5 +1,3 @@
-import pytest
-
 from syntaxis.models.enums import PartOfSpeech as POSEnum
 from syntaxis.models.part_of_speech import Adjective, Article, Noun, Verb
 from syntaxis.morpheus import Morpheus

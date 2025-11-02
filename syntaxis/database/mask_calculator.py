@@ -1,6 +1,6 @@
 """Calculate bitmasks for word features by inspecting generated forms."""
 
-from syntaxis.database.bitmasks import build_mask, enum_to_bit
+from syntaxis.database.bitmasks import enum_to_bit
 from syntaxis.models.enums import (
     Case,
     Gender,

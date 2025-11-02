@@ -10,6 +10,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "autoflake>=2.0.0",
     "black>=25.9.0",
     "ipython>=8.37.0",
     "isort>=7.0.0",

@@ -3,7 +3,7 @@ import sqlite3
 import pytest
 
 from syntaxis.database.manager import LexicalManager
-from syntaxis.models.enums import Case, Gender, Number
+from syntaxis.models.enums import Case, Number
 from syntaxis.models.enums import PartOfSpeech as POSEnum
 from syntaxis.models.part_of_speech import Noun, Verb
 
@@ -95,6 +95,7 @@ def test_create_word_from_row_handles_multiple_translations():
     result = manager._create_word_from_row(row, POSEnum.VERB)
 
     assert isinstance(result, Verb)
+    assert result.translations is not None
     assert set(result.translations) == {"eat", "consume"}
 
 
@@ -256,7 +257,7 @@ def test_add_word_raises_error_for_none_translations():
     manager = LexicalManager()
 
     with pytest.raises(ValueError) as exc_info:
-        manager.add_word(lemma="άνθρωπος", translations=None, pos=POSEnum.NOUN)
+        manager.add_word(lemma="άνθρωπος", translations=[], pos=POSEnum.NOUN)
 
     assert "At least one translation required" in str(exc_info.value)
 
@@ -356,6 +357,7 @@ def test_get_words_by_english_finds_single_noun():
     assert len(result) == 1
     assert isinstance(result[0], Noun)
     assert result[0].lemma == "άνθρωπος"
+    assert result[0].translations is not None
     assert "person" in result[0].translations
 
 

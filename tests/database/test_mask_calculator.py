@@ -1,7 +1,4 @@
-import pytest
-
 from syntaxis.database.mask_calculator import calculate_masks_for_word
-from syntaxis.models.enums import Case, Number
 from syntaxis.models.enums import PartOfSpeech as POSEnum
 
 

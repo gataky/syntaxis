@@ -1,7 +1,5 @@
 import sqlite3
 
-import pytest
-
 from syntaxis.database.schema import create_schema
 
 

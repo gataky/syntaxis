@@ -6,7 +6,7 @@ from syntaxis.database.bitmasks import (
     VALID_FEATURES,
     enum_to_bit,
 )
-from syntaxis.database.mask_calculator import calculate_masks_for_word, STRING_TO_ENUM
+from syntaxis.database.mask_calculator import STRING_TO_ENUM, calculate_masks_for_word
 from syntaxis.database.schema import create_schema
 from syntaxis.models.enums import PartOfSpeech
 from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase

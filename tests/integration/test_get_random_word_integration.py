@@ -1,12 +1,9 @@
 """Integration tests for get_random_word with real Greek words."""
 
-import pytest
-
 from syntaxis.database.manager import LexicalManager
 from syntaxis.database.mask_calculator import calculate_masks_for_word
 from syntaxis.models.enums import (
     Case,
-    Gender,
     Number,
 )
 from syntaxis.models.enums import PartOfSpeech as POSEnum

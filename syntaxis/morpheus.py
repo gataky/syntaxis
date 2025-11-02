@@ -7,12 +7,12 @@ from syntaxis.models.part_of_speech import (
     Adjective,
     Adverb,
     Article,
+    Conjunction,
     Noun,
     Numberal,
+    Preposition,
     Pronoun,
     Verb,
-    Preposition,
-    Conjunction
 )
 
 # TypeVar for part of speech classes
@@ -85,13 +85,18 @@ class Morpheus:
         return Morpheus._get_inflected_forms(lemma, Pronoun)
 
     @staticmethod
+    def verb(lemma: str) -> Verb:
+        return Morpheus._get_inflected_forms(lemma, Verb)
+
+    # The following POS don't exist in modern_greek_inflexion
+    # because they don't inflect in any way. So we "inflect"
+    # them ourselves by returning a forms like dict with the
+    # lemma as the declined word.
+
+    @staticmethod
     def preposition(lemma: str) -> Preposition:
         return Preposition(lemma, forms={"prep": set([lemma])})
 
     @staticmethod
     def conjunction(lemma: str) -> Conjunction:
         return Conjunction(lemma, forms={"conj": set([lemma])})
-
-    @staticmethod
-    def verb(lemma: str) -> Verb:
-        return Morpheus._get_inflected_forms(lemma, Verb)

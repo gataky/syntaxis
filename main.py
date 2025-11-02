@@ -1,6 +1,8 @@
 import csv
+
 from syntaxis.database.manager import LexicalManager
 from syntaxis.models.enums import PartOfSpeechMap
+
 
 def main():
 
@@ -16,7 +18,6 @@ def main():
             pos = PartOfSpeechMap[line[0]]
             lemma = line[2]
             translations = line[1].split(",")
-
 
             m.add_word(lemma, translations, pos)
 

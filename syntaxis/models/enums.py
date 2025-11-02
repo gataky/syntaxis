@@ -4,6 +4,8 @@ from modern_greek_inflexion import resources
 
 
 class PartOfSpeech(Enum):
+    # The following POS appear in the modern_greek_inflexion
+    # library
     NOUN = "noun"
     VERB = "verb"
     PRONOUN = "pronoun"
@@ -11,21 +13,24 @@ class PartOfSpeech(Enum):
     ADVERB = "adv"
     ARTICLE = "article"
     ADJECTIVE = "adj"
+    # These two POS do not appear in modern_greek_inflexion
+    # because they don't decline
     PREPOSITION = "prep"
     CONJUNCTION = "conj"
 
 
 PartOfSpeechMap = {
-     "noun"    : PartOfSpeech.NOUN,
-     "verb"    : PartOfSpeech.VERB,
-     "pronoun" : PartOfSpeech.PRONOUN,
-     "numeral" : PartOfSpeech.NUMERAL,
-     "adverb"     : PartOfSpeech.ADVERB,
-     "article" : PartOfSpeech.ARTICLE,
-     "adjective"     : PartOfSpeech.ADJECTIVE,
-     "preposition"    : PartOfSpeech.PREPOSITION,
-     "conjunction"    : PartOfSpeech.CONJUNCTION,
- }
+    "noun": PartOfSpeech.NOUN,
+    "verb": PartOfSpeech.VERB,
+    "pronoun": PartOfSpeech.PRONOUN,
+    "numeral": PartOfSpeech.NUMERAL,
+    "adverb": PartOfSpeech.ADVERB,
+    "article": PartOfSpeech.ARTICLE,
+    "adjective": PartOfSpeech.ADJECTIVE,
+    "preposition": PartOfSpeech.PREPOSITION,
+    "conjunction": PartOfSpeech.CONJUNCTION,
+}
+
 
 class Gender(Enum):
     MASCULINE = resources.MASC

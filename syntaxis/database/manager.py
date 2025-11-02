@@ -6,7 +6,7 @@ from syntaxis.database.bitmasks import (
     VALID_FEATURES,
     enum_to_bit,
 )
-from syntaxis.database.mask_calculator import calculate_masks_for_word
+from syntaxis.database.mask_calculator import calculate_masks_for_word, STRING_TO_ENUM
 from syntaxis.database.schema import create_schema
 from syntaxis.models.enums import PartOfSpeech
 from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
@@ -296,6 +296,111 @@ class LexicalManager:
         },
     }
 
+    def _validate_and_prepare_lemma(
+        self, lemma: str, pos: PartOfSpeech, translations: list[str]
+    ) -> PartOfSpeechBase:
+        """Validate inputs and use Morpheus to create a word object."""
+        if not lemma:
+            raise ValueError("Lemma cannot be empty")
+        if not translations:
+            raise ValueError("At least one translation required")
+
+        table = POS_TO_TABLE_MAP[pos]
+        cursor = self._conn.cursor()
+        existing = cursor.execute(
+            f"SELECT id FROM {table} WHERE lemma = ?", (lemma,)
+        ).fetchone()
+        if existing:
+            raise ValueError(f"Word '{lemma}' already exists as {pos.name}")
+
+        try:
+            word = Morpheus.create(lemma, pos)
+        except Exception as e:
+            raise ValueError(f"Failed to generate forms for '{lemma}': {e}")
+
+        if not word.forms:
+            raise ValueError(f"Morpheus generated no forms for '{lemma}'")
+
+        return word
+
+    def _prepare_database_values(
+        self, lemma: str, pos: PartOfSpeech, word: PartOfSpeechBase
+    ) -> dict[str, Any]:
+        """Calculate masks and prepare a dictionary of values for DB insertion."""
+        masks = calculate_masks_for_word(lemma, pos)
+        config = self.POS_CONFIG[pos]
+        fields = config["fields"]
+
+        values: dict[str, str | int | None] = {
+            "lemma": lemma,
+            "validation_status": "VALID",
+        }
+
+        if pos == PartOfSpeech.NOUN:
+            gender_key = next(iter(word.forms.keys()))
+            gender_enum = STRING_TO_ENUM.get(gender_key)
+            if gender_enum:
+                values["gender"] = gender_enum.name
+        elif pos == PartOfSpeech.VERB:
+            values["verb_group"] = getattr(word, "verb_group", None)
+
+        for field in fields:
+            if field.endswith("_mask") and field in masks:
+                values[field] = masks[field]
+            elif field.endswith("_mask") and field not in values:
+                values[field] = 0
+
+        return values
+
+    def _execute_add_word_transaction(
+        self, pos: PartOfSpeech, values: dict[str, Any], translations: list[str]
+    ) -> int:
+        """Execute the database transaction to add a word and its translations."""
+        table = POS_TO_TABLE_MAP[pos]
+        config = self.POS_CONFIG[pos]
+        fields = config["fields"]
+        cursor = self._conn.cursor()
+
+        try:
+            # Step 1: Insert Greek word
+            columns = ", ".join(fields)
+            placeholders = ", ".join(["?"] * len(fields))
+            sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+
+            cursor.execute(sql, [values.get(field) for field in fields])
+            greek_word_id = cursor.lastrowid
+            if not greek_word_id:
+                raise sqlite3.Error("Failed to insert Greek word, no row ID returned.")
+
+            # Step 2: Insert/retrieve English words and create links
+            english_word_ids = []
+            for translation in translations:
+                translation = translation.strip()
+                cursor.execute(
+                    "INSERT OR IGNORE INTO english_words (word, pos_type) VALUES (?, ?)",
+                    (translation, pos.name),
+                )
+                eng_id_row = cursor.execute(
+                    "SELECT id FROM english_words WHERE word = ? AND pos_type = ?",
+                    (translation, pos.name),
+                ).fetchone()
+                if eng_id_row:
+                    english_word_ids.append(eng_id_row[0])
+
+            # Step 3: Create translation links
+            for eng_id in english_word_ids:
+                cursor.execute(
+                    "INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type) VALUES (?, ?, ?)",
+                    (eng_id, greek_word_id, pos.name),
+                )
+
+            self._conn.commit()
+            return greek_word_id
+
+        except Exception:
+            self._conn.rollback()
+            raise
+
     def add_word(
         self, lemma: str, translations: list[str], pos: PartOfSpeech
     ) -> PartOfSpeechBase:
@@ -312,122 +417,12 @@ class LexicalManager:
         Raises:
             ValueError: If translations empty, lemma empty, word exists, or Morpheus fails
         """
-        # Validate lemma
-        if not lemma:
-            raise ValueError("Lemma cannot be empty")
-        # Validate translations
-        if not translations:
-            raise ValueError("At least one translation required")
+        word = self._validate_and_prepare_lemma(lemma, pos, translations)
+        values = self._prepare_database_values(lemma, pos, word)
+        greek_word_id = self._execute_add_word_transaction(pos, values, translations)
 
-        # Check for duplicates
-        table = POS_TO_TABLE_MAP[pos]
-        cursor = self._conn.cursor()
-        existing = cursor.execute(
-            f"SELECT id FROM {table} WHERE lemma = ?", (lemma,)
-        ).fetchone()
-        if existing:
-            raise ValueError(f"Word '{lemma}' already exists as {pos.name}")
-
-        # Generate forms with Morpheus
-        try:
-            word = Morpheus.create(lemma, pos)
-        except Exception as e:
-            raise ValueError(f"Failed to generate forms for '{lemma}': {e}")
-
-        if not word.forms:
-            raise ValueError(f"Morpheus generated no forms for '{lemma}'")
-
-        # Calculate masks
-        masks = calculate_masks_for_word(lemma, pos)
-
-        # Prepare data for insertion
-        config = self.POS_CONFIG[pos]
-        fields = config["fields"]
-
-        values: dict[str, str | int | None] = {
-            "lemma": lemma,
-            "validation_status": "VALID",
-        }
-
-        # Infer POS-specific fields and add masks
-        if pos == PartOfSpeech.NOUN:
-            from syntaxis.database.mask_calculator import STRING_TO_ENUM
-
-            gender_key = next(iter(word.forms.keys()))
-            gender_enum = STRING_TO_ENUM.get(gender_key)
-            if gender_enum:
-                values["gender"] = gender_enum.name
-        elif pos == PartOfSpeech.VERB:
-            values["verb_group"] = getattr(word, "verb_group", None)
-
-        for field in fields:
-            if field.endswith("_mask") and field in masks:
-                values[field] = masks[field]
-            elif field.endswith("_mask") and field not in values:
-                values[field] = 0
-
-        # Insert into database (transactional)
-        try:
-            # Step 1: Insert Greek word
-            columns = ", ".join(fields)
-            placeholders = ", ".join(["?"] * len(fields))
-            sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
-
-            cursor.execute(sql, [values.get(field) for field in fields])
-            greek_word_id = cursor.lastrowid
-
-            # Step 2: Insert/retrieve English words
-            english_word_ids = []
-            for translation in translations:
-                translation = translation.strip()
-                cursor.execute(
-                    """
-                    INSERT OR IGNORE INTO english_words (word, pos_type)
-                    VALUES (?, ?)
-                    """,
-                    (translation, pos.name),
-                )
-
-                eng_id = cursor.execute(
-                    """
-                    SELECT id FROM english_words WHERE word = ? AND pos_type = ?
-                    """,
-                    (translation, pos.name),
-                ).fetchone()[0]
-
-                english_word_ids.append(eng_id)
-
-            # Step 3: Create translation links
-            for eng_id in english_word_ids:
-                cursor.execute(
-                    """
-                    INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type)
-                    VALUES (?, ?, ?)
-                    """,
-                    (eng_id, greek_word_id, pos.name),
-                )
-
-            self._conn.commit()
-
-            # Step 4: Build and return Word object
-            row = cursor.execute(
-                f"""
-                SELECT
-                    g.id,
-                    g.lemma,
-                    GROUP_CONCAT(e.word, '|') as translations
-                FROM {table} g
-                LEFT JOIN translations t ON t.greek_word_id = g.id
-                    AND t.greek_pos_type = ?
-                LEFT JOIN english_words e ON e.id = t.english_word_id
-                WHERE g.id = ?
-                GROUP BY g.id
-                """,
-                (pos.name, greek_word_id),
-            ).fetchone()
-
-            return self._create_word_from_row(row, pos)
-
-        except Exception:
-            self._conn.rollback()
-            raise
+        new_word = self._get_word_by_id(greek_word_id, pos)
+        if not new_word:
+            # This should not happen if transaction was successful
+            raise RuntimeError(f"Failed to retrieve newly added word '{lemma}'")
+        return new_word

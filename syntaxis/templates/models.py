@@ -1,71 +1,79 @@
 """Data models for template parsing and representation."""
 
 from dataclasses import dataclass
-from enum import Enum
+from syntaxis.models.enums import (
+    Case,
+    Gender,
+    Number,
+    PartOfSpeech,
+    Person,
+    Tense,
+    Voice,
+)
 
 
-class PartOfSpeech(Enum):
-    """Part of speech types supported in templates."""
-
-    NOUN = "Noun"
-    VERB = "Verb"
-    ADJECTIVE = "Adj"
-    ARTICLE = "Article"
-    PRONOUN = "Pronoun"
-    PREPOSITION = "Preposition"
-    CONJUNCTION = "Conjunction"
-    ADVERB = "Adverb"
-
-
-class Case(Enum):
-    """Greek grammatical cases."""
-
-    NOMINATIVE = "nom"
-    GENITIVE = "gen"
-    ACCUSATIVE = "acc"
-    VOCATIVE = "voc"
-
-
-class Gender(Enum):
-    """Greek grammatical genders."""
-
-    MASCULINE = "m"
-    FEMININE = "f"
-    NEUTER = "n"
-
-
-class Number(Enum):
-    """Greek grammatical numbers."""
-
-    SINGULAR = "sg"
-    PLURAL = "pl"
-
-
-class Voice(Enum):
-    """Greek verb voices."""
-
-    ACTIVE = "act"
-    PASSIVE = "pass"
-
-
-class Tense(Enum):
-    """Greek verb tenses."""
-
-    AORIST = "aor"
-    FUTURE_PERFECT = "futperf"
-    IMPERFECT = "impf"
-    PERFECT = "perf"
-    PLUPERFECT = "plup"
-    PRESENT = "pres"
-    SIMPLE_FUTURE = "fut"
-
-
-class Person(Enum):
-    """Greek grammatical persons."""
-
-    FIRST = "1"
-    SECOND = "2"
-    THIRD = "3"
+# class PartOfSpeech(Enum):
+#     """Part of speech types supported in templates."""
+#
+#     NOUN = "Noun"
+#     VERB = "Verb"
+#     ADJECTIVE = "Adj"
+#     ARTICLE = "Article"
+#     PRONOUN = "Pronoun"
+#     PREPOSITION = "Preposition"
+#     CONJUNCTION = "Conjunction"
+#     ADVERB = "Adverb"
+#
+#
+# class Case(Enum):
+#     """Greek grammatical cases."""
+#
+#     NOMINATIVE = "nom"
+#     GENITIVE = "gen"
+#     ACCUSATIVE = "acc"
+#     VOCATIVE = "voc"
+#
+#
+# class Gender(Enum):
+#     """Greek grammatical genders."""
+#
+#     MASCULINE = "m"
+#     FEMININE = "f"
+#     NEUTER = "n"
+#
+#
+# class Number(Enum):
+#     """Greek grammatical numbers."""
+#
+#     SINGULAR = "sg"
+#     PLURAL = "pl"
+#
+#
+# class Voice(Enum):
+#     """Greek verb voices."""
+#
+#     ACTIVE = "act"
+#     PASSIVE = "pass"
+#
+#
+# class Tense(Enum):
+#     """Greek verb tenses."""
+#
+#     AORIST = "aor"
+#     FUTURE_PERFECT = "futperf"
+#     IMPERFECT = "impf"
+#     PERFECT = "perf"
+#     PLUPERFECT = "plup"
+#     PRESENT = "pres"
+#     SIMPLE_FUTURE = "fut"
+#
+#
+# class Person(Enum):
+#     """Greek grammatical persons."""
+#
+#     FIRST = "1"
+#     SECOND = "2"
+#     THIRD = "3"
 
 
 @dataclass

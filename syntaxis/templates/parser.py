@@ -3,16 +3,19 @@
 import re
 from typing import List
 
-from .models import (
+from syntaxis.models.enums import (
     Case,
     Gender,
     Number,
-    ParsedTemplate,
     PartOfSpeech,
     Person,
     Tense,
-    TokenFeatures,
     Voice,
+)
+
+from .models import (
+    ParsedTemplate,
+    TokenFeatures,
 )
 
 

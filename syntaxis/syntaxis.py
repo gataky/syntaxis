@@ -11,9 +11,7 @@ class Syntaxis:
     def generate_sentence(self, template: str):
 
         parsed = self.template_parser.parse(template)
-
         for token in parsed.tokens:
-
             self.lexical_manager.get_random_word(token.pos, **token.__dict__)
 
         return

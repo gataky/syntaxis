@@ -72,7 +72,7 @@ def has_feature(mask: int, feature: Enum) -> bool:
 VALID_FEATURES: dict[POSEnum, set[str]] = {
     POSEnum.NOUN: {"gender", "number", "case"},
     POSEnum.VERB: {"tense", "voice", "mood", "number", "person", "case"},
-    POSEnum.ADJECTIVE: {"number", "case"},
+    POSEnum.ADJECTIVE: {"gender", "number", "case"},
     POSEnum.ARTICLE: {"gender", "number", "case"},
     POSEnum.PRONOUN: {"gender", "number", "case"},
     POSEnum.ADVERB: set(),

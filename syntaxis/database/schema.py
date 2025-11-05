@@ -28,7 +28,7 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS greek_nouns (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
-            gender TEXT NOT NULL,
+            gender_mask TEXT NOT NULL,
             number_mask INTEGER,
             case_mask INTEGER,
             validation_status TEXT NOT NULL
@@ -60,6 +60,7 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS greek_adjectives (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL UNIQUE,
+            gender_mask INTEGER,
             number_mask INTEGER,
             case_mask INTEGER,
             validation_status TEXT NOT NULL

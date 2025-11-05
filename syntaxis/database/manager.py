@@ -110,7 +110,8 @@ class LexicalManager:
         if not row:
             return None
 
-        return self._create_word_from_row(row, pos)
+        word = self._create_word_from_row(row, pos)
+        return word
 
     # Helper methods
 
@@ -231,6 +232,7 @@ class LexicalManager:
         word = Morpheus.create(lemma, pos)
         word.translations = translations
 
+
         return word
 
     POS_CONFIG = {
@@ -238,7 +240,7 @@ class LexicalManager:
             "table": "greek_nouns",
             "fields": [
                 "lemma",
-                "gender",
+                "gender_mask",
                 "number_mask",
                 "case_mask",
                 "validation_status",
@@ -260,7 +262,7 @@ class LexicalManager:
         },
         PartOfSpeech.ADJECTIVE: {
             "table": "greek_adjectives",
-            "fields": ["lemma", "number_mask", "case_mask", "validation_status"],
+            "fields": ["lemma", "gender_mask", "number_mask", "case_mask", "validation_status"],
         },
         PartOfSpeech.ARTICLE: {
             "table": "greek_articles",

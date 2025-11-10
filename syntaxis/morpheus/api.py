@@ -1,6 +1,6 @@
 """Morpheus: Translation layer between modern_greek_inflexion and syntaxis."""
 
-from typing import TypeVar
+from typing import TypeVar, cast
 
 import modern_greek_inflexion as mgi
 
@@ -68,7 +68,7 @@ class Morpheus:
         # Map our classes to the mgi classes
         mgi_class = getattr(mgi, lexical_class.__name__)
         mgi_forms = mgi_class(lemma).all()
-        syntaxis_forms = translate_forms(mgi_forms)
+        syntaxis_forms = cast(dict, translate_forms(mgi_forms))
         return lexical_class(lemma, syntaxis_forms)
 
     @staticmethod

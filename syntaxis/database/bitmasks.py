@@ -1,27 +1,27 @@
 """Mapping constants for database tables and valid features."""
 
-from syntaxis.models.enums import PartOfSpeech as POSEnum
+from syntaxis.models import constants as c
 
 # Maps POS to its valid feature names
-VALID_FEATURES: dict[POSEnum, set[str]] = {
-    POSEnum.NOUN: {"gender", "number", "case_name"},
-    POSEnum.VERB: {"tense", "voice", "mood", "number", "person", "case_name"},
-    POSEnum.ADJECTIVE: {"gender", "number", "case_name"},
-    POSEnum.ARTICLE: {"gender", "number", "case_name"},
-    POSEnum.PRONOUN: {"gender", "number", "case_name", "person", "type"},
-    POSEnum.ADVERB: set(),
-    POSEnum.PREPOSITION: set(),
-    POSEnum.CONJUNCTION: set(),
+VALID_FEATURES: dict[str, set[str]] = {
+    c.NOUN: {"gender", "number", "case_name"},
+    c.VERB: {"tense", "voice", "mood", "number", "person", "case_name"},
+    c.ADJECTIVE: {"gender", "number", "case_name"},
+    c.ARTICLE: {"gender", "number", "case_name"},
+    c.PRONOUN: {"gender", "number", "case_name", "person", "type"},
+    c.ADVERB: set(),
+    c.PREPOSITION: set(),
+    c.CONJUNCTION: set(),
 }
 
-# Maps POS enum to database table name
-POS_TO_TABLE_MAP: dict[POSEnum, str] = {
-    POSEnum.NOUN: "greek_nouns",
-    POSEnum.VERB: "greek_verbs",
-    POSEnum.ADJECTIVE: "greek_adjectives",
-    POSEnum.ARTICLE: "greek_articles",
-    POSEnum.PRONOUN: "greek_pronouns",
-    POSEnum.ADVERB: "greek_adverbs",
-    POSEnum.PREPOSITION: "greek_prepositions",
-    POSEnum.CONJUNCTION: "greek_conjunctions",
+# Maps POS string to database table name
+POS_TO_TABLE_MAP: dict[str, str] = {
+    c.NOUN: "greek_nouns",
+    c.VERB: "greek_verbs",
+    c.ADJECTIVE: "greek_adjectives",
+    c.ARTICLE: "greek_articles",
+    c.PRONOUN: "greek_pronouns",
+    c.ADVERB: "greek_adverbs",
+    c.PREPOSITION: "greek_prepositions",
+    c.CONJUNCTION: "greek_conjunctions",
 }

@@ -3,59 +3,9 @@ from typing import Any
 
 from syntaxis.database.bitmasks import POS_TO_TABLE_MAP, VALID_FEATURES
 from syntaxis.database.schema import create_schema
-from syntaxis.models.enums import PartOfSpeech
+from syntaxis.models import constants as c
 from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
 from syntaxis.morpheus import Morpheus
-
-# Map Morpheus abbreviations to enum name equivalents
-MORPHEUS_TO_ENUM = {
-    # Gender
-    "MASC": "MASCULINE",
-    "FEM": "FEMININE",
-    "NEUT": "NEUTER",
-    # Number
-    "SG": "SINGULAR",
-    "PL": "PLURAL",
-    # Case
-    "NOM": "NOMINATIVE",
-    "GEN": "GENITIVE",
-    "ACC": "ACCUSATIVE",
-    "VOC": "VOCATIVE",
-    # Tense
-    "PRES": "PRESENT",
-    "IMPERF": "IMPERFECT",
-    "AOR": "AORIST",
-    "PERF": "PERFECT",
-    "PLUPERF": "PLUPERFECT",
-    "FUT": "FUTURE",
-    # Voice
-    "ACT": "ACTIVE",
-    "PASS": "PASSIVE",
-    "MID": "MIDDLE",
-    # Mood
-    "IND": "INDICATIVE",
-    "SUBJ": "SUBJUNCTIVE",
-    "IMP": "IMPERATIVE",
-    "PARTICIPLE": "PARTICIPLE",
-    "INF": "INFINITIVE",
-    # Person
-    "1": "FIRST",
-    "2": "SECOND",
-    "3": "THIRD",
-}
-
-
-def normalize_feature(value: str) -> str:
-    """Normalize Morpheus feature value to enum name format.
-
-    Args:
-        value: Morpheus feature value (e.g., 'SG', 'MASC', 'NOM')
-
-    Returns:
-        Enum-compatible name (e.g., 'SINGULAR', 'MASCULINE', 'NOMINATIVE')
-    """
-    upper_value = value.upper()
-    return MORPHEUS_TO_ENUM.get(upper_value, upper_value)
 
 
 class LexicalManager:
@@ -85,15 +35,13 @@ class LexicalManager:
     # Storage methods
     # Random selection methods
 
-    def get_random_word(
-        self, pos: PartOfSpeech, **features: Any
-    ) -> PartOfSpeechBase | None:
+    def get_random_word(self, pos: str, **features: Any) -> PartOfSpeechBase | None:
         """Get a random word of the specified part of speech.
 
         Args:
-            pos: Part of speech enum (PartOfSpeech.NOUN, PartOfSpeech.VERB, etc.)
-            **features: Feature filters as enum values
-                        (gender=Gender.MASCULINE, case_name=Case.NOMINATIVE, etc.)
+            pos: Part of speech string (c.NOUN, c.VERB, etc.)
+            **features: Feature filters as string constants
+                        (gender=c.MASCULINE, case=c.NOMINATIVE, etc.)
 
         Returns:
             Instance of appropriate PartOfSpeech subclass with forms and
@@ -103,7 +51,7 @@ class LexicalManager:
             ValueError: If invalid features provided for the POS type
 
         Examples:
-            >>> manager.get_random_word(PartOfSpeech.NOUN, number=Number.SINGULAR)
+            >>> manager.get_random_word(c.NOUN, number=c.SINGULAR)
             Noun(lemma="άνθρωπος", ...)
         """
         # Validate features
@@ -112,7 +60,7 @@ class LexicalManager:
 
         if invalid_features:
             raise ValueError(
-                f"Invalid features {invalid_features} for {pos.name}. "
+                f"Invalid features {invalid_features} for {pos}. "
                 + f"Valid features are: {valid_features}"
             )
 
@@ -124,10 +72,9 @@ class LexicalManager:
         where_params: list[str] = []
 
         for feature_name, feature_value in features.items():
-            # Convert enum to string (e.g., Number.SINGULAR -> "SINGULAR")
-            feature_str = feature_value.name
+            # Use string constant directly
             conditions.append(f"g.{feature_name} = ?")
-            where_params.append(feature_str)
+            where_params.append(feature_value)
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
 
@@ -147,9 +94,9 @@ class LexicalManager:
         """
 
         # Parameters must be in the order they appear in the query:
-        # 1. Subquery parameter (pos.name) comes first
+        # 1. Subquery parameter (pos) comes first
         # 2. WHERE clause parameters come after
-        params = [pos.name] + where_params
+        params = [pos] + where_params
 
         row = cursor.execute(query, params).fetchone()
         if not row:
@@ -181,7 +128,7 @@ class LexicalManager:
     # Reverse lookup methods
 
     def get_words_by_english(
-        self, english_word: str, pos: PartOfSpeech | None = None
+        self, english_word: str, pos: str | None = None
     ) -> list:
         """Find all Greek words that translate to the given English word.
 
@@ -195,11 +142,11 @@ class LexicalManager:
         results = []
         pos_to_check = [pos] if pos else list(POS_TO_TABLE_MAP.keys())
 
-        for pos_enum in pos_to_check:
-            if pos_enum not in POS_TO_TABLE_MAP:
+        for pos_str in pos_to_check:
+            if pos_str not in POS_TO_TABLE_MAP:
                 continue
 
-            table = POS_TO_TABLE_MAP[pos_enum]
+            table = POS_TO_TABLE_MAP[pos_str]
             query = f"""
                 SELECT
                     g.lemma,
@@ -215,14 +162,14 @@ class LexicalManager:
             """
             cursor = self._conn.cursor()
             rows = cursor.execute(
-                query, (pos_enum.name, pos_enum.name, english_word)
+                query, (pos_str, pos_str, english_word)
             ).fetchall()
             for row in rows:
-                results.append(self._create_word_from_row(row, pos_enum))
+                results.append(self._create_word_from_row(row, pos_str))
 
         return results
 
-    def _get_word_by_id(self, word_id: int, pos: PartOfSpeech):
+    def _get_word_by_id(self, word_id: int, pos: str):
         """Helper to retrieve a word by its database ID and POS.
 
         Args:
@@ -248,13 +195,13 @@ class LexicalManager:
             WHERE g.id = ?
         """
 
-        row = cursor.execute(query, (pos.name, word_id)).fetchone()
+        row = cursor.execute(query, (pos, word_id)).fetchone()
         if not row:
             return None
 
         return self._create_word_from_row(row, pos)
 
-    def _get_word_by_lemma(self, lemma: str, pos: PartOfSpeech):
+    def _get_word_by_lemma(self, lemma: str, pos: str):
         """Helper to retrieve a word by its lemma and POS.
 
         Args:
@@ -280,14 +227,14 @@ class LexicalManager:
             LIMIT 1
         """
 
-        row = cursor.execute(query, (pos.name, lemma)).fetchone()
+        row = cursor.execute(query, (pos, lemma)).fetchone()
         if not row:
             return None
 
         return self._create_word_from_row(row, pos)
 
     def _create_word_from_row(
-        self, row: sqlite3.Row, pos: PartOfSpeech
+        self, row: sqlite3.Row, pos: str
     ) -> PartOfSpeechBase:
         """Create PartOfSpeech object with translations from query result.
 
@@ -326,9 +273,9 @@ class LexicalManager:
                 for case_name, form in case_dict.items():
                     if form:  # Only if form exists
                         features_list.append({
-                            "gender": normalize_feature(gender),
-                            "number": normalize_feature(number),
-                            "case_name": normalize_feature(case_name),
+                            "gender": gender,
+                            "number": number,
+                            "case_name": case_name,
                         })
         return features_list
 
@@ -351,7 +298,7 @@ class LexicalManager:
             if isinstance(voice_dict, set):
                 features_list.append({
                     "verb_group": verb_group,
-                    "tense": normalize_feature(tense),
+                    "tense": tense,
                     "voice": None,
                     "mood": None,
                     "number": None,
@@ -365,8 +312,8 @@ class LexicalManager:
                 if isinstance(mood_dict, set):
                     features_list.append({
                         "verb_group": verb_group,
-                        "tense": normalize_feature(tense),
-                        "voice": normalize_feature(voice),
+                        "tense": tense,
+                        "voice": voice,
                         "mood": None,
                         "number": None,
                         "person": None,
@@ -380,15 +327,15 @@ class LexicalManager:
                         # Infinitive: no number/person/case
                         features_list.append({
                             "verb_group": verb_group,
-                            "tense": normalize_feature(tense),
-                            "voice": normalize_feature(voice),
-                            "mood": normalize_feature(mood),
+                            "tense": tense,
+                            "voice": voice,
+                            "mood": mood,
                             "number": None,
                             "person": None,
                             "case_name": None,
                         })
                     # Check if this is a participle (has gender level)
-                    elif normalize_feature(mood) == "PARTICIPLE":
+                    elif mood == "participle":
                         # Participle: {gender: {number: {case: {forms}}}}
                         for gender, number_dict in mood_value.items():
                             for number, case_dict in number_dict.items():
@@ -396,12 +343,12 @@ class LexicalManager:
                                     if forms:
                                         features_list.append({
                                             "verb_group": verb_group,
-                                            "tense": normalize_feature(tense),
-                                            "voice": normalize_feature(voice),
-                                            "mood": normalize_feature(mood),
-                                            "number": normalize_feature(number),
+                                            "tense": tense,
+                                            "voice": voice,
+                                            "mood": mood,
+                                            "number": number,
                                             "person": None,
-                                            "case_name": normalize_feature(case_name),
+                                            "case_name": case_name,
                                         })
                     else:
                         # Regular mood: {number: {person: {forms}}}
@@ -410,10 +357,10 @@ class LexicalManager:
                             if isinstance(person_dict, set):
                                 features_list.append({
                                     "verb_group": verb_group,
-                                    "tense": normalize_feature(tense),
-                                    "voice": normalize_feature(voice),
-                                    "mood": normalize_feature(mood),
-                                    "number": normalize_feature(number),
+                                    "tense": tense,
+                                    "voice": voice,
+                                    "mood": mood,
+                                    "number": number,
                                     "person": None,
                                     "case_name": None,
                                 })
@@ -422,11 +369,11 @@ class LexicalManager:
                                     if forms:
                                         features_list.append({
                                             "verb_group": verb_group,
-                                            "tense": normalize_feature(tense),
-                                            "voice": normalize_feature(voice),
-                                            "mood": normalize_feature(mood),
-                                            "number": normalize_feature(number),
-                                            "person": normalize_feature(person),
+                                            "tense": tense,
+                                            "voice": voice,
+                                            "mood": mood,
+                                            "number": number,
+                                            "person": person,
                                             "case_name": None,
                                         })
         return features_list
@@ -446,9 +393,9 @@ class LexicalManager:
                 for case_name, form in case_dict.items():
                     if form:
                         features_list.append({
-                            "gender": normalize_feature(gender),
-                            "number": normalize_feature(number),
-                            "case_name": normalize_feature(case_name),
+                            "gender": gender,
+                            "number": number,
+                            "case_name": case_name,
                         })
         return features_list
 
@@ -480,7 +427,7 @@ class LexicalManager:
         return [{}]
 
     def _extract_features_from_morpheus(
-        self, word: PartOfSpeechBase, pos: PartOfSpeech
+        self, word: PartOfSpeechBase, pos: str
     ) -> list[dict[str, str | None]]:
         """Extract all valid feature combinations from Morpheus-generated forms.
 
@@ -493,29 +440,29 @@ class LexicalManager:
 
         Examples:
             For a noun: [
-                {"gender": "M", "number": "SINGULAR", "case_name": "NOMINATIVE"},
-                {"gender": "M", "number": "SINGULAR", "case_name": "GENITIVE"},
+                {"gender": "masc", "number": "sg", "case_name": "nom"},
+                {"gender": "masc", "number": "sg", "case_name": "gen"},
                 ...
             ]
         """
-        if pos == PartOfSpeech.NOUN:
+        if pos == c.NOUN:
             return self._extract_noun_features(word)
-        elif pos == PartOfSpeech.VERB:
+        elif pos == c.VERB:
             return self._extract_verb_features(word)
-        elif pos in [PartOfSpeech.ADJECTIVE, PartOfSpeech.ARTICLE]:
+        elif pos in [c.ADJECTIVE, c.ARTICLE]:
             return self._extract_adjective_features(word)
-        elif pos == PartOfSpeech.PRONOUN:
+        elif pos == c.PRONOUN:
             return self._extract_pronoun_features(word)
-        elif pos in [PartOfSpeech.ADVERB, PartOfSpeech.PREPOSITION, PartOfSpeech.CONJUNCTION]:
+        elif pos in [c.ADVERB, c.PREPOSITION, c.CONJUNCTION]:
             return self._extract_simple_features()
         return []
 
     POS_CONFIG = {
-        PartOfSpeech.NOUN: {
+        c.NOUN: {
             "table": "greek_nouns",
             "fields": ["lemma", "gender", "number", "case_name", "validation_status"],
         },
-        PartOfSpeech.VERB: {
+        c.VERB: {
             "table": "greek_verbs",
             "fields": [
                 "lemma",
@@ -529,15 +476,15 @@ class LexicalManager:
                 "validation_status",
             ],
         },
-        PartOfSpeech.ADJECTIVE: {
+        c.ADJECTIVE: {
             "table": "greek_adjectives",
             "fields": ["lemma", "gender", "number", "case_name", "validation_status"],
         },
-        PartOfSpeech.ARTICLE: {
+        c.ARTICLE: {
             "table": "greek_articles",
             "fields": ["lemma", "gender", "number", "case_name", "validation_status"],
         },
-        PartOfSpeech.PRONOUN: {
+        c.PRONOUN: {
             "table": "greek_pronouns",
             "fields": [
                 "lemma",
@@ -549,22 +496,22 @@ class LexicalManager:
                 "validation_status",
             ],
         },
-        PartOfSpeech.ADVERB: {
+        c.ADVERB: {
             "table": "greek_adverbs",
             "fields": ["lemma", "validation_status"],
         },
-        PartOfSpeech.PREPOSITION: {
+        c.PREPOSITION: {
             "table": "greek_prepositions",
             "fields": ["lemma", "validation_status"],
         },
-        PartOfSpeech.CONJUNCTION: {
+        c.CONJUNCTION: {
             "table": "greek_conjunctions",
             "fields": ["lemma", "validation_status"],
         },
     }
 
     def _validate_and_prepare_lemma(
-        self, lemma: str, pos: PartOfSpeech, translations: list[str]
+        self, lemma: str, pos: str, translations: list[str]
     ) -> PartOfSpeechBase:
         """Validate inputs and use Morpheus to create a word object."""
         if not lemma:
@@ -578,7 +525,7 @@ class LexicalManager:
             f"SELECT id FROM {table} WHERE lemma = ?", (lemma,)
         ).fetchone()
         if existing:
-            raise ValueError(f"Word '{lemma}' already exists as {pos.name}")
+            raise ValueError(f"Word '{lemma}' already exists as {pos}")
 
         try:
             word = Morpheus.create(lemma, pos)
@@ -591,7 +538,7 @@ class LexicalManager:
         return word
 
     def _prepare_database_values(
-        self, lemma: str, pos: PartOfSpeech, word: PartOfSpeechBase, features: dict[str, str | None]
+        self, lemma: str, pos: str, word: PartOfSpeechBase, features: dict[str, str | None]
     ) -> dict[str, str | int | None]:
         """Prepare values for one database row (one feature combination).
 
@@ -625,7 +572,7 @@ class LexicalManager:
         return values
 
     def _execute_add_word_transaction(
-        self, pos: PartOfSpeech, lemma: str, values_list: list[dict[str, Any]], translations: list[str]
+        self, pos: str, lemma: str, values_list: list[dict[str, Any]], translations: list[str]
     ) -> None:
         """Execute database transaction to add word with multiple feature rows.
 
@@ -655,11 +602,11 @@ class LexicalManager:
                 translation = translation.strip()
                 cursor.execute(
                     "INSERT OR IGNORE INTO english_words (word, pos_type) VALUES (?, ?)",
-                    (translation, pos.name),
+                    (translation, pos),
                 )
                 eng_id_row = cursor.execute(
                     "SELECT id FROM english_words WHERE word = ? AND pos_type = ?",
-                    (translation, pos.name),
+                    (translation, pos),
                 ).fetchone()
                 if eng_id_row:
                     english_word_ids.append(eng_id_row[0])
@@ -668,7 +615,7 @@ class LexicalManager:
             for eng_id in english_word_ids:
                 cursor.execute(
                     "INSERT OR IGNORE INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
-                    (eng_id, lemma, pos.name),
+                    (eng_id, lemma, pos),
                 )
 
             self._conn.commit()
@@ -678,14 +625,14 @@ class LexicalManager:
             raise
 
     def add_word(
-        self, lemma: str, translations: list[str], pos: PartOfSpeech
+        self, lemma: str, translations: list[str], pos: str
     ) -> PartOfSpeechBase:
         """Add a word to the lexicon with automatic feature extraction.
 
         Args:
             lemma: Greek word in its base form
             translations: List of English translations (at least one required)
-            pos: Part of speech enum
+            pos: Part of speech string constant (c.NOUN, c.VERB, etc.)
 
         Returns:
             Complete PartOfSpeech object with forms and translations

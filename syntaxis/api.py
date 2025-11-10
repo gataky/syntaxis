@@ -1,4 +1,5 @@
 from syntaxis.database import Database
+from syntaxis.models.lexical import Lexical
 from syntaxis.templates import Template
 
 
@@ -9,7 +10,7 @@ class Syntaxis:
         self.database: Database = Database("./syntaxis.db")
         self.template: Template = Template()
 
-    def generate_sentence(self, template: str):
+    def generate_sentence(self, template: str) -> list[Lexical]:
 
         parsed = self.template.parse(template)
         words = []

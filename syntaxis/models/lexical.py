@@ -36,8 +36,8 @@ class Lexical(Generic[lexical]):
 
 
 class Adjective(Lexical[types.Adjective]):
-    def apply_features(self, gender: str, number: str, form: str, **extra) -> set[str]:
-        self.word = self.forms["adj"][number][gender][form]
+    def apply_features(self, gender: str, number: str, case: str, **extra) -> set[str]:
+        self.word = self.forms["adj"][number][gender][case]
         return self.word
 
 
@@ -48,26 +48,26 @@ class Adverb(Lexical[types.Adverb]):
 
 
 class Article(Lexical[types.Article]):
-    def apply_features(self, number: str, gender: str, form: str, **extra) -> set[str]:
-        self.word = self.forms[number][gender][form]
+    def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.word = self.forms[number][gender][case]
         return self.word
 
 
 class Noun(Lexical[types.Noun]):
-    def apply_features(self, gender: str, number: str, form: str, **extra) -> set[str]:
-        self.word = self.forms[gender][number][form]
+    def apply_features(self, gender: str, number: str, case: str, **extra) -> set[str]:
+        self.word = self.forms[gender][number][case]
         return self.word
 
 
 class Numberal(Lexical[types.Numeral]):
-    def apply_features(self, number: str, gender: str, form: str, **extra) -> set[str]:
-        self.word = self.forms[c.ADJECTIVE][number][gender][form]
+    def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.word = self.forms[c.ADJECTIVE][number][gender][case]
         return self.word
 
 
 class Pronoun(Lexical[types.Pronoun]):
-    def apply_features(self, number: str, gender: str, form: str, **extra) -> set[str]:
-        self.word = self.forms[number][gender][form]
+    def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.word = self.forms[number][gender][case]
         return self.word
 
 
@@ -78,7 +78,7 @@ class Verb(Lexical[types.Verb]):
         voice: str,
         number: str,
         person: str,
-        form: str = c.NOMINATIVE,
+        case: str = c.NOMINATIVE,
         mood: str = c.INDICATIVE,
         **extra,
     ) -> set[str]:

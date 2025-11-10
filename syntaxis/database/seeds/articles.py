@@ -54,7 +54,7 @@ def seed(conn: sqlite3.Connection) -> None:
     cursor.executemany(
         """
         INSERT OR IGNORE INTO greek_articles
-        (lemma, type, gender, number, form, validation_status)
+        (lemma, type, gender, number, [case], validation_status)
         VALUES (?, ?, ?, ?, ?, ?)
         """,
         articles

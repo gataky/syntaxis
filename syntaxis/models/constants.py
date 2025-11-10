@@ -9,7 +9,7 @@ LEMMA = "lemma"
 # Features
 GENDER = "gender"
 NUMBER = "number"
-FORM = "form"
+CASE = "case"
 TENSE = "tense"
 VOICE = "voice"
 MOOD = "mood"

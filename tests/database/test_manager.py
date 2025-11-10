@@ -18,7 +18,7 @@ def test_create_word_from_row_creates_noun_with_translations():
 
     # Insert test data (with new schema: feature columns required)
     cursor.execute(
-        "INSERT INTO greek_nouns (lemma, gender, number, form, validation_status) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO greek_nouns (lemma, gender, number, [case], validation_status) VALUES (?, ?, ?, ?, ?)",
         ("άνθρωπος", "masc", "sg", "nom", "validated"),
     )
     cursor.execute(
@@ -62,7 +62,7 @@ def test_create_word_from_row_handles_multiple_translations():
     cursor = conn.cursor()
 
     cursor.execute(
-        "INSERT INTO greek_verbs (lemma, tense, voice, mood, number, person, form, validation_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO greek_verbs (lemma, tense, voice, mood, number, person, [case], validation_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         ("τρώω", "pres", "act", "ind", "sg", "1", None, "validated"),
     )
     cursor.execute(
@@ -111,7 +111,7 @@ def test_create_word_from_row_handles_no_translations():
     cursor = conn.cursor()
 
     cursor.execute(
-        "INSERT INTO greek_nouns (lemma, gender, number, form, validation_status) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO greek_nouns (lemma, gender, number, [case], validation_status) VALUES (?, ?, ?, ?, ?)",
         ("άνθρωπος", "masc", "sg", "nom", "validated"),
     )
     conn.commit()
@@ -192,7 +192,7 @@ def test_add_word_raises_error_for_duplicate_lemma():
     # Manually insert a word (at least one row with this lemma)
     cursor = manager._conn.cursor()
     cursor.execute(
-        "INSERT INTO greek_nouns (lemma, gender, number, form, validation_status) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO greek_nouns (lemma, gender, number, [case], validation_status) VALUES (?, ?, ?, ?, ?)",
         ("άνθρωπος", "masc", "sg", "nom", "VALID"),
     )
     manager._conn.commit()
@@ -215,14 +215,14 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     assert isinstance(result, Noun)
     assert result.lemma == "άνθρωπος"
     assert result.translations == ["person"]
-    assert result.forms is not None  # Morpheus generated forms
+    assert result.forms is not None  # Morpheus generated cases
 
     # Verify database state
     cursor = manager._conn.cursor()
 
     # Check Greek word inserted (multiple rows expected - one per feature combination)
     rows = cursor.execute(
-        "SELECT lemma, gender, number, form, validation_status FROM greek_nouns WHERE lemma = ?",
+        "SELECT lemma, gender, number, [case], validation_status FROM greek_nouns WHERE lemma = ?",
         ("άνθρωπος",),
     ).fetchall()
     assert (
@@ -230,9 +230,9 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     )  # Should have multiple rows (one per valid feature combination)
     # Check first row as sample
     assert rows[0][0] == "άνθρωπος"
-    assert rows[0][1] == "masc"  # Inferred from forms
+    assert rows[0][1] == "masc"  # Inferred from cases
     assert rows[0][2] in ["sg", "pl"]  # Has explicit number
-    assert rows[0][3] in ["nom", "gen", "acc", "voc"]  # Has explicit form
+    assert rows[0][3] in ["nom", "gen", "acc", "voc"]  # Has explicit case
     assert rows[0][4] == "VALID"
 
     # Check English word inserted

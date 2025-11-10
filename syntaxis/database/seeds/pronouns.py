@@ -104,7 +104,7 @@ def seed(conn: sqlite3.Connection) -> None:
     cursor.executemany(
         """
         INSERT OR IGNORE INTO greek_pronouns
-        (lemma, type, person, gender, number, form, validation_status)
+        (lemma, type, person, gender, number, [case], validation_status)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
         pronouns

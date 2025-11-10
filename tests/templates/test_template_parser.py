@@ -20,7 +20,7 @@ class TestTemplateParser:
     # Valid template tests
 
     @pytest.mark.parametrize(
-        "template,expected_lexical,expected_form,expected_gender,expected_number",
+        "template,expected_lexical,expected_case,expected_gender,expected_number",
         [
             (
                 "[noun:nom:masc:sg]",
@@ -50,7 +50,7 @@ class TestTemplateParser:
         parser,
         template,
         expected_lexical,
-        expected_form,
+        expected_case,
         expected_gender,
         expected_number,
     ):
@@ -60,7 +60,7 @@ class TestTemplateParser:
         assert len(result.tokens) == 1
         token = result.tokens[0]
         assert token.lexical == expected_lexical
-        assert token.form == expected_form
+        assert token.case == expected_case
         assert token.gender == expected_gender
         assert token.number == expected_number
 
@@ -93,7 +93,7 @@ class TestTemplateParser:
         token = result.tokens[0]
         assert token.lexical == expected_lexical
         assert token.is_invariable()
-        assert token.form is None
+        assert token.case is None
         assert token.gender is None
         assert token.number is None
 
@@ -140,7 +140,7 @@ class TestTemplateParser:
         # All should parse to the same token features
         for result in [result1, result2, result3]:
             token = result.tokens[0]
-            assert token.form == c.NOMINATIVE
+            assert token.case == c.NOMINATIVE
             assert token.gender == c.MASCULINE
             assert token.number == c.SINGULAR
 
@@ -189,13 +189,13 @@ class TestTemplateParser:
             parser.parse(template)
 
     @pytest.mark.parametrize(
-        "form", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE]
+        "case", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE]
     )
-    def test_all_forms_valid(self, parser, form):
-        """Test that all form values are recognized."""
-        template = f"[noun:{form}:masc:sg]"
+    def test_all_cases_valid(self, parser, case):
+        """Test that all case values are recognized."""
+        template = f"[noun:{case}:masc:sg]"
         result = parser.parse(template)
-        assert result.tokens[0].form == form
+        assert result.tokens[0].case == case
 
     @pytest.mark.parametrize("gender", [c.MASCULINE, c.FEMININE, c.NEUTER])
     def test_all_genders_valid(self, parser, gender):
@@ -259,7 +259,7 @@ class TestTemplateParser:
     # Pronoun template parsing tests
 
     @pytest.mark.parametrize(
-        "template,expected_form,expected_person,expected_number,expected_gender",
+        "template,expected_case,expected_person,expected_number,expected_gender",
         [
             # First person (no gender)
             (
@@ -311,34 +311,34 @@ class TestTemplateParser:
             ),
         ],
     )
-    def test_parse_pronoun_valid_forms(
+    def test_parse_pronoun_valid_cases(
         self,
         parser,
         template,
-        expected_form,
+        expected_case,
         expected_person,
         expected_number,
         expected_gender,
     ):
-        """Test parsing various valid pronoun forms."""
+        """Test parsing various valid pronoun cases."""
         result = parser.parse(template)
 
         assert len(result.tokens) == 1
         token = result.tokens[0]
         assert token.lexical == c.PRONOUN
-        assert token.form == expected_form
+        assert token.case == expected_case
         assert token.person == expected_person
         assert token.number == expected_number
         assert token.gender == expected_gender
 
     @pytest.mark.parametrize(
-        "form", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE]
+        "case", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE]
     )
-    def test_parse_pronoun_all_forms(self, parser, form):
-        """Test that all forms work with pronouns."""
-        template = f"[pronoun:{form}:pri:sg]"
+    def test_parse_pronoun_all_cases(self, parser, case):
+        """Test that all cases work with pronouns."""
+        template = f"[pronoun:{case}:pri:sg]"
         result = parser.parse(template)
-        assert result.tokens[0].form == form
+        assert result.tokens[0].case == case
         assert result.tokens[0].person == c.FIRST
         assert result.tokens[0].number == c.SINGULAR
 

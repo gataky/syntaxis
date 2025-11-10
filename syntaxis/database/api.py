@@ -76,8 +76,9 @@ class Database:
         where_params: list[str] = []
 
         for feature_name, feature_value in features.items():
-            # Use string constant directly
-            conditions.append(f"g.{feature_name} = ?")
+            # Use string constant directly and wrap in [] to allow us to use reserved
+            # sqlite3 keys as columns.  Case in this example
+            conditions.append(f"g.[{feature_name}] = ?")
             where_params.append(feature_value)
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
@@ -202,7 +203,7 @@ class Database:
                             {
                                 c.GENDER: gender,
                                 c.NUMBER: number,
-                                c.FORM: case,
+                                c.CASE: case,
                             }
                         )
         return features_list
@@ -232,7 +233,7 @@ class Database:
                         c.MOOD: None,
                         c.NUMBER: None,
                         c.PERSON: None,
-                        c.FORM: None,
+                        c.CASE: None,
                     }
                 )
                 continue
@@ -248,7 +249,7 @@ class Database:
                             c.MOOD: None,
                             c.NUMBER: None,
                             c.PERSON: None,
-                            c.FORM: None,
+                            c.CASE: None,
                         }
                     )
                     continue
@@ -265,7 +266,7 @@ class Database:
                                 c.MOOD: mood,
                                 c.NUMBER: None,
                                 c.PERSON: None,
-                                c.FORM: None,
+                                c.CASE: None,
                             }
                         )
                     # Check if this is a participle (has gender level)
@@ -283,7 +284,7 @@ class Database:
                                                 c.MOOD: mood,
                                                 c.NUMBER: number,
                                                 c.PERSON: None,
-                                                c.FORM: case,
+                                                c.CASE: case,
                                             }
                                         )
                     else:
@@ -299,7 +300,7 @@ class Database:
                                         c.MOOD: mood,
                                         c.NUMBER: number,
                                         c.PERSON: None,
-                                        c.FORM: None,
+                                        c.CASE: None,
                                     }
                                 )
                             else:
@@ -313,7 +314,7 @@ class Database:
                                                 c.MOOD: mood,
                                                 c.NUMBER: number,
                                                 c.PERSON: person,
-                                                c.FORM: None,
+                                                c.CASE: None,
                                             }
                                         )
         return features_list
@@ -336,7 +337,7 @@ class Database:
                             {
                                 c.GENDER: gender,
                                 c.NUMBER: number,
-                                c.FORM: case,
+                                c.CASE: case,
                             }
                         )
         return features_list
@@ -358,7 +359,7 @@ class Database:
                 c.PERSON: None,
                 c.GENDER: None,
                 c.NUMBER: None,
-                c.FORM: None,
+                c.CASE: None,
             }
         ]
 
@@ -484,7 +485,7 @@ class Database:
 
         try:
             # Step 1: Insert all Greek word rows (one per feature combination)
-            columns = ", ".join(fields)
+            columns = ", ".join(f'"{field}"' for field in fields)
             placeholders = ", ".join(["?"] * len(fields))
             sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
 

@@ -11,7 +11,7 @@ class Token:
 
     Attributes:
         lexical: Part of speech (required for all tokens)
-        form: Grammatical form (required for nouns, adjectives, articles)
+        case: Grammatical case (required for nouns, adjectives, articles)
         gender: Grammatical gender (required for nouns, adjectives, articles)
         number: Grammatical number (required for nouns, adjectives, articles, verbs)
         tense: Verb tense (required for verbs)
@@ -21,7 +21,7 @@ class Token:
 
     lexical: str
     # Features for the lexical
-    form: str | None = None
+    case: str | None = None
     gender: str | None = None
     number: str | None = None
     tense: str | None = None

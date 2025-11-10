@@ -1,15 +1,7 @@
 """Data models for template parsing and representation."""
 
 from dataclasses import dataclass
-from syntaxis.models.enums import (
-    Case,
-    Gender,
-    Number,
-    PartOfSpeech,
-    Person,
-    Tense,
-    Voice,
-)
+from syntaxis.models import constants as c
 
 
 # class PartOfSpeech(Enum):
@@ -90,31 +82,21 @@ class TokenFeatures:
         person: Grammatical person (required for verbs)
     """
 
-    pos: PartOfSpeech
-    case: Case | None = None
-    gender: Gender | None = None
-    number: Number | None = None
-    tense: Tense | None = None
-    voice: Voice | None = None
-    person: Person | None = None
+    pos: str
+    case: str | None = None
+    gender: str | None = None
+    number: str | None = None
+    tense: str | None = None
+    voice: str | None = None
+    person: str | None = None
 
     def is_inflectable(self) -> bool:
         """Check if this token type requires inflection."""
-        return self.pos in {
-            PartOfSpeech.NOUN,
-            PartOfSpeech.VERB,
-            PartOfSpeech.ADJECTIVE,
-            PartOfSpeech.ARTICLE,
-            PartOfSpeech.PRONOUN,
-        }
+        return self.pos in {c.NOUN, c.VERB, c.ADJECTIVE, c.ARTICLE, c.PRONOUN}
 
     def is_invariable(self) -> bool:
         """Check if this token type is invariable (doesn't inflect)."""
-        return self.pos in {
-            PartOfSpeech.PREPOSITION,
-            PartOfSpeech.CONJUNCTION,
-            PartOfSpeech.ADVERB,
-        }
+        return self.pos in {c.PREPOSITION, c.CONJUNCTION, c.ADVERB}
 
 
 @dataclass

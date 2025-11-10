@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, cast
 
 from syntaxis.models import constants as c
 from syntaxis.models import types
@@ -25,19 +25,20 @@ class Lexical(Generic[lexical]):
     translations: list[str] | None = None
 
     def __str__(self) -> str:
-        if self.word:
+        if self.word is not None:
             return list(self.word)[0]
         else:
             return self.lemma
 
     def apply_features(self, *args, **kwargs) -> set[str]:
         """apply_features will extract the morphed word from forms for the given set of features"""
-        raise NotImplemented("apply_features not implemented for this Lexical")
+        raise NotImplementedError("apply_features not implemented for this Lexical")
 
 
 class Adjective(Lexical[types.Adjective]):
     def apply_features(self, gender: str, number: str, case: str, **extra) -> set[str]:
-        self.word = self.forms["adj"][number][gender][case]
+        adjective_forms: types.Adjective = self.forms
+        self.word = adjective_forms["adj"][number][gender][case]
         return self.word
 
 
@@ -49,25 +50,25 @@ class Adverb(Lexical[types.Adverb]):
 
 class Article(Lexical[types.Article]):
     def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        self.word = self.forms[number][gender][case]
+        self.word = cast(set[str], self.forms[number][gender][case])
         return self.word
 
 
 class Noun(Lexical[types.Noun]):
     def apply_features(self, gender: str, number: str, case: str, **extra) -> set[str]:
-        self.word = self.forms[gender][number][case]
+        self.word = cast(set[str], self.forms[gender][number][case])
         return self.word
 
 
 class Numberal(Lexical[types.Numeral]):
     def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        self.word = self.forms[c.ADJECTIVE][number][gender][case]
+        self.word = cast(set[str], self.forms[c.ADJECTIVE][number][gender][case])
         return self.word
 
 
 class Pronoun(Lexical[types.Pronoun]):
     def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        self.word = self.forms[number][gender][case]
+        self.word = cast(set[str], self.forms[number][gender][case])
         return self.word
 
 
@@ -82,7 +83,7 @@ class Verb(Lexical[types.Verb]):
         mood: str = c.INDICATIVE,
         **extra,
     ) -> set[str]:
-        self.word = self.forms[tense][voice][mood][number][person]
+        self.word = cast(set[str], self.forms[tense][voice][mood][number][person])
         return self.word
 
 

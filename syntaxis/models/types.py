@@ -1,4 +1,4 @@
-type Adjective = dict[str, dict[str, dict[str, set[str]]]]
+type Adjective = dict[str, dict[str, dict[str, dict[str, set[str]]]]]
 type Adverb = dict[str, set[str]]
 type Article = dict[str, dict[str, dict[str, set[str]]]]
 type Noun = dict[str, dict[str, dict[str, set[str]]]]

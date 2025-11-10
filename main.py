@@ -4,13 +4,12 @@ import random
 
 from prettytable import PrettyTable
 from syntaxis.syntaxis import Syntaxis
-from syntaxis.database.manager import LexicalManager
-from syntaxis.models.enums import PartOfSpeechMap
-from syntaxis.templates.parser import TemplateParser
+from syntaxis.database import Database
+from syntaxis.templates import Template
 
 
 def populate_db():
-    m = LexicalManager("syntaxis.db")
+    m = Database("syntaxis.db")
     with open("dictionary.csv", "r") as f:
         r = csv.reader(f)
         next(r)
@@ -26,8 +25,8 @@ def plumbing():
 
 if __name__ == "__main__":
     # populate_db()
-    p = TemplateParser()
-    l = LexicalManager("syntaxis.db")
+    p = Template()
+    l = Database("syntaxis.db")
 
     while True:
         os.system("clear")

@@ -15,7 +15,7 @@ class TemplateParseError(Exception):
     """Raised when a template cannot be parsed."""
 
 
-class TemplateParser:
+class Template:
     """Parses template strings into structured TokenFeatures.
 
     Template syntax: [POS:feature1:feature2:...]
@@ -32,7 +32,7 @@ class TemplateParser:
     GENDER_VALUES = {c.MASCULINE, c.FEMININE, c.NEUTER}
     NUMBER_VALUES = {c.SINGULAR, c.PLURAL}
     VOICE_VALUES = {c.ACTIVE, c.PASSIVE}
-    TENSE_VALUES = {c.PRESENT, c.AORIST, c.PARATATIKOS, c.FUTURE, c.FUTURE_SIMPLE}
+    TENSE_VALUES = {c.PRESENT, c.AORIST, c.PARATATIKOS}
     PERSON_VALUES = {c.FIRST, c.SECOND, c.THIRD}
 
     def parse(self, template: str) -> ParsedTemplate:

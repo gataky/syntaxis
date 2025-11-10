@@ -5,7 +5,7 @@ from typing import TypeVar
 import modern_greek_inflexion as mgi
 
 from syntaxis.models import constants as c
-from syntaxis.models.part_of_speech import (
+from syntaxis.models.lexical import (
     Adjective,
     Adverb,
     Article,

@@ -1,12 +1,12 @@
-from syntaxis.database.manager import LexicalManager
-from syntaxis.templates.parser import TemplateParser
+from syntaxis.database import Database
+from syntaxis.templates import Template
 
 class Syntaxis:
 
     def __init__(self):
 
-        self.lexical_manager: LexicalManager = LexicalManager("./syntaxis.db")
-        self.template_parser: TemplateParser = TemplateParser()
+        self.lexical_manager: Database = Database("./syntaxis.db")
+        self.template_parser: Template = Template()
 
     def generate_sentence(self, template: str):
 

@@ -8,7 +8,7 @@ pos = TypeVar("pos")
 
 
 @dataclass
-class PartOfSpeech(Generic[pos]):
+class Lexical(Generic[pos]):
     """Base class for all parts of speech with common fields."""
 
     lemma: str
@@ -22,43 +22,43 @@ class PartOfSpeech(Generic[pos]):
         return "NONE"
 
 @dataclass
-class Adjective(PartOfSpeech[types.Adjective]):
+class Adjective(Lexical[types.Adjective]):
     def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:
         return self.forms["adj"][number][gender][case]
 
 
 @dataclass
-class Adverb(PartOfSpeech[types.Adverb]):
+class Adverb(Lexical[types.Adverb]):
     def get_form(self, **extra) -> set[str]:
         return self.forms[c.ADVERB]
 
 
 @dataclass
-class Article(PartOfSpeech[types.Article]):
+class Article(Lexical[types.Article]):
     def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
         return self.forms[number][gender][case]
 
 
 @dataclass
-class Noun(PartOfSpeech[types.Noun]):
+class Noun(Lexical[types.Noun]):
     def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:
         return self.forms[gender][number][case]
 
 
 @dataclass
-class Numberal(PartOfSpeech[types.Numeral]):
+class Numberal(Lexical[types.Numeral]):
     def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
         return self.forms[c.ADJECTIVE][number][gender][case]
 
 
 @dataclass
-class Pronoun(PartOfSpeech[types.Pronoun]):
+class Pronoun(Lexical[types.Pronoun]):
     def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
         return self.forms[number][gender][case]
 
 
 @dataclass
-class Verb(PartOfSpeech[types.Verb]):
+class Verb(Lexical[types.Verb]):
     def get_form(
         self,
         tense: str,
@@ -73,12 +73,12 @@ class Verb(PartOfSpeech[types.Verb]):
 
 
 @dataclass
-class Preposition(PartOfSpeech[types.Preposition]):
+class Preposition(Lexical[types.Preposition]):
     def get_form(self, **extra) -> set[str]:
         return self.forms["prep"]
 
 
 @dataclass
-class Conjunction(PartOfSpeech[types.Conjunction]):
+class Conjunction(Lexical[types.Conjunction]):
     def get_form(self, **extra) -> set[str]:
         return self.forms["conj"]

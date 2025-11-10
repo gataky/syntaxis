@@ -17,17 +17,17 @@ SYNTAXIS_TO_MGI = {
     c.ACCUSATIVE: resources.ACC,
     c.GENITIVE: resources.GEN,
     c.VOCATIVE: resources.VOC,
-    # Tense
+    # Tense (constants match MGI values directly)
     c.PRESENT: resources.PRESENT,
     c.AORIST: resources.AORIST,
     c.PARATATIKOS: resources.PARATATIKOS,
-    # Voice
+    # Voice (constants match MGI values directly)
     c.ACTIVE: resources.ACTIVE,
     c.PASSIVE: resources.PASSIVE,
     # Mood
     c.INDICATIVE: resources.IND,
     c.IMPERATIVE: resources.IMP,
-    # Person
+    # Person (constants match MGI values directly)
     c.FIRST: resources.PRI,
     c.SECOND: resources.SEC,
     c.THIRD: resources.TER,

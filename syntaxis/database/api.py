@@ -4,11 +4,11 @@ from typing import Any
 from syntaxis.database.bitmasks import POS_TO_TABLE_MAP, VALID_FEATURES
 from syntaxis.database.schema import create_schema
 from syntaxis.models import constants as c
-from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
+from syntaxis.models.lexical import Lexical
 from syntaxis.morpheus import Morpheus
 
 
-class LexicalManager:
+class Database:
     """Manages vocabulary storage and retrieval for sentence generation.
 
     The lexical manager maintains vocabulary in a SQLite database and provides
@@ -35,7 +35,7 @@ class LexicalManager:
     # Storage methods
     # Random selection methods
 
-    def get_random_word(self, pos: str, **features: Any) -> PartOfSpeechBase | None:
+    def get_random_word(self, pos: str, **features: Any) -> Lexical | None:
         """Get a random word of the specified part of speech.
 
         Args:
@@ -235,7 +235,7 @@ class LexicalManager:
 
     def _create_word_from_row(
         self, row: sqlite3.Row, pos: str
-    ) -> PartOfSpeechBase:
+    ) -> Lexical:
         """Create PartOfSpeech object with translations from query result.
 
         Args:
@@ -258,7 +258,7 @@ class LexicalManager:
 
         return word
 
-    def _extract_noun_features(self, word: PartOfSpeechBase) -> list[dict[str, str | None]]:
+    def _extract_noun_features(self, word: Lexical) -> list[dict[str, str | None]]:
         """Extract feature combinations for nouns.
 
         Args:
@@ -279,7 +279,7 @@ class LexicalManager:
                         })
         return features_list
 
-    def _extract_verb_features(self, word: PartOfSpeechBase) -> list[dict[str, str | None]]:
+    def _extract_verb_features(self, word: Lexical) -> list[dict[str, str | None]]:
         """Extract feature combinations for verbs.
 
         Handles various verb form structures that Morpheus returns.
@@ -378,7 +378,7 @@ class LexicalManager:
                                         })
         return features_list
 
-    def _extract_adjective_features(self, word: PartOfSpeechBase) -> list[dict[str, str | None]]:
+    def _extract_adjective_features(self, word: Lexical) -> list[dict[str, str | None]]:
         """Extract feature combinations for adjectives and articles.
 
         Args:
@@ -399,7 +399,7 @@ class LexicalManager:
                         })
         return features_list
 
-    def _extract_pronoun_features(self, word: PartOfSpeechBase) -> list[dict[str, str | None]]:
+    def _extract_pronoun_features(self, word: Lexical) -> list[dict[str, str | None]]:
         """Extract feature combinations for pronouns.
 
         Args:
@@ -427,7 +427,7 @@ class LexicalManager:
         return [{}]
 
     def _extract_features_from_morpheus(
-        self, word: PartOfSpeechBase, pos: str
+        self, word: Lexical, pos: str
     ) -> list[dict[str, str | None]]:
         """Extract all valid feature combinations from Morpheus-generated forms.
 
@@ -512,7 +512,7 @@ class LexicalManager:
 
     def _validate_and_prepare_lemma(
         self, lemma: str, pos: str, translations: list[str]
-    ) -> PartOfSpeechBase:
+    ) -> Lexical:
         """Validate inputs and use Morpheus to create a word object."""
         if not lemma:
             raise ValueError("Lemma cannot be empty")
@@ -538,7 +538,7 @@ class LexicalManager:
         return word
 
     def _prepare_database_values(
-        self, lemma: str, pos: str, word: PartOfSpeechBase, features: dict[str, str | None]
+        self, lemma: str, pos: str, word: Lexical, features: dict[str, str | None]
     ) -> dict[str, str | int | None]:
         """Prepare values for one database row (one feature combination).
 
@@ -626,7 +626,7 @@ class LexicalManager:
 
     def add_word(
         self, lemma: str, translations: list[str], pos: str
-    ) -> PartOfSpeechBase:
+    ) -> Lexical:
         """Add a word to the lexicon with automatic feature extraction.
 
         Args:

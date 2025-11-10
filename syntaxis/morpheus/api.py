@@ -29,18 +29,18 @@ class Morpheus:
     """
 
     @staticmethod
-    def create(lemma: str, pos: str) -> T:
-        """Generic method to create any POS type from lemma.
+    def create(lemma: str, lexical: str) -> T:
+        """Generic method to create any lexical type from lemma.
 
         Args:
             lemma: The base form of the word
-            pos: Part of speech string constant (c.NOUN, c.VERB, etc.)
+            lexical: Part of speech string constant (c.NOUN, c.VERB, etc.)
 
         Returns:
             Appropriate PartOfSpeech subclass with forms using syntaxis constants
 
         Raises:
-            KeyError: If pos is not in the method map
+            KeyError: If lexical is not in the method map
 
         Examples:
             >>> Morpheus.create("άνθρωπος", c.NOUN)
@@ -57,19 +57,19 @@ class Morpheus:
             c.PREPOSITION: Morpheus.preposition,
             c.CONJUNCTION: Morpheus.conjunction,
         }
-        return method_map[pos](lemma)
+        return method_map[lexical](lemma)
 
     @staticmethod
-    def _get_inflected_forms(lemma: str, pos_class: type[T]) -> T:
+    def _get_inflected_forms(lemma: str, lexical_class: type[T]) -> T:
         """Generic method to get inflected forms for any part of speech.
 
         Gets forms from modern_greek_inflexion and translates to syntaxis constants.
         """
         # Map our classes to the mgi classes
-        mgi_class = getattr(mgi, pos_class.__name__)
+        mgi_class = getattr(mgi, lexical_class.__name__)
         mgi_forms = mgi_class(lemma).all()
         syntaxis_forms = translate_forms(mgi_forms)
-        return pos_class(lemma, syntaxis_forms)
+        return lexical_class(lemma, syntaxis_forms)
 
     @staticmethod
     def adjective(lemma: str) -> Adjective:
@@ -99,7 +99,7 @@ class Morpheus:
     def verb(lemma: str) -> Verb:
         return Morpheus._get_inflected_forms(lemma, Verb)
 
-    # The following POS don't exist in modern_greek_inflexion
+    # The following lexicals do not exist in modern_greek_inflexion
     # because they don't inflect in any way. So we "inflect"
     # them ourselves by returning a forms like dict with the
     # lemma as the declined word.

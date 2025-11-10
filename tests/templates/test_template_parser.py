@@ -20,7 +20,7 @@ class TestTemplateParser:
     # Valid template tests
 
     @pytest.mark.parametrize(
-        "template,expected_pos,expected_form,expected_gender,expected_number",
+        "template,expected_lexical,expected_form,expected_gender,expected_number",
         [
             (
                 "[noun:nom:masc:sg]",
@@ -49,7 +49,7 @@ class TestTemplateParser:
         self,
         parser,
         template,
-        expected_pos,
+        expected_lexical,
         expected_form,
         expected_gender,
         expected_number,
@@ -59,7 +59,7 @@ class TestTemplateParser:
 
         assert len(result.tokens) == 1
         token = result.tokens[0]
-        assert token.pos == expected_pos
+        assert token.lexical == expected_lexical
         assert token.form == expected_form
         assert token.gender == expected_gender
         assert token.number == expected_number
@@ -71,27 +71,27 @@ class TestTemplateParser:
 
         assert len(result.tokens) == 1
         token = result.tokens[0]
-        assert token.pos == c.VERB
+        assert token.lexical == c.VERB
         assert token.tense == c.PRESENT
         assert token.voice == c.ACTIVE
         assert token.person == c.THIRD
         assert token.number == c.PLURAL
 
     @pytest.mark.parametrize(
-        "template,expected_pos",
+        "template,expected_lexical",
         [
             ("[prep]", c.PREPOSITION),
             ("[adv]", c.ADVERB),
             ("[conj]", c.CONJUNCTION),
         ],
     )
-    def test_parse_invariable_words(self, parser, template, expected_pos):
+    def test_parse_invariable_words(self, parser, template, expected_lexical):
         """Test parsing invariable words."""
         result = parser.parse(template)
 
         assert len(result.tokens) == 1
         token = result.tokens[0]
-        assert token.pos == expected_pos
+        assert token.lexical == expected_lexical
         assert token.is_invariable()
         assert token.form is None
         assert token.gender is None
@@ -103,10 +103,10 @@ class TestTemplateParser:
         result = parser.parse(template)
 
         assert len(result.tokens) == 4
-        assert result.tokens[0].pos == c.ARTICLE
-        assert result.tokens[1].pos == c.ADJECTIVE
-        assert result.tokens[2].pos == c.NOUN
-        assert result.tokens[3].pos == c.VERB
+        assert result.tokens[0].lexical == c.ARTICLE
+        assert result.tokens[1].lexical == c.ADJECTIVE
+        assert result.tokens[2].lexical == c.NOUN
+        assert result.tokens[3].lexical == c.VERB
 
     def test_parse_prd_example_template(self, parser):
         """Test parsing the example from the PRD."""
@@ -170,7 +170,7 @@ class TestTemplateParser:
             ("", "cannot be empty"),
             ("   ", "cannot be empty"),
             ("just some text without brackets", "No valid tokens found"),
-            ("[InvalidPOS:nom:masc:sg]", "Unknown part of speech"),
+            ("[InvalidLexical:nom:masc:sg]", "Unknown part of speech"),
             ("[noun:nom:masc]", "requires exactly 3 features"),
             ("[noun:nom:masc:sg:extra]", "requires exactly 3 features"),
             ("[verb:present:active:3]", "requires exactly 4 features"),
@@ -239,8 +239,8 @@ class TestTemplateParser:
 
         tokens = list(result)
         assert len(tokens) == 2
-        assert tokens[0].pos == c.NOUN
-        assert tokens[1].pos == c.VERB
+        assert tokens[0].lexical == c.NOUN
+        assert tokens[1].lexical == c.VERB
 
     def test_parsed_template_length(self, parser):
         """Test that ParsedTemplate supports len()."""
@@ -325,7 +325,7 @@ class TestTemplateParser:
 
         assert len(result.tokens) == 1
         token = result.tokens[0]
-        assert token.pos == c.PRONOUN
+        assert token.lexical == c.PRONOUN
         assert token.form == expected_form
         assert token.person == expected_person
         assert token.number == expected_number
@@ -359,9 +359,9 @@ class TestTemplateParser:
         result = parser.parse(template)
 
         assert len(result.tokens) == 2
-        assert result.tokens[0].pos == c.PRONOUN
+        assert result.tokens[0].lexical == c.PRONOUN
         assert result.tokens[0].person == c.FIRST
-        assert result.tokens[1].pos == c.VERB
+        assert result.tokens[1].lexical == c.VERB
         assert result.tokens[1].person == c.FIRST
 
     def test_parse_complex_template_with_pronoun(self, parser):
@@ -370,12 +370,12 @@ class TestTemplateParser:
         result = parser.parse(template)
 
         assert len(result.tokens) == 4
-        assert result.tokens[0].pos == c.PRONOUN
+        assert result.tokens[0].lexical == c.PRONOUN
         assert result.tokens[0].person == c.THIRD
         assert result.tokens[0].gender == c.MASCULINE
-        assert result.tokens[1].pos == c.VERB
-        assert result.tokens[2].pos == c.ARTICLE
-        assert result.tokens[3].pos == c.NOUN
+        assert result.tokens[1].lexical == c.VERB
+        assert result.tokens[2].lexical == c.ARTICLE
+        assert result.tokens[3].lexical == c.NOUN
 
     # Negative tests for invalid pronoun templates
 

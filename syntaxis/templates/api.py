@@ -18,15 +18,15 @@ class TemplateParseError(Exception):
 class Template:
     """Parses template strings into structured TokenFeatures.
 
-    Template syntax: [POS:feature1:feature2:...]
+    Template syntax: [lexical:feature1:feature2:...]
     Example: [Article:nom:n:pl] [Noun:nom:n:pl] [Verb:pres:act:3:pl]
     """
 
-    # Regex pattern to match tokens in format [POS:feature:feature:...]
+    # Regex pattern to match tokens in format [lexical:feature:feature:...]
     TOKEN_PATTERN = re.compile(r"\[([^\]]+)\]")
 
     # Valid string constants for validation
-    POS_VALUES = {
+    LEXICAL_VALUES = {
         c.NOUN,
         c.VERB,
         c.ADJECTIVE,
@@ -48,7 +48,7 @@ class Template:
         """Parse a template string into a ParsedTemplate object.
 
         Args:
-            template: Template string in format [POS:features...] [POS:features...]
+            template: Template string in format [lexical:features...] [lexical:features...]
 
         Returns:
             ParsedTemplate object containing the parsed tokens
@@ -75,7 +75,7 @@ class Template:
         """Parse a single token string into a TokenFeatures object.
 
         Args:
-            token_str: Token string in format "POS:feature:feature:..."
+            token_str: Token string in format "lexical:feature:feature:..."
 
         Returns:
             TokenFeatures object
@@ -88,46 +88,44 @@ class Template:
             raise TemplateParseError(f"Empty token: [{token_str}]")
 
         # Parse part of speech
-        pos_str = parts[0]
-        if pos_str not in self.POS_VALUES:
+        lexical = parts[0]
+        if lexical not in self.LEXICAL_VALUES:
             raise TemplateParseError(
-                f"Unknown part of speech: {pos_str}. "
-                f"Valid options: {sorted(self.POS_VALUES)}"
+                f"Unknown part of speech: {lexical}. "
+                f"Valid options: {sorted(self.LEXICAL_VALUES)}"
             )
 
-        pos = pos_str
         features = parts[1:]
 
-        # Create TokenFeatures with the POS
-        token_features = Token(lexical=pos)
+        token = Token(lexical)
 
         # For invariable words, no additional features required
-        if token_features.is_invariable():
+        if token.is_invariable():
             if features:
                 raise TemplateParseError(
-                    f"Invariable word {pos_str} should not have features, "
+                    f"Invariable word {lexical} should not have features, "
                     f"but got: {':'.join(features)}"
                 )
-            return token_features
+            return token
 
-        # Parse features based on POS type
-        if pos in {c.NOUN, c.ADJECTIVE, c.ARTICLE}:
-            token_features = self._parse_nominal_features(
-                token_features, features, pos_str
+        # Parse features based on lexical type
+        if lexical in {c.NOUN, c.ADJECTIVE, c.ARTICLE}:
+            token = self._parse_nominal_features(
+                token, features, lexical
             )
-        elif pos == c.VERB:
-            token_features = self._parse_verbal_features(
-                token_features, features, pos_str
+        elif lexical == c.VERB:
+            token = self._parse_verbal_features(
+                token, features, lexical
             )
-        elif pos == c.PRONOUN:
-            token_features = self._parse_pronoun_features(
-                token_features, features, pos_str
+        elif lexical == c.PRONOUN:
+            token = self._parse_pronoun_features(
+                token, features, lexical
             )
 
-        return token_features
+        return token
 
     def _parse_nominal_features(
-        self, token: Token, features: List[str], pos_str: str
+        self, token: Token, features: List[str], lexical: str
     ) -> Token:
         """Parse features for nouns, adjectives, and articles.
 
@@ -136,7 +134,7 @@ class Template:
         Args:
             token: TokenFeatures object to populate
             features: List of feature strings
-            pos_str: String representation of POS for error messages
+            lexical: String representation of lexical for error messages
 
         Returns:
             Updated TokenFeatures object
@@ -146,7 +144,7 @@ class Template:
         """
         if len(features) != 3:
             raise TemplateParseError(
-                f"{pos_str} requires exactly 3 features (case, gender, number), "
+                f"{lexical} requires exactly 3 features (case, gender, number), "
                 f"but got {len(features)}: {':'.join(features)}"
             )
 
@@ -160,19 +158,19 @@ class Template:
                 token.number = feature
             else:
                 raise TemplateParseError(
-                    f"Invalid or duplicate feature for {pos_str}: {feature}"
+                    f"Invalid or duplicate feature for {lexical}: {feature}"
                 )
 
         # Verify all required features are present
         if token.case is None or token.gender is None or token.number is None:
             raise TemplateParseError(
-                f"{pos_str} must have case, gender, and number. Got: {':'.join(features)}"
+                f"{lexical} must have case, gender, and number. Got: {':'.join(features)}"
             )
 
         return token
 
     def _parse_verbal_features(
-        self, token: Token, features: List[str], pos_str: str
+        self, token: Token, features: List[str], lexical: str
     ) -> Token:
         """Parse features for verbs.
 
@@ -181,7 +179,7 @@ class Template:
         Args:
             token: TokenFeatures object to populate
             features: List of feature strings
-            pos_str: String representation of POS for error messages
+            lexical: String representation of lexical for error messages
 
         Returns:
             Updated TokenFeatures object
@@ -191,7 +189,7 @@ class Template:
         """
         if len(features) != 4:
             raise TemplateParseError(
-                f"{pos_str} requires exactly 4 features (tense, voice, person, number), "
+                f"{lexical} requires exactly 4 features (tense, voice, person, number), "
                 f"but got {len(features)}: {':'.join(features)}"
             )
 
@@ -207,7 +205,7 @@ class Template:
                 token.number = feature
             else:
                 raise TemplateParseError(
-                    f"Invalid or duplicate feature for {pos_str}: {feature}"
+                    f"Invalid or duplicate feature for {lexical}: {feature}"
                 )
 
         # Verify all required features are present
@@ -218,14 +216,14 @@ class Template:
             or token.number is None
         ):
             raise TemplateParseError(
-                f"{pos_str} must have tense, voice, person, and number. "
+                f"{lexical} must have tense, voice, person, and number. "
                 f"Got: {':'.join(features)}"
             )
 
         return token
 
     def _parse_pronoun_features(
-        self, token: Token, features: List[str], pos_str: str
+        self, token: Token, features: List[str], lexical: str
     ) -> Token:
         """Parse features for pronouns.
 
@@ -235,7 +233,7 @@ class Template:
         Args:
             token: TokenFeatures object to populate
             features: List of feature strings
-            pos_str: String representation of POS for error messages
+            lexical: String representation of lexical for error messages
 
         Returns:
             Updated TokenFeatures object
@@ -245,7 +243,7 @@ class Template:
         """
         if len(features) < 3 or len(features) > 4:
             raise TemplateParseError(
-                f"{pos_str} requires 3-4 features (case, person, number, [gender]), "
+                f"{lexical} requires 3-4 features (case, person, number, [gender]), "
                 f"but got {len(features)}: {':'.join(features)}"
             )
 
@@ -261,13 +259,13 @@ class Template:
                 token.gender = feature
             else:
                 raise TemplateParseError(
-                    f"Invalid or duplicate feature for {pos_str}: {feature}"
+                    f"Invalid or duplicate feature for {lexical}: {feature}"
                 )
 
         # Verify all required features are present
         if token.case is None or token.person is None or token.number is None:
             raise TemplateParseError(
-                f"{pos_str} must have case, person, and number. Got: {':'.join(features)}"
+                f"{lexical} must have case, person, and number. Got: {':'.join(features)}"
             )
 
         return token

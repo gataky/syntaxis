@@ -1,4 +1,4 @@
-from syntaxis.api import Syntaxis
+from syntaxis import Syntaxis
 
 template = "[article:nom:masc:sg] [adj:nom:masc:sg] [noun:nom:masc:sg] [verb:present:active:ter:sg]"
 

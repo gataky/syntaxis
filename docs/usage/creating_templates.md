@@ -27,14 +27,14 @@ This template specifies an article followed by a noun, both in the nominative, m
 
 ### Token Format
 
-Each token follows the format: `[POS:feature1:feature2:...]`
+Each token follows the format: `[LEXICAL:feature1:feature2:...]`
 
--   **POS**: The Part of Speech for the word.
+-   **LEXICAL**: The lexical for the word.
 -   **features**: A colon-separated list of grammatical features that the word must have. The order of features does not matter.
 
-### Parts of Speech (POS)
+### Lexical (aka Part of Speach)
 
-The following are the valid Part of Speech tags you can use in a token:
+The following are the valid lexical tags you can use in a token:
 
 -   `noun`
 -   `verb`

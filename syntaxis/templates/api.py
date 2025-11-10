@@ -7,7 +7,7 @@ from syntaxis.models import constants as c
 
 from .models import (
     ParsedTemplate,
-    TokenFeatures,
+    Token,
 )
 
 
@@ -71,7 +71,7 @@ class Template:
 
         return ParsedTemplate(raw_template=template, tokens=tokens)
 
-    def _parse_token(self, token_str: str) -> TokenFeatures:
+    def _parse_token(self, token_str: str) -> Token:
         """Parse a single token string into a TokenFeatures object.
 
         Args:
@@ -99,7 +99,7 @@ class Template:
         features = parts[1:]
 
         # Create TokenFeatures with the POS
-        token_features = TokenFeatures(pos=pos)
+        token_features = Token(lexical=pos)
 
         # For invariable words, no additional features required
         if token_features.is_invariable():
@@ -127,8 +127,8 @@ class Template:
         return token_features
 
     def _parse_nominal_features(
-        self, token: TokenFeatures, features: List[str], pos_str: str
-    ) -> TokenFeatures:
+        self, token: Token, features: List[str], pos_str: str
+    ) -> Token:
         """Parse features for nouns, adjectives, and articles.
 
         Required features: form, gender, number (in any order)
@@ -172,8 +172,8 @@ class Template:
         return token
 
     def _parse_verbal_features(
-        self, token: TokenFeatures, features: List[str], pos_str: str
-    ) -> TokenFeatures:
+        self, token: Token, features: List[str], pos_str: str
+    ) -> Token:
         """Parse features for verbs.
 
         Required features: tense, voice, person, number (in any order)
@@ -225,8 +225,8 @@ class Template:
         return token
 
     def _parse_pronoun_features(
-        self, token: TokenFeatures, features: List[str], pos_str: str
-    ) -> TokenFeatures:
+        self, token: Token, features: List[str], pos_str: str
+    ) -> Token:
         """Parse features for pronouns.
 
         Required features: form, person, number

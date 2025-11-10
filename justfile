@@ -7,8 +7,8 @@ format:
     black .
 
 # Reset and seed the database
-db-seed:
+seed:
     python -m syntaxis.cli create-db --clear
-    python -m syntaxis.cli seed-db
+    python -m syntaxis.cli seed-dictionary
     python -m syntaxis.cli seed-pronouns
     python -m syntaxis.cli seed-articles

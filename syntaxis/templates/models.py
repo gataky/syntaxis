@@ -6,11 +6,11 @@ from syntaxis.models import constants as c
 
 
 @dataclass
-class TokenFeatures:
+class Token:
     """Represents the grammatical features required for a token in a template.
 
     Attributes:
-        pos: Part of speech (required for all tokens)
+        lexical: Part of speech (required for all tokens)
         form: Grammatical form (required for nouns, adjectives, articles)
         gender: Grammatical gender (required for nouns, adjectives, articles)
         number: Grammatical number (required for nouns, adjectives, articles, verbs)
@@ -19,7 +19,8 @@ class TokenFeatures:
         person: Grammatical person (required for verbs)
     """
 
-    pos: str
+    lexical: str
+    # Features for the lexical
     form: str | None = None
     gender: str | None = None
     number: str | None = None
@@ -29,11 +30,21 @@ class TokenFeatures:
 
     def is_inflectable(self) -> bool:
         """Check if this token type requires inflection."""
-        return self.pos in {c.NOUN, c.VERB, c.ADJECTIVE, c.ARTICLE, c.PRONOUN}
+        return self.lexical in {c.NOUN, c.VERB, c.ADJECTIVE, c.ARTICLE, c.PRONOUN}
 
     def is_invariable(self) -> bool:
         """Check if this token type is invariable (doesn't inflect)."""
-        return self.pos in {c.PREPOSITION, c.CONJUNCTION, c.ADVERB}
+        return self.lexical in {c.PREPOSITION, c.CONJUNCTION, c.ADVERB}
+
+    def features(self) -> dict[str, str]:
+        features = {}
+        for k, v in self.__dict__.items():
+            if k == "lexical":
+                continue
+            if v is None:
+                continue
+            features[k] = v
+        return features
 
 
 @dataclass
@@ -46,7 +57,7 @@ class ParsedTemplate:
     """
 
     raw_template: str
-    tokens: list[TokenFeatures]
+    tokens: list[Token]
 
     def __len__(self) -> int:
         """Return the number of tokens in the template."""

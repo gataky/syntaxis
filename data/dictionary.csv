@@ -1,63 +1,241 @@
 part_of_speech,english,greek,category
+adjective,"awful, terrible, foul",απαίσιος,
+adjective,"beautiful, handsome",όμορφος,
+adjective,"big, large",μεγάλος,
+adjective,"fast, quick",γρήγορος,
+adjective,"good, kind",καλός,
+adjective,"kind, polite",ευγενικός,
+adjective,"new, young",νέος,
+adjective,"serious, important, severe",σοβαρός,
+adjective,"silly, stupid",ανόητος,
+adjective,"smart, clever",έξυπνος,
+adjective,"warm, hot",ζεστός,
+adjective,angry,θυμωμένος,
+adjective,bad,κακός,
+adjective,brave,γενναίος,
+adjective,clean,καθαρός,
+adjective,cold,κρύος,
+adjective,crazy,τρελός,
+adjective,difficult,δύσκολος,
+adjective,dirty,βρώμικος,
+adjective,easy,εύκολος,
+adjective,empty,άδειος,
+adjective,friendly,φιλικός,
+adjective,full,γεμάτος,
+adjective,funny,αστείος,
+adjective,happy,χαρούμενος,
+adjective,hungry,πεινασμένος,
+adjective,independent,ανεξάρτητος,
+adjective,negative,αρνητικός,
+adjective,old,παλιός,
+adjective,poor,φτωχός,
+adjective,positive,θετικός,
+adjective,possible,πιθανός,
+adjective,quiet,ήσυχος,
+adjective,rich,πλούσιος,
+adjective,sad,λυπημένος,
+adjective,selfish,εγωιστικός,
+adjective,short,κοντός,
+adjective,slow,αργός,
+adjective,small,μικρός,
+adjective,strange,παράξενος,
+adjective,strong,δυνατός,
+adjective,tall,ψηλός,
+adjective,thirsty,διψασμένος,
+adjective,tired,κουρασμένος,
+adjective,ugly,άσχημος,
+adjective,unlikable,αντιπαθητικός,
+adjective,weak,αδύναμος,
+adverb,"late, slowly",αργά,
 adverb,a little,λίγο,
-preposition,"about, for",για,
-noun,adult (f),ενήλικη,feminine
-noun,adult (m),ενήλικος,masculine
-preposition,after,μετά,
+adverb,always,πάντα,
+adverb,badly,άσχημα,
+adverb,down,κάτω,
+adverb,early,νωρίς,
+adverb,fast,γρήγορα,
+adverb,here,εδώ,
+adverb,inside,μέσα,
+adverb,later,αργότερα,
+adverb,less,λιγότερο,
+adverb,more,περισσότερο,
+adverb,never,ποτέ,
+adverb,now,τώρα,
+adverb,often,συχνά,
+adverb,outside,έξω,
+adverb,sometimes,μερικές φορές,
+adverb,there,εκεί,
+adverb,today,σήμερα,
+adverb,tomorrow,αύριο,
+adverb,up,πάνω,
+adverb,very,πολύ,
+adverb,well,καλά,
+adverb,when,πότε ,
+adverb,yesterday,χθες,
+conjunction,and,και,
+conjunction,because,γιατί,
+conjunction,but,αλλά,
+conjunction,if,αν,
+conjunction,or,ή,
+conjunction,so,λοιπόν,
+conjunction,that,ότι,
+conjunction,when,όταν,
+noun,"antics, nonsense",χαζομάρες,masculine
+noun,"appointment, date",ραντεβού,neuter
+noun,"bag, handbag",τσάντα,feminine
+noun,"basement, cellar ",υπόγειο,neuter
+noun,"beach, coast, shore",παραλία,feminine
+noun,"bell, church bell",καμπάνα,feminine
+noun,"bill, check, account",λογαριασμός,masculine
+noun,"board, council, committee",συμβούλιο,neuter
+noun,"branch, stick, sprig",κλαδί,neuter
+noun,"break-up, division",χωρισμός,masculine
+noun,"broom, vacuum cleaner",σκούπα,feminine
+noun,"bush, shrub",θάμνος,masculine
+noun,"canal, channel",κανάλι,neuter
+noun,"canyon, gorge",φαράγγι,neuter
+noun,"cap, beanie",σκουφί,neuter
+noun,"carbon, coal",άνθρακας,masculine
+noun,"cart, wagon",κάρο,neuter
+noun,"category, accusation",κατηγορία,feminine
+noun,"center, centre",κέντρο,neuter
+noun,"charisma, gift, talent",χάρισμα,neuter
+noun,"competition, contest",διαγωνισμός,masculine
+noun,"cooperation, collaboration",συνεργασία,feminine
+noun,"cord, lace",κορδόνι,neuter
+noun,"counter, countertop, stand, bench",πάγκος,masculine
+noun,"demand, market demand",ζήτηση,feminine
+noun,"device, appliance",συσκευή,feminine
+noun,"diet, nutrition",διατροφή,feminine
+noun,"dish, plate",πιάτο,neuter
+noun,"domination, supremacy",κυριαρχία,feminine
+noun,"effort, attempt",προσπάθεια,feminine
+noun,"executive, stalk, stem",στέλεχος,masculine
+noun,"expansion, extension",επέκταση,feminine
+noun,"face, character",πρόσωπο,neuter
+noun,"favour, grace",χάρη,feminine
+noun,"finger, toe",δάχτυλο,neuter
+noun,"fingernail, toenail",νύχι,neuter
+noun,"fog, mist",ομίχλη,feminine
+noun,"forehead, brow, battlefront",μέτωπο,neuter
+noun,"friend, boyfriend, girlfriend",φίλος,masculine
+noun,"girl, girlfriend",κοπέλα,feminine
+noun,"glass, drinking glass",ποτήρι,neuter
+noun,"guide, driver",οδηγός,masculine
+noun,"gum, rubber",γόμα,feminine
+noun,"habit, custom",συνήθεια,feminine
+noun,"hall, auditorium, classroom",αίθουσα,feminine
+noun,"heartbeat, pulse",παλμός,masculine
+noun,"hen, wimp, chicken",κότα,feminine
+noun,"hysteria, hysterics",υστερία,feminine
+noun,"ignorance, unawareness",άγνοια,feminine
+noun,"indigenous person, aboriginal",ιθαγενής,masculine
+noun,"instructions, directions",οδηγίες,masculine
+noun,"lamp, light bulb",λάμπα,feminine
+noun,"language, tongue",γλώσσα,feminine
+noun,"laugh, laughter",γέλιο,neuter
+noun,"lavatory, toilet, bathroom ",τουαλέτα,feminine
+noun,"leg, foot",πόδι,neuter
+noun,"liberation, release, deregulation",απελευθέρωση,feminine
+noun,"man, husband",άντρας,masculine
+noun,"maniac, lunatic",μανιακός,masculine
+noun,"mattress, layer, stratum",στρώμα,neuter
+noun,"meal, lunch",γεύμα,neuter
+noun,"memory, recollection",ανάμνηση,feminine
+noun,"moneybox, piggy bank",κουμπαράς,masculine
+noun,"nap, snooze",υπνάκος,masculine
+noun,"neck, throat",λαιμός,masculine
+noun,"observer, inspector",παρατηρητής,masculine
+noun,"painting, decorating",βάψιμο,neuter
+noun,"painting, table, chart, diagram",πίνακας,masculine
+noun,"paper (material, document)",χαρτί,neuter
+noun,"path, footpath, trail",μονοπάτι,neuter
+noun,"point of view, opinion",άποψη,feminine
+noun,"politics, policy",πολιτική,feminine
+noun,"port, harbour",λιμάνι,neuter
+noun,"rapport, attachment, tying up",δέσιμο,neuter
+noun,"rebel, revolutionary",επαναστάτης,masculine
+noun,"registration, sign-up, recording",εγγραφή,feminine
+noun,"repetition, recurrence",επανάληψη,feminine
+noun,"revelation, apocalypse",αποκάλυψη,feminine
+noun,"riches, wealth",πλούτη,neuter
+noun,"road, way, journey",δρόμος,masculine
+noun,"robe, gown",ρόμπα,feminine
+noun,"rug, carpet",χαλί,neuter
+noun,"sadness, sorrow",λύπη,feminine
+noun,"saucepan, pot",κατσαρόλα,feminine
+noun,"scream, yell",κραυγή,feminine
+noun,"shame, pity",κρίμα,neuter
+noun,"shave, shaving",ξύρισμα,neuter
+noun,"slap, smack",χαστούκι,neuter
+noun,"spouse (husband, wife)",σύζυγος,masculine
+noun,"steering wheel, handlebars",τιμόνι,neuter
+noun,"stocking, tights",καλτσόν,neuter
+noun,"stomach, belly, tummy",κοιλιά,feminine
+noun,"stop, attitude, posture",στάση,feminine
+noun,"suit jacket, blazer",σακάκι,neuter
+noun,"swamp, marsh",βάλτος,masculine
+noun,"tie, bond, relationship, affair",δεσμός,masculine
+noun,"tray, disc, hard drive",δίσκος,masculine
+noun,"truck, van",φορτηγό,neuter
+noun,"urge, momentum",ορμή,feminine
+noun,"vase, jar",βάζο,neuter
+noun,"wallet, purse",πορτοφόλι,neuter
+noun,"whisk, wire",σύρμα,feminine
+noun,admirer,θαυμαστής,masculine
+noun,adult,ενήλικος,masculine
+noun,Africa,Αφρική,feminine
 noun,afternoon,απόγευμα,neuter
 noun,age,ηλικία,feminine
+noun,air-conditioning,κλιματισμός,masculine
+noun,air,αέρας,masculine
 noun,airplane,αεροπλάνο,neuter
 noun,airport,αεροδρόμιο,neuter
 noun,alarm clock,ξυπνητήρι,neuter
-adverb,always,πάντα,
-conjunction,and,και,
-adjective,angry,θυμωμένος,
+noun,alcohol,αλκοόλ,neuter
+noun,amateur,ερασιτέχνης,masculine
+noun,America,Αμερική,feminine
+noun,American,αμερικάνικος,
+noun,animal,ζώο,neuter
 noun,ankle,αστράγαλος,masculine
-verb,answer,απαντάω,
+noun,ant,μυρμήγκι,neuter
+noun,ape,πίθηκος,masculine
+noun,appartment,διαμέρισμα,neuter
 noun,apple,μήλο,neuter
 noun,April,Απρίλιος,masculine
-verb,ask,ρωτάω,
-preposition,"at, in, on, to",σε,
+noun,Asia,Ασία,feminine
+noun,Athenian,Αθηναίος,masculine
+noun,Athens,Αθήνα,feminine
 noun,attic,σοφίτα,feminine
 noun,August,Αύγουστος,masculine
 noun,aunt,θεία,feminine
+noun,Australia,Αυστραλία,feminine
+noun,autumn,φθινόπωρο,neuter
 noun,avocado ,αβοκάντο,neuter
-adjective,"awful, terrible, foul",απαίσιος,
 noun,baby,μωρό,neuter
+noun,back (anatomy),πλάτη,feminine
 noun,backpack,σακίδιο,neuter
-adjective,bad,κακός,
-adverb,badly,άσχημα,
-noun,"bag, handbag",τσάντα,feminine
 noun,banana ,μπανάνα,feminine
 noun,bank,τράπεζα,feminine
-noun,"basement, cellar ",υπόγειο,neuter
-verb,be,είμαι,
-noun,"beach, coast, shore",παραλία,feminine
+noun,Barcelona,Βαρκελώνη,feminine
+noun,bat,νυχτερίδα,feminine
 noun,bean,φασόλι,neuter
 noun,bear,αρκούδα,feminine
-adjective,"beautiful, handsome",όμορφος,
-conjunction,because,γιατί,
-noun,bed,κρεβάτι,neuter
 noun,bed sheet,σεντόνι,neuter
+noun,bed,κρεβάτι,neuter
 noun,bedroom,υπνοδωμάτιο,neuter
 noun,bee,μέλισσα,feminine
 noun,beer,μπύρα,feminine
-preposition,before,πριν,
-preposition,behind,πίσω από,
-verb,believe,πιστεύω,
-noun,"bell, church bell",καμπάνα,feminine
+noun,Belgium,Βέλγιο,neuter
 noun,belt,ζώνη,feminine
+noun,Berlin,Βερολίνο,neuter
+noun,berry,μούρο,neuter
 noun,best man,κουμπάρος,masculine
 noun,best woman,κουμπάρα,feminine
-preposition,between,ανάμεσα σε,
-adjective,"big, large",μεγάλος,
 noun,bike,ποδήλατο,neuter
-noun,"bill, check, account",λογαριασμός,masculine
 noun,bird,πουλί,neuter
 noun,blackberry,μπατόμουρο,neuter
 noun,blanket,κουβέρτα,feminine
 noun,blouse,μπλούζα,feminine
-noun,"painting, table, chart, diagram",πίνακας,masculine
 noun,body,σώμα,neuter
 noun,bone,κόκκαλο,neuter
 noun,book,βιβλίο,neuter
@@ -65,58 +243,63 @@ noun,boot,μπότα,feminine
 noun,bowl,μπολ,neuter
 noun,box,κουτί,neuter
 noun,boy,αγόρι,neuter
-adjective,brave,γενναίος,
+noun,Brazil,Βραζιλία,feminine
 noun,bread,ψωμί,neuter
 noun,breakfast,πρωινό,neuter
+noun,bribery,δωροδοκία,feminine
 noun,brick,τούβλο,neuter
 noun,bridge,γέφυρα,feminine
+noun,Britain,Βρετανία,feminine
+noun,British,βρετανικός,
 noun,broccoli ,μπρόκολο,neuter
-noun,"broom, vacuum cleaner",σκούπα,feminine
 noun,brother,αδελφός,masculine
 noun,brush,βούρτσα,feminine
 noun,bucket,κουβάς,masculine
-noun,bus,λεωφορείο,neuter
+noun,bull,ταύρος,masculine
 noun,bus station,σταθμός λεωφορείων,masculine
-noun,"bush, shrub",θάμνος,masculine
-conjunction,but,αλλά,
+noun,bus,λεωφορείο,neuter
 noun,butter,βούτυρο,neuter
 noun,butterfly,πεταλούδα,feminine
-verb,buy,αγοράζω,
+noun,button,κουμπί,neuter
 noun,cabbage,λάχανο,neuter
-noun,"canal, channel",κανάλι,neuter
-noun,"cap, beanie",σκουφί,neuter
-noun,moter car,αυτοκίνητο,neuter
+noun,cake,τούρτα,feminine
+noun,car,αμάξι,neuter
+noun,card,κάρτα,feminine
 noun,carrot,καρότο,neuter
 noun,cat,γάτα,feminine
+noun,cave,σπηλιά,feminine
 noun,ceiling ,ταβάνι,neuter
-noun,"center, centre",κέντρο,neuter
+noun,cell (biological),κύτταρο,neuter
 noun,chain,αλυσίδα,feminine
 noun,chair,καρέκλα,feminine
+noun,champagne,σαμπάνια,feminine
 noun,cheek,μάγουλο,neuter
 noun,cheese,τυρί,neuter
 noun,cherry,κεράσι,neuter
-noun,"hen, wimp, chicken",κότα,feminine
 noun,child,παιδί,neuter
 noun,chin,σαγόνι,neuter
+noun,China,Κίνα,feminine
+noun,Chinese (language),κινέζικα,neuter
+noun,Chinese,κινέζικος,
+noun,chocolate,σοκολάτα,feminine
+noun,cinema,σινεμά,neuter
 noun,city,πόλη,feminine
 noun,class,τάξη,feminine
-noun,"hall, auditorium, classroom",αίθουσα,feminine
-adjective,clean,καθαρός,
 noun,cleaning,καθάρισμα,neuter
-verb,close,κλείνω,
 noun,closet,ντουλάπα,feminine
 noun,cloud,σύννεφο,neuter
 noun,coat,παλτό,neuter
 noun,coffee,καφές,masculine
-adjective,cold,κρύος,
-verb,come,έρχομαι,
+noun,colour,χρώμα,neuter
+noun,communication,επικοινωνία,feminine
 noun,computer,υπολογιστής,masculine
+noun,confusion,σύγχυση,feminine
 noun,couch,καναπές,masculine
 noun,country,χώρα,feminine
+noun,coupon,κουπόνι,neuter
 noun,cousin (f),ξαδέλφη,feminine
 noun,cousin (m),ξάδελφος,masculine
 noun,cow,αγελάδα,feminine
-adjective,crazy,τρελός,
 noun,cucumber ,αγγούρι,neuter
 noun,cup (larger),κούπα,feminine
 noun,cup (smaller for tea or coffee),φλιτζάνι,neuter
@@ -124,573 +307,387 @@ noun,curtain,κουρτίνα,feminine
 noun,dad,μπαμπάς,masculine
 noun,daughter,κόρη,feminine
 noun,December,Δεκέμβριος,masculine
+noun,Denmark,Δανία,feminine
+noun,depth,βάθος,neuter
 noun,desk,θρανίο,neuter
-adjective,difficult,δύσκολος,
 noun,dining room ,τραπεζαρία,feminine
 noun,dinner,δείπνο,neuter
-adjective,dirty,βρώμικος,
-noun,"dish, plate",πιάτο,neuter
-verb,"do, make",κάνω,
 noun,dog,σκύλος,masculine
 noun,donkey,γάιδαρος,masculine
 noun,door,πόρτα,feminine
-adverb,down,κάτω,
 noun,drain,σιφώνι,neuter
 noun,drawer,συρτάρι,neuter
 noun,dress,φόρεμα,neuter
-verb,drink,πίνω,
+noun,drink,ποτό,neuter
 noun,drinking straw,καλαμάκι,neuter
-verb,drive,οδηγώ,
+noun,eagle,αετός,masculine
 noun,ear,αυτί,neuter
-adverb,early,νωρίς,
-adjective,easy,εύκολος,
-verb,eat,τρώω,
+noun,Egypt,Αίγυπτος,feminine
 noun,elbow,αγκώνας,masculine
-adjective,empty,άδειος,
+noun,emphasis,έμφαση,feminine
+noun,England,Αγγλία,feminine
+noun,English (language),αγγλικά,neuter
+noun,English,αγγλικός,
 noun,eraser,σβήστρα,feminine
+noun,Europe,Ευρώπη,feminine
 noun,evening,βράδυ,neuter
+noun,expression,έκφραση,feminine
 noun,eye,μάτι,neuter
 noun,eyebrow,φρύδι,neuter
 noun,eyelash,βλεφαρίδα,feminine
 noun,eyelid,βλέφαρο,neuter
-noun,"face, character",πρόσωπο,neuter
 noun,factory,εργοστάσιο,neuter
 noun,family,οικογένεια,feminine
-adverb,fast,γρήγορα,
-adjective,"fast, quick",γρήγορος,
-noun,father,πατέρας,masculine
 noun,father-in-law,πεθερός,masculine
+noun,father,πατέρας,masculine
 noun,faucet,βρύση,feminine
 noun,February,Φεβρουάριος,masculine
-verb,feel,νιώθω,
 noun,ferry,πορθμείο,neuter
-verb,find,βρίσκω,
-noun,"finger, toe",δάχτυλο,neuter
-noun,"fingernail, toenail",νύχι,neuter
-verb,finish,τελειώνω,
 noun,fire station,πυροσβεστικός σταθμός,masculine
 noun,fish,ψάρι,neuter
 noun,flip-flop,σαγιονάρα,feminine
 noun,floor of a room,πάτωμα,neuter
 noun,flower,λουλούδι,neuter
-noun,"fog, mist",ομίχλη,feminine
 noun,food,φαγητό,neuter
-noun,"forehead, brow, battlefront",μέτωπο,neuter
 noun,forest,δάσος,masculine
 noun,fork,πιρούνι,neuter
+noun,France,Γαλλία,feminine
 noun,freezer,κατάψυξη,feminine
-noun,friday,παρασκευή,feminine
+noun,French (language),γαλλικά,neuter
+noun,French,γαλλικός,
+noun,Friday,παρασκευή,feminine
 noun,friend,φίλη,feminine
-noun,"friend, boyfriend, girlfriend",φίλος,masculine
-adjective,friendly,φιλικός,
-preposition,from,από,
-adjective,full,γεμάτος,
-adjective,funny,αστείος,
 noun,garden,κήπος,masculine
 noun,garlic,σκόρδο,neuter
-verb,get up,σηκώνομαι,
+noun,gene,γονίδιο,neuter
+noun,general,στρατηγός,masculine
+noun,German (language),γερμανικά,neuter
+noun,Germany,Γερμανία,feminine
 noun,girl (young),κορίτσι,neuter
-noun,"girl, girlfriend",κοπέλα,feminine
-verb,give,δίνω,
-noun,"glass, drinking glass",ποτήρι,neuter
 noun,glasses,γυαλιά,feminine
 noun,glove,γάντι,neuter
 noun,glue,κόλλα,feminine
-verb,go,πάω,
-adjective,"good, kind",καλός,
+noun,graduation,αποφοίτηση,feminine
 noun,granddaughter,εγγονή,feminine
 noun,grandfather,παππούς,masculine
 noun,grandmother,γιαγιά,feminine
 noun,grandson,εγγονός,masculine
 noun,grape,σταφύλι,neuter
+noun,grass,γρασίδι,neuter
+noun,Greece,Ελλάδα,feminine
+noun,Greek (language),ελληνικά,neuter
 noun,grocery store,παντοπωλείο,neuter
-noun,"gum, rubber",γόμα,feminine
 noun,hair (single stran),μαλλί,neuter
 noun,hallway ,διάδρομος,masculine
 noun,hand arm,χέρι,neuter
-adjective,happy,χαρούμενος,
 noun,hat,καπέλο,neuter
-verb,have,έχω,
 noun,head,κεφάλι,neuter
-verb,hear,ακούω,
+noun,headphones,ακουστικά,neuter
 noun,heavy jacket,μπουφάν,neuter
 noun,heel (foot),φτέρνα,feminine
 noun,heel (shoe),τακούνι,neuter
-adverb,here,εδώ,
 noun,hill,λόφος,masculine
+noun,homosexual,ομοφυλόφιλος,masculine
+noun,honey,μέλι,neuter
 noun,horse,άλογο,neuter
 noun,hospital,νοσοκομείο,neuter
+noun,host,οικοδεσπότης,masculine
 noun,hotel,ξενοδοχείο,neuter
 noun,house,σπίτι,neuter
-adjective,hungry,πεινασμένος,
-conjunction,if,αν,
-preposition,in front of,μπροστά σε,
-adjective,independent,ανεξάρτητος,
-adverb,inside,μέσα,
+noun,Hungary,Ουγγαρία,feminine
+noun,ice cream,παγωτό,neuter
+noun,ice cube,παγάκι,neuter
+noun,ice,πάγος,masculine
+noun,India,Ινδία,feminine
+noun,insult,προσβολή,feminine
+noun,intelligence,ευφυΐα,feminine
+noun,investor,επενδυτής,masculine
+noun,invitation,πρόσκληση,feminine
+noun,Ireland,Ιρλανδία,feminine
+noun,Israel,Ισραήλ,neuter
+noun,Italian,ιταλικός,
+noun,Italy,Ιταλία,feminine
 noun,jacket,ζακέτα,feminine
 noun,January,Ιανουάριος,masculine
+noun,Japan,Ιαπωνία,feminine
+noun,Japanese (language),ιαπωνικά,neuter
 noun,July,Ιούλιος,masculine
 noun,June,Ιούνιος,masculine
 noun,key,κλειδί,neuter
-adjective,"kind, polite",ευγενικός,
 noun,kitchen,κουζίνα,feminine
 noun,kiwi ,ακτινίδιο,neuter
 noun,knee,γόνατο,neuter
 noun,knife,μαχαίρι,neuter
-verb,know (a fact),ξέρω,
-verb,"know (a person, place)",γνωρίζω,
 noun,lake,λίμνη,feminine
-noun,"lamp, light bulb",λάμπα,feminine
-adverb,"late, slowly",αργά,
-adverb,later,αργότερα,
-verb,learn,μαθαίνω,
-noun,"leg, foot",πόδι,neuter
-adverb,less,λιγότερο,
+noun,lamb,αρνί,neuter
+noun,Latin (language),λατινικά,neuter
+noun,lemon,λεμόνι,neuter
 noun,letter,γράμμα,neuter
 noun,lettuce ,μαρούλι,neuter
-verb,"like, love",αγαπάω,
-noun,lip,χείλι,neuter
-verb,live,ζω,
-noun,living room ,καθιστικό,neuter
-noun,lunch,μεσημεριανό,neuter
-noun,"man, husband",άντρας,masculine
-noun,mango,μάνγκο,neuter
-noun,March,Μάρτιος,masculine
-noun,marker,μαρκαδόρος,masculine
-noun,"mattress, layer, stratum",στρώμα,neuter
-noun,May,Μάιος,masculine
-noun,measuring cup,δοσομετρητής,masculine
-noun,meat,κρέας,masculine
-noun,mind,μυαλό,neuter
-noun,mirror,καθρέφτης,masculine
-noun,Miss,δεσποινίς,feminine
-noun,mom,μαμά,feminine
-noun,monday,δευτέρα,feminine
-noun,"moneybox, piggy bank",κουμπαράς,masculine
-noun,moon,φεγγάρι,neuter
-adverb,more,περισσότερο,
-noun,morning,πρωί,neuter
-noun,mother,μητέρα,feminine
-noun,mother-in-law,πεθερά,feminine
-noun,mountain,βουνό,neuter
-noun,mouse,ποντίκι,neuter
-noun,mouth,στόμα,neuter
-noun,Mr,κύριος,masculine
-noun,Mrs,κύρια,feminine
-noun,"neck, throat",λαιμός,masculine
-adjective,negative,αρνητικός,
-noun,nephew,ανιψιός,masculine
-adverb,never,ποτέ,
-adjective,"new, young",νέος,
-preposition,next to,δίπλα σε,
-noun,niece,ανιψιά,feminine
-noun,night,νύχτα,feminine
-noun,nightgown,νυχτικό,neuter
-noun,nightstand,κομοδίνο,neuter
-noun,nose,μύτη,feminine
-noun,notebook,τετράδιο,neuter
-noun,November,Νοέμβριος,masculine
-adverb,now,τώρα,
-noun,object,αντικείμενο,neuter
-noun,October,Οκτώβριος,masculine
-preposition,of,"του,της,των",
-adverb,often,συχνά,
-adjective,old,παλιός,
-noun,olive,ελιά,feminine
-noun,onion ,κρεμμύδι,neuter
-verb,open,ανοίγω,
-conjunction,or,ή,
-noun,orange,πορτοκάλι,neuter
-adverb,outside,έξω,
-noun,oven,φούρνος,masculine
-preposition,over,πάνω από,
-noun,pan,τηγάνι,neuter
-noun,pants,παντελόνι,neuter
-noun,"paper (material, document)",χαρτί,neuter
-noun,parent,γονιός,masculine
-noun,passport ,διαβατήριο,neuter
-noun,"path, footpath, trail",μονοπάτι,neuter
-noun,pen,στυλό,neuter
-noun,pencil,μολύβι,neuter
-noun,pencil case,κασετίνα,feminine
-noun,pepper,πιπέρι,neuter
-noun,person,άνθρωπος,masculine
-noun,pillow,μαξιλάρι,neuter
-noun,pineapple ,ανανάς,masculine
-noun,plant,φυτό,neuter
-noun,police station,αστυνομικό τμήμα,neuter
-adjective,poor,φτωχός,
-noun,"port, harbour",λιμάνι,neuter
-adjective,positive,θετικός,
-adjective,possible,πιθανός,
-noun,post office,ταχυδρομείο,neuter
-noun,"saucepan, pot",κατσαρόλα,feminine
-noun,potato ,πατάτα,feminine
-verb,put,βάζω,
-noun,pyjama,πιτζάμα,feminine
-adjective,quiet,ήσυχος,
-noun,rabbit,κουνέλι,neuter
-noun,razor,ξυράφι,neuter
-verb,read,διαβάζω,
-noun,refrigerator,ψυγείο,neuter
-noun,relation by marriage (f),συμπεθέρα,feminine
-noun,relation by marriage (m),συμπέθερος,masculine
-adjective,rich,πλούσιος,
-noun,river,ποτάμι,neuter
-noun,"road, way, journey",δρόμος,masculine
-noun,"robe, gown",ρόμπα,feminine
-noun,rock,βράχος,masculine
-noun,"rug, carpet",χαλί,neuter
-noun,ruler,χάρακας,masculine
-verb,run,τρέχω,
-adjective,sad,λυπημένος,
-noun,sandal,πέδιλο,neuter
-noun,saturday,σάββατο,neuter
-noun,scarf,κασκόλ,neuter
-noun,school,σχολείο,neuter
-noun,scissor,ψαλίδι,neuter
-verb,see,βλέπω,
-adjective,selfish,εγωιστικός,
-verb,sell,πουλάω,
-noun,September,Σεπτέμβριος,masculine
-adjective,"serious, important, severe",σοβαρός,
-noun,sharpener,ξύστρα,feminine
-noun,ship,πλοίο,neuter
-noun,shirt,πουκάμισο,neuter
-noun,shoe,παπούτσι,neuter
-adjective,short,κοντός,
-noun,shorts,σορτς,neuter
-noun,shoulder,ώμος,masculine
-noun,shower,ντους,neuter
-adjective,"silly, stupid",ανόητος,
-noun,singlet,φανέλα,feminine
-noun,sink,νεροχύτης,masculine
-noun,sister,αδελφή,feminine
-verb,sit down,κάθομαι,
-noun,skirt,φούστα,feminine
-noun,sky,ουρανός,masculine
-verb,sleep,κοιμάμαι,
-noun,sleeve,μανίκι,neuter
-noun,slipper,παντόφλα,feminine
-adjective,slow,αργός,
-adjective,small,μικρός,
-adjective,"smart, clever",έξυπνος,
-noun,sneaker (athletic shoe),αθλητικά παπούτσι,neuter
-conjunction,so,λοιπόν,
-noun,soap,σαπούνι,neuter
-noun,sock,κάλτσα,feminine
-adverb,sometimes,μερικές φορές,
-noun,son,γιός,masculine
-noun,spatula,σπάτουλα,feminine
-verb,speak,μιλάω,
-noun,spinach ,σπανάκι,neuter
-noun,sponge,σφουγγάρι,neuter
-noun,spoon,κουτάλι,neuter
-noun,"spouse (husband, wife)",σύζυγος,masculine
-noun,star,αστέρι,neuter
-verb,start,αρχίζω,
-noun,"stocking, tights",καλτσόν,neuter
-noun,"stomach, belly, tummy",κοιλιά,feminine
-adjective,strange,παράξενος,
-noun,strawberry ,φράουλα,feminine
-adjective,strong,δυνατός,
-noun,student (f),μαθήτρια,feminine
-noun,student (m),μαθητής,masculine
-noun,"suit jacket, blazer",σακάκι,neuter
-noun,sun,ήλιος,masculine
-noun,sunday,κυριακή,feminine
-noun,sweater,πουλόβερ,neuter
-noun,swimsuit,μαγιό,neuter
-noun,t-shirt,κοντομάνικο,neuter
-noun,table,τραπέζι,neuter
-verb,take,παίρνω,
-adjective,tall,ψηλός,
-noun,tea,τσάι,neuter
-noun,teacher (f),δασκάλα,feminine
-noun,teacher (m),δάσκαλος,masculine
-noun,teeth,δόντι,neuter
-noun,television,τηλεόραση,feminine
-conjunction,that,ότι,
-noun,back (anatomy),πλάτη,feminine
-adverb,there,εκεί,
-noun,thing,πράγμα,neuter
-verb,think,σκέφτομαι,
-adjective,thirsty,διψασμένος,
-noun,thursday,πέμπτη,feminine
-adjective,tired,κουρασμένος,
-adverb,today,σήμερα,
-noun,"lavatory, toilet, bathroom ",τουαλέτα,feminine
-noun,tomato ,ντομάτα,feminine
-adverb,tomorrow,αύριο,
-noun,toothbrush,οδοντόβουρτσα,feminine
-noun,toothpaste,οδοντόκρεμα,feminine
-noun,"language, tongue",γλώσσα,feminine
-noun,towel,πετσέτα,feminine
-noun,town square,πλατεία,feminine
-noun,toy,παιχνίδι,neuter
-noun,train,τρένο,neuter
-noun,train station,σιδηροδρομικός σταθμός,masculine
-noun,tree,δέντρο,neuter
-noun,"truck, van",φορτηγό,neuter
-noun,tuesday,τρίτη,feminine
-adjective,ugly,άσχημος,
-noun,umbrella,ομπρέλα,feminine
-noun,uncle,θείος,masculine
-preposition,under,κάτω από,
-verb,understand,καταλαβαίνω,
-noun,university,πανεπιστήμιο,neuter
-adjective,unlikable,αντιπαθητικός,
-adverb,up,πάνω,
-verb,use,χρησιμοποιώ,
-noun,"vase, jar",βάζο,neuter
-adverb,very,πολύ,
-verb,wait,περιμένω,
-verb,walk,περπατάω,
-noun,wall,τείχος,masculine
-noun,"wallet, purse",πορτοφόλι,neuter
-verb,want,θέλω,
-adjective,"warm, hot",ζεστός,
-noun,water,νερό,neuter
-noun,waterfall,καταράχτης,masculine
-noun,watermelon ,καρπούζι,neuter
-adjective,weak,αδύναμος,
-noun,weather,καιρός,masculine
-noun,wednesday,τετάρτη,feminine
-adverb,well,καλά,
-noun,wheel,ρόδα,feminine
-conjunction,when,όταν,
-adverb,when,πότε ,
-noun,"whisk, wire",σύρμα,feminine
-noun,window,παράθυρο,neuter
-noun,wine,κρασί,neuter
-preposition,with,με,
-noun,woman,γυναίκα,feminine
-verb,work,δουλεύω,
-verb,write,γράφω,
-noun,yard,αυλή,feminine
-adverb,yesterday,χθες,
-noun,Africa,Αφρική,feminine
-noun,America,Αμερική,feminine
-noun,Asia,Ασία,feminine
-noun,Athens,Αθήνα,feminine
-noun,Australia,Αυστραλία,feminine
-noun,Barcelona,Βαρκελώνη,feminine
-noun,Belgium,Βέλγιο,neuter
-noun,Berlin,Βερολίνο,neuter
-noun,Brazil,Βραζιλία,feminine
-noun,Britain,Βρετανία,feminine
-noun,China,Κίνα,feminine
-noun,Denmark,Δανία,feminine
-noun,Egypt,Αίγυπτος,feminine
-noun,England,Αγγλία,feminine
-noun,Europe,Ευρώπη,feminine
-noun,France,Γαλλία,feminine
-noun,Germany,Γερμανία,feminine
-noun,Greece,Ελλάδα,feminine
-noun,Hungary,Ουγγαρία,feminine
-noun,India,Ινδία,feminine
-noun,Ireland,Ιρλανδία,feminine
-noun,Israel,Ισραήλ,neuter
-noun,Italy,Ιταλία,feminine
-noun,Japan,Ιαπωνία,feminine
-noun,Norway,Νορβηγία,feminine
-noun,Poland,Πολωνία,feminine
-noun,Russia,Ρωσία,feminine
-noun,Scotland,Σκωτία,feminine
-noun,Spain,Ισπανία,feminine
-noun,Sweden,Σουηδία,feminine
-noun,Switzerland,Ελβετία,feminine
-noun,Turkey,Τουρκία,feminine
-noun,Chinese (language),κινέζικα,neuter
-noun,English (language),αγγλικά,neuter
-noun,French (language),γαλλικά,neuter
-noun,German (language),γερμανικά,neuter
-noun,Greek (language),ελληνικά,neuter
-noun,Japanese (language),ιαπωνικά,neuter
-noun,Spanish (language),ισπανικά,neuter
-noun,Latin (language),λατινικά,neuter
-noun,English,αγγλικός,
-noun,Italian,ιταλικός,
-noun,American,αμερικάνικος,
-noun,British,βρετανικός,
-noun,Chinese,κινέζικος,
-noun,French,γαλλικός,
-noun,Russian,ρώσικος,
-noun,Spanish,ισπανικός,
-noun,air,αέρας,masculine
-noun,alcohol,αλκοόλ,neuter
-noun,animal,ζώο,neuter
-noun,ant,μυρμήγκι,neuter
-noun,ape,πίθηκος,masculine
-noun,appartment,διαμέρισμα,neuter
-noun,autumn,φθινόπωρο,neuter
-noun,bat,νυχτερίδα,feminine
-noun,berry,μούρο,neuter
-noun,bull,ταύρος,masculine
-noun,button,κουμπί,neuter
-noun,cake,τούρτα,feminine
-noun,card,κάρτα,feminine
-noun,cave,σπηλιά,feminine
-noun,chocolate,σοκολάτα,feminine
-noun,cinema,σινεμά,neuter
-noun,colour,χρώμα,neuter
-noun,weakness,αδυναμία,feminine
-noun,week,εβδομάδα,feminine
-noun,weekend,σαββατοκύριακο,neuter
-noun,wolf,λύκος,masculine
-noun,word,λέξη,feminine
-noun,wait,αναμονή,feminine
-noun,drink,ποτό,neuter
-noun,sleep,ύπνος,masculine
-noun,car,αμάξι,neuter
-noun,well,πηγάδι,neuter
-noun,turkey,γαλοπούλα,feminine
-noun,use,χρήση,feminine
-noun,honey,μέλι,neuter
-noun,ice,πάγος,masculine
-noun,ice cream,παγωτό,neuter
-noun,ice cube,παγάκι,neuter
-noun,lamb,αρνί,neuter
-noun,lemon,λεμόνι,neuter
 noun,library,βιβλιοθήκη,feminine
 noun,life,ζωή,feminine
+noun,lightning,αστραπή,feminine
 noun,lion,λιοντάρι,neuter
+noun,lip,χείλι,neuter
+noun,living room ,καθιστικό,neuter
+noun,lunch,μεσημεριανό,neuter
 noun,magazine,περιοδικό,neuter
+noun,mango,μάνγκο,neuter
 noun,map,χάρτης,masculine
-noun,"meal, lunch",γεύμα,neuter
+noun,March,Μάρτιος,masculine
+noun,marker,μαρκαδόρος,masculine
+noun,May,Μάιος,masculine
+noun,meaning,νόημα,neuter
+noun,measuring cup,δοσομετρητής,masculine
+noun,meat,κρέας,masculine
 noun,menu,μενού,neuter
 noun,midday,μεσημέρι,neuter
 noun,middle,μέση,feminine
 noun,midnight,μεσάνυχτα,neuter
 noun,milk,γάλα,neuter
+noun,mince meat,κιμάς,masculine
+noun,mind,μυαλό,neuter
 noun,mint,μέντα,feminine
 noun,minute,λεπτό,neuter
+noun,mirror,καθρέφτης,masculine
+noun,Miss,δεσποινίς,feminine
+noun,mom,μαμά,feminine
+noun,Monday,δευτέρα,feminine
 noun,money,λεφτά,neuter
 noun,month,μήνας,masculine
+noun,moon,φεγγάρι,neuter
+noun,morning,πρωί,neuter
 noun,mosquito,κουνούπι,neuter
-noun,name,όνομα,neuter
-noun,"nap, snooze",υπνάκος,masculine
-noun,newspaper,εφημερίδα,feminine
-noun,owl,κουκουβάγια,feminine
-noun,park,πάρκο,neuter
-noun,pet,κατοικίδιο,neuter
-noun,pig,γουρούνι,neuter
-noun,wind,άνεμος,masculine
-noun,stupidity,βλακεία,feminine
-noun,"revelation, apocalypse",αποκάλυψη,feminine
-noun,postage stamp,γραμματόσημο,neuter
+noun,moter car,αυτοκίνητο,neuter
+noun,mother-in-law,πεθερά,feminine
+noun,mother,μητέρα,feminine
+noun,mountain,βουνό,neuter
+noun,mouse,ποντίκι,neuter
+noun,mouth,στόμα,neuter
+noun,Mr,κύριος,masculine
+noun,Mrs,κύρια,feminine
 noun,mythology,μυθολογία,feminine
-noun,planet,πλανήτης,masculine
-noun,wave,κύμα,neuter
-noun,suicide,αυτοκτονία,feminine
-noun,"rebel, revolutionary",επαναστάτης,masculine
-noun,"break-up, division",χωρισμός,masculine
-noun,"painting, decorating",βάψιμο,neuter
-noun,graduation,αποφοίτηση,feminine
-noun,"maniac, lunatic",μανιακός,masculine
-noun,"instructions, directions",οδηγίες,masculine
-noun,host,οικοδεσπότης,masculine
-noun,pocket,τσέπη,feminine
-noun,expression,έκφραση,feminine
-noun,eagle,αετός,masculine
-noun,"shame, pity",κρίμα,neuter
-noun,"observer, inspector",παρατηρητής,masculine
-noun,prediction,πρόβλεψη,feminine
-noun,puppet,μαριονέτα,feminine
-noun,"cooperation, collaboration",συνεργασία,feminine
-noun,past,παρελθόν,neuter
-noun,style,στυλ,neuter
-noun,coupon,κουπόνι,neuter
-noun,Athenian,Αθηναίος,masculine
-noun,parachute,αλεξίπτωτο,neuter
-noun,"tray, disc, hard drive",δίσκος,masculine
-noun,"swamp, marsh",βάλτος,masculine
-noun,"habit, custom",συνήθεια,feminine
-noun,writing,γραφή,feminine
-noun,admirer,θαυμαστής,masculine
-noun,"appointment, date",ραντεβού,neuter
-noun,"domination, supremacy",κυριαρχία,feminine
-noun,"category, accusation",κατηγορία,feminine
-noun,studio,στούντιο,neuter
-noun,"guide, driver",οδηγός,masculine
-noun,south,νότος,masculine
-noun,air-conditioning,κλιματισμός,masculine
-noun,prince,πρίγκιπας,masculine
-noun,"urge, momentum",ορμή,feminine
-noun,"hysteria, hysterics",υστερία,feminine
-noun,"liberation, release, deregulation",απελευθέρωση,feminine
-noun,reptile,ερπετό,neuter
-noun,"cart, wagon",κάρο,neuter
-noun,intelligence,ευφυΐα,feminine
-noun,survival,επιβίωση,feminine
-noun,headphones,ακουστικά,neuter
-noun,"politics, policy",πολιτική,feminine
-noun,invitation,πρόσκληση,feminine
-noun,"branch, stick, sprig",κλαδί,neuter
-noun,point (score),πόντος,masculine
-noun,investor,επενδυτής,masculine
-noun,"scream, yell",κραυγή,feminine
-noun,"steering wheel, handlebars",τιμόνι,neuter
-noun,"expansion, extension",επέκταση,feminine
-noun,"counter, countertop, stand, bench",πάγκος,masculine
-noun,"board, council, committee",συμβούλιο,neuter
-noun,champagne,σαμπάνια,feminine
-noun,lightning,αστραπή,feminine
-noun,mince meat,κιμάς,masculine
-noun,confusion,σύγχυση,feminine
-noun,"cord, lace",κορδόνι,neuter
-noun,stepmother,μητριά,feminine
-noun,bribery,δωροδοκία,feminine
-noun,warning,προειδοποίηση,feminine
-noun,"carbon, coal",άνθρακας,masculine
-noun,cell (biological),κύτταρο,neuter
-noun,grass,γρασίδι,neuter
-noun,"riches, wealth",πλούτη,neuter
-noun,depth,βάθος,neuter
-noun,"effort, attempt",προσπάθεια,feminine
-noun,slavery,δουλεία,feminine
-noun,"slap, smack",χαστούκι,neuter
-noun,theft,κλοπή,feminine
-noun,"shave, shaving",ξύρισμα,neuter
-noun,"favour, grace",χάρη,feminine
-noun,emphasis,έμφαση,feminine
-noun,"repetition, recurrence",επανάληψη,feminine
-noun,"laugh, laughter",γέλιο,neuter
-noun,prisoner,κρατούμενος,masculine
-noun,homosexual,ομοφυλόφιλος,masculine
-noun,amateur,ερασιτέχνης,masculine
-noun,communication,επικοινωνία,feminine
-noun,"point of view, opinion",άποψη,feminine
-noun,"memory, recollection",ανάμνηση,feminine
-noun,"CV, resume",βιογραφικό,neuter
-noun,shield,ασπίδα,feminine
-noun,stomach,στομάχι,neuter
-noun,poet,ποιητής,masculine
-noun,"competition, contest",διαγωνισμός,masculine
-noun,gene,γονίδιο,neuter
-noun,"rapport, attachment, tying up",δέσιμο,neuter
-noun,"executive, stalk, stem",στέλεχος,masculine
-noun,postponement,αναβολή,feminine
-noun,phone call,τηλεφώνημα,neuter
+noun,name,όνομα,neuter
+noun,nephew,ανιψιός,masculine
+noun,newspaper,εφημερίδα,feminine
+noun,niece,ανιψιά,feminine
+noun,night,νύχτα,feminine
+noun,nightgown,νυχτικό,neuter
+noun,nightstand,κομοδίνο,neuter
+noun,Norway,Νορβηγία,feminine
+noun,nose,μύτη,feminine
+noun,notebook,τετράδιο,neuter
+noun,November,Νοέμβριος,masculine
+noun,object,αντικείμενο,neuter
+noun,October,Οκτώβριος,masculine
 noun,oil,λάδι,neuter
-noun,"canyon, gorge",φαράγγι,neuter
-noun,"ignorance, unawareness",άγνοια,feminine
-noun,volcano,ηφαίστειο,neuter
-noun,"device, appliance",συσκευή,feminine
-noun,"sadness, sorrow",λύπη,feminine
-noun,scale,κλίμακα,feminine
-noun,"charisma, gift, talent",χάρισμα,neuter
-noun,"indigenous person, aboriginal",ιθαγενής,masculine
-noun,general,στρατηγός,masculine
-noun,meaning,νόημα,neuter
-noun,"registration, sign-up, recording",εγγραφή,feminine
-noun,insult,προσβολή,feminine
-noun,"antics, nonsense",χαζομάρες,masculine
-noun,"tie, bond, relationship, affair",δεσμός,masculine
-noun,spectrum,φάσμα,neuter
-noun,"diet, nutrition",διατροφή,feminine
+noun,olive,ελιά,feminine
+noun,onion ,κρεμμύδι,neuter
+noun,orange,πορτοκάλι,neuter
+noun,oven,φούρνος,masculine
+noun,owl,κουκουβάγια,feminine
+noun,pan,τηγάνι,neuter
+noun,pants,παντελόνι,neuter
+noun,parachute,αλεξίπτωτο,neuter
+noun,parent,γονιός,masculine
+noun,park,πάρκο,neuter
+noun,passport ,διαβατήριο,neuter
+noun,past,παρελθόν,neuter
+noun,pen,στυλό,neuter
+noun,pencil case,κασετίνα,feminine
+noun,pencil,μολύβι,neuter
+noun,pepper,πιπέρι,neuter
+noun,person,άνθρωπος,masculine
+noun,pet,κατοικίδιο,neuter
+noun,phone call,τηλεφώνημα,neuter
+noun,pig,γουρούνι,neuter
+noun,pillow,μαξιλάρι,neuter
+noun,pineapple ,ανανάς,masculine
+noun,planet,πλανήτης,masculine
+noun,plant,φυτό,neuter
+noun,pocket,τσέπη,feminine
+noun,poet,ποιητής,masculine
+noun,point (score),πόντος,masculine
+noun,Poland,Πολωνία,feminine
+noun,police station,αστυνομικό τμήμα,neuter
+noun,post office,ταχυδρομείο,neuter
+noun,postage stamp,γραμματόσημο,neuter
+noun,postponement,αναβολή,feminine
+noun,potato ,πατάτα,feminine
+noun,prediction,πρόβλεψη,feminine
+noun,prince,πρίγκιπας,masculine
+noun,prisoner,κρατούμενος,masculine
+noun,puppet,μαριονέτα,feminine
+noun,pyjama,πιτζάμα,feminine
+noun,rabbit,κουνέλι,neuter
 noun,railing,κάγκελα,neuter
-noun,"stop, attitude, posture",στάση,feminine
-noun,"demand, market demand",ζήτηση,feminine
-noun,"heartbeat, pulse",παλμός,masculine
+noun,razor,ξυράφι,neuter
 noun,reading,ανάγνωση,feminine
+noun,refrigerator,ψυγείο,neuter
+noun,relation by marriage (f),συμπεθέρα,feminine
+noun,relation by marriage (m),συμπέθερος,masculine
+noun,reptile,ερπετό,neuter
+noun,river,ποτάμι,neuter
+noun,rock,βράχος,masculine
+noun,ruler,χάρακας,masculine
+noun,Russia,Ρωσία,feminine
+noun,Russian,ρώσικος,
+noun,sandal,πέδιλο,neuter
+noun,Saturday,σάββατο,neuter
+noun,scale,κλίμακα,feminine
+noun,scarf,κασκόλ,neuter
+noun,school,σχολείο,neuter
+noun,scissor,ψαλίδι,neuter
+noun,Scotland,Σκωτία,feminine
+noun,September,Σεπτέμβριος,masculine
+noun,sharpener,ξύστρα,feminine
+noun,shield,ασπίδα,feminine
+noun,ship,πλοίο,neuter
+noun,shirt,πουκάμισο,neuter
+noun,shoe,παπούτσι,neuter
+noun,shorts,σορτς,neuter
+noun,shoulder,ώμος,masculine
+noun,shower,ντους,neuter
+noun,singlet,φανέλα,feminine
+noun,sink,νεροχύτης,masculine
+noun,sister,αδελφή,feminine
+noun,skirt,φούστα,feminine
+noun,sky,ουρανός,masculine
+noun,slavery,δουλεία,feminine
+noun,sleep,ύπνος,masculine
+noun,sleeve,μανίκι,neuter
+noun,slipper,παντόφλα,feminine
+noun,sneaker (athletic shoe),αθλητικά παπούτσι,neuter
+noun,soap,σαπούνι,neuter
+noun,sock,κάλτσα,feminine
+noun,son,γιός,masculine
+noun,south,νότος,masculine
+noun,Spain,Ισπανία,feminine
+noun,Spanish (language),ισπανικά,neuter
+noun,Spanish,ισπανικός,
+noun,spatula,σπάτουλα,feminine
+noun,spectrum,φάσμα,neuter
+noun,spinach ,σπανάκι,neuter
+noun,sponge,σφουγγάρι,neuter
+noun,spoon,κουτάλι,neuter
+noun,star,αστέρι,neuter
+noun,stepmother,μητριά,feminine
+noun,stomach,στομάχι,neuter
+noun,strawberry ,φράουλα,feminine
+noun,student (f),μαθήτρια,feminine
+noun,student (m),μαθητής,masculine
+noun,studio,στούντιο,neuter
+noun,stupidity,βλακεία,feminine
+noun,style,στυλ,neuter
+noun,suicide,αυτοκτονία,feminine
+noun,sun,ήλιος,masculine
+noun,Sunday,κυριακή,feminine
+noun,survival,επιβίωση,feminine
+noun,sweater,πουλόβερ,neuter
+noun,Sweden,Σουηδία,feminine
+noun,swimsuit,μαγιό,neuter
+noun,Switzerland,Ελβετία,feminine
+noun,t-shirt,κοντομάνικο,neuter
+noun,table,τραπέζι,neuter
+noun,tea,τσάι,neuter
+noun,teacher (f),δασκάλα,feminine
+noun,teacher (m),δάσκαλος,masculine
+noun,teeth,δόντι,neuter
+noun,television,τηλεόραση,feminine
+noun,theft,κλοπή,feminine
+noun,thing,πράγμα,neuter
+noun,Thursday,πέμπτη,feminine
+noun,tomato ,ντομάτα,feminine
+noun,toothbrush,οδοντόβουρτσα,feminine
+noun,toothpaste,οδοντόκρεμα,feminine
+noun,towel,πετσέτα,feminine
+noun,town square,πλατεία,feminine
+noun,toy,παιχνίδι,neuter
+noun,train station,σιδηροδρομικός σταθμός,masculine
+noun,train,τρένο,neuter
+noun,tree,δέντρο,neuter
+noun,Tuesday,τρίτη,feminine
+noun,turkey,γαλοπούλα,feminine
+noun,Turkey,Τουρκία,feminine
+noun,umbrella,ομπρέλα,feminine
+noun,uncle,θείος,masculine
+noun,university,πανεπιστήμιο,neuter
+noun,use,χρήση,feminine
+noun,volcano,ηφαίστειο,neuter
+noun,wait,αναμονή,feminine
+noun,wall,τείχος,masculine
+noun,warning,προειδοποίηση,feminine
+noun,water,νερό,neuter
+noun,waterfall,καταράχτης,masculine
+noun,watermelon ,καρπούζι,neuter
+noun,wave,κύμα,neuter
+noun,weakness,αδυναμία,feminine
+noun,weather,καιρός,masculine
+noun,Wednesday,τετάρτη,feminine
+noun,week,εβδομάδα,feminine
+noun,weekend,σαββατοκύριακο,neuter
+noun,well,πηγάδι,neuter
+noun,wheel,ρόδα,feminine
+noun,wind,άνεμος,masculine
+noun,window,παράθυρο,neuter
+noun,wine,κρασί,neuter
+noun,wolf,λύκος,masculine
+noun,woman,γυναίκα,feminine
+noun,word,λέξη,feminine
+noun,writing,γραφή,feminine
+noun,yard,αυλή,feminine
+preposition,"about, for",για,
+preposition,"at, in, on, to",σε,
+preposition,after,μετά,
+preposition,before,πριν,
+preposition,behind,πίσω από,
+preposition,between,ανάμεσα σε,
+preposition,from,από,
+preposition,in front of,μπροστά σε,
+preposition,next to,δίπλα σε,
+preposition,over,πάνω από,
+preposition,under,κάτω από,
+preposition,with,με,
+verb,"do, make",κάνω,
+verb,"know (a person, place)",γνωρίζω,
+verb,"like, love",αγαπάω,
+verb,answer,απαντάω,
+verb,ask,ρωτάω,
+verb,be,είμαι,
+verb,believe,πιστεύω,
+verb,buy,αγοράζω,
+verb,close,κλείνω,
+verb,come,έρχομαι,
+verb,drink,πίνω,
+verb,drive,οδηγώ,
+verb,eat,τρώω,
+verb,feel,νιώθω,
+verb,find,βρίσκω,
+verb,finish,τελειώνω,
+verb,get up,σηκώνομαι,
+verb,give,δίνω,
+verb,go,πάω,
+verb,have,έχω,
+verb,hear,ακούω,
+verb,know (a fact),ξέρω,
+verb,learn,μαθαίνω,
+verb,live,ζω,
+verb,open,ανοίγω,
+verb,put,βάζω,
+verb,read,διαβάζω,
+verb,run,τρέχω,
+verb,see,βλέπω,
+verb,sell,πουλάω,
+verb,sit down,κάθομαι,
+verb,sleep,κοιμάμαι,
+verb,speak,μιλάω,
+verb,start,αρχίζω,
+verb,take,παίρνω,
+verb,think,σκέφτομαι,
+verb,understand,καταλαβαίνω,
+verb,use,χρησιμοποιώ,
+verb,wait,περιμένω,
+verb,walk,περπατάω,
+verb,want,θέλω,
+verb,work,δουλεύω,
+verb,write,γράφω,

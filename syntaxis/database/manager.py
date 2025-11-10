@@ -335,8 +335,10 @@ class LexicalManager:
     def _extract_verb_features(self, word: PartOfSpeechBase) -> list[dict[str, str | None]]:
         """Extract feature combinations for verbs.
 
+        Handles various verb form structures that Morpheus returns.
+
         Args:
-            word: Verb with forms structure {tense: {voice: {mood: {number: {person: form}}}}}
+            word: Verb with forms from Morpheus
 
         Returns:
             List of feature dictionaries
@@ -345,32 +347,88 @@ class LexicalManager:
         verb_group = getattr(word, "verb_group", None)
 
         for tense, voice_dict in word.forms.items():
+            # Handle case where tense maps directly to a set (shouldn't happen, but defensive)
+            if isinstance(voice_dict, set):
+                features_list.append({
+                    "verb_group": verb_group,
+                    "tense": normalize_feature(tense),
+                    "voice": None,
+                    "mood": None,
+                    "number": None,
+                    "person": None,
+                    "case_name": None,
+                })
+                continue
+
             for voice, mood_dict in voice_dict.items():
-                for mood, number_dict in mood_dict.items():
-                    for number, person_or_case_dict in number_dict.items():
-                        for person_or_case, form in person_or_case_dict.items():
-                            if form:
-                                # Check if this is a participle (has case) or regular verb (has person)
-                                if normalize_feature(mood) == "PARTICIPLE":
-                                    features_list.append({
-                                        "verb_group": verb_group,
-                                        "tense": normalize_feature(tense),
-                                        "voice": normalize_feature(voice),
-                                        "mood": normalize_feature(mood),
-                                        "number": normalize_feature(number),
-                                        "person": None,
-                                        "case_name": normalize_feature(person_or_case),
-                                    })
-                                else:
-                                    features_list.append({
-                                        "verb_group": verb_group,
-                                        "tense": normalize_feature(tense),
-                                        "voice": normalize_feature(voice),
-                                        "mood": normalize_feature(mood),
-                                        "number": normalize_feature(number),
-                                        "person": normalize_feature(person_or_case),
-                                        "case_name": None,
-                                    })
+                # Handle case where voice maps directly to a set (shouldn't happen, but defensive)
+                if isinstance(mood_dict, set):
+                    features_list.append({
+                        "verb_group": verb_group,
+                        "tense": normalize_feature(tense),
+                        "voice": normalize_feature(voice),
+                        "mood": None,
+                        "number": None,
+                        "person": None,
+                        "case_name": None,
+                    })
+                    continue
+
+                for mood, mood_value in mood_dict.items():
+                    # Check if this is an infinitive (just a set of forms)
+                    if isinstance(mood_value, set):
+                        # Infinitive: no number/person/case
+                        features_list.append({
+                            "verb_group": verb_group,
+                            "tense": normalize_feature(tense),
+                            "voice": normalize_feature(voice),
+                            "mood": normalize_feature(mood),
+                            "number": None,
+                            "person": None,
+                            "case_name": None,
+                        })
+                    # Check if this is a participle (has gender level)
+                    elif normalize_feature(mood) == "PARTICIPLE":
+                        # Participle: {gender: {number: {case: {forms}}}}
+                        for gender, number_dict in mood_value.items():
+                            for number, case_dict in number_dict.items():
+                                for case_name, forms in case_dict.items():
+                                    if forms:
+                                        features_list.append({
+                                            "verb_group": verb_group,
+                                            "tense": normalize_feature(tense),
+                                            "voice": normalize_feature(voice),
+                                            "mood": normalize_feature(mood),
+                                            "number": normalize_feature(number),
+                                            "person": None,
+                                            "case_name": normalize_feature(case_name),
+                                        })
+                    else:
+                        # Regular mood: {number: {person: {forms}}}
+                        for number, person_dict in mood_value.items():
+                            # Handle case where number maps directly to a set (no person level)
+                            if isinstance(person_dict, set):
+                                features_list.append({
+                                    "verb_group": verb_group,
+                                    "tense": normalize_feature(tense),
+                                    "voice": normalize_feature(voice),
+                                    "mood": normalize_feature(mood),
+                                    "number": normalize_feature(number),
+                                    "person": None,
+                                    "case_name": None,
+                                })
+                            else:
+                                for person, forms in person_dict.items():
+                                    if forms:
+                                        features_list.append({
+                                            "verb_group": verb_group,
+                                            "tense": normalize_feature(tense),
+                                            "voice": normalize_feature(voice),
+                                            "mood": normalize_feature(mood),
+                                            "number": normalize_feature(number),
+                                            "person": normalize_feature(person),
+                                            "case_name": None,
+                                        })
         return features_list
 
     def _extract_adjective_features(self, word: PartOfSpeechBase) -> list[dict[str, str | None]]:

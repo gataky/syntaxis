@@ -31,21 +31,21 @@ class TestTemplateParser:
         "template,expected_pos,expected_case,expected_gender,expected_number",
         [
             (
-                "[Noun:nom:m:sg]",
+                "[noun:nom:masc:sg]",
                 PartOfSpeech.NOUN,
                 Case.NOMINATIVE,
                 Gender.MASCULINE,
                 Number.SINGULAR,
             ),
             (
-                "[Article:acc:f:pl]",
+                "[article:acc:fem:pl]",
                 PartOfSpeech.ARTICLE,
                 Case.ACCUSATIVE,
                 Gender.FEMININE,
                 Number.PLURAL,
             ),
             (
-                "[Adj:gen:n:sg]",
+                "[adj:gen:neut:sg]",
                 PartOfSpeech.ADJECTIVE,
                 Case.GENITIVE,
                 Gender.NEUTER,
@@ -74,7 +74,7 @@ class TestTemplateParser:
 
     def test_parse_simple_verb(self, parser):
         """Test parsing a simple verb token."""
-        template = "[Verb:pres:act:3:pl]"
+        template = "[verb:present:active:ter:pl]"
         result = parser.parse(template)
 
         assert len(result.tokens) == 1
@@ -88,9 +88,9 @@ class TestTemplateParser:
     @pytest.mark.parametrize(
         "template,expected_pos",
         [
-            ("[Preposition]", PartOfSpeech.PREPOSITION),
-            ("[Adverb]", PartOfSpeech.ADVERB),
-            ("[Conjunction]", PartOfSpeech.CONJUNCTION),
+            ("[prep]", PartOfSpeech.PREPOSITION),
+            ("[adv]", PartOfSpeech.ADVERB),
+            ("[conj]", PartOfSpeech.CONJUNCTION),
         ],
     )
     def test_parse_invariable_words(self, parser, template, expected_pos):
@@ -108,7 +108,7 @@ class TestTemplateParser:
     def test_parse_complex_template(self, parser):
         """Test parsing a template with multiple tokens."""
         template = (
-            "[Article:nom:m:sg] [Adj:nom:m:sg] [Noun:nom:m:sg] [Verb:aor:act:3:sg]"
+            "[article:nom:masc:sg] [adj:nom:masc:sg] [noun:nom:masc:sg] [verb:aorist:active:ter:sg]"
         )
         result = parser.parse(template)
 
@@ -120,7 +120,7 @@ class TestTemplateParser:
 
     def test_parse_prd_example_template(self, parser):
         """Test parsing the example from the PRD."""
-        template = "[Article:nom:n:pl] [Adj:nom:n:pl] [Noun:nom:n:pl] [Verb:pres:act:3:pl] [Adverb]"
+        template = "[article:nom:neut:pl] [adj:nom:neut:pl] [noun:nom:neut:pl] [verb:present:active:ter:pl] [adv]"
         result = parser.parse(template)
 
         assert len(result.tokens) == 5
@@ -139,9 +139,9 @@ class TestTemplateParser:
 
     def test_parse_features_in_different_order(self, parser):
         """Test that feature order doesn't matter for nominals."""
-        template1 = "[Noun:nom:m:sg]"
-        template2 = "[Noun:sg:nom:m]"
-        template3 = "[Noun:m:sg:nom]"
+        template1 = "[noun:nom:masc:sg]"
+        template2 = "[noun:sg:nom:masc]"
+        template3 = "[noun:masc:sg:nom]"
 
         result1 = parser.parse(template1)
         result2 = parser.parse(template2)
@@ -156,9 +156,9 @@ class TestTemplateParser:
 
     def test_parse_verb_features_different_order(self, parser):
         """Test that feature order doesn't matter for verbs."""
-        template1 = "[Verb:pres:act:3:pl]"
-        template2 = "[Verb:pl:3:act:pres]"
-        template3 = "[Verb:act:pl:pres:3]"
+        template1 = "[verb:present:active:ter:pl]"
+        template2 = "[verb:pl:ter:active:present]"
+        template3 = "[verb:active:pl:present:ter]"
 
         result1 = parser.parse(template1)
         result2 = parser.parse(template2)
@@ -180,17 +180,17 @@ class TestTemplateParser:
             ("", "cannot be empty"),
             ("   ", "cannot be empty"),
             ("just some text without brackets", "No valid tokens found"),
-            ("[InvalidPOS:nom:m:sg]", "Unknown part of speech"),
-            ("[Noun:nom:m]", "requires exactly 3 features"),
-            ("[Noun:nom:m:sg:extra]", "requires exactly 3 features"),
-            ("[Verb:pres:act:3]", "requires exactly 4 features"),
-            ("[Verb:pres:act:3:pl:extra]", "requires exactly 4 features"),
-            ("[Noun:invalid:m:sg]", "Invalid or duplicate feature"),
-            ("[Noun:nom:invalid:sg]", "Invalid or duplicate feature"),
-            ("[Noun:nom:m:invalid]", "Invalid or duplicate feature"),
-            ("[Verb:invalid:act:3:pl]", "Invalid or duplicate feature"),
-            ("[Noun:nom:nom:m]", "Invalid or duplicate feature"),
-            ("[Adverb:nom:m:sg]", "should not have features"),
+            ("[InvalidPOS:nom:masc:sg]", "Unknown part of speech"),
+            ("[noun:nom:masc]", "requires exactly 3 features"),
+            ("[noun:nom:masc:sg:extra]", "requires exactly 3 features"),
+            ("[verb:present:active:3]", "requires exactly 4 features"),
+            ("[verb:present:active:ter:pl:extra]", "requires exactly 4 features"),
+            ("[noun:invalid:masc:sg]", "Invalid or duplicate feature"),
+            ("[noun:nom:invalid:sg]", "Invalid or duplicate feature"),
+            ("[noun:nom:masc:invalid]", "Invalid or duplicate feature"),
+            ("[verb:invalid:active:ter:pl]", "Invalid or duplicate feature"),
+            ("[noun:nom:nom:masc]", "Invalid or duplicate feature"),
+            ("[adv:nom:masc:sg]", "should not have features"),
         ],
     )
     def test_parse_errors(self, parser, template, error_match):
@@ -201,48 +201,48 @@ class TestTemplateParser:
     @pytest.mark.parametrize("case", list(Case))
     def test_all_cases_valid(self, parser, case):
         """Test that all case values are recognized."""
-        template = f"[Noun:{case.value}:m:sg]"
+        template = f"[noun:{case.value}:masc:sg]"
         result = parser.parse(template)
         assert result.tokens[0].case == case
 
     @pytest.mark.parametrize("gender", list(Gender))
     def test_all_genders_valid(self, parser, gender):
         """Test that all gender values are recognized."""
-        template = f"[Noun:nom:{gender.value}:sg]"
+        template = f"[noun:nom:{gender.value}:sg]"
         result = parser.parse(template)
         assert result.tokens[0].gender == gender
 
     @pytest.mark.parametrize("number", list(Number))
     def test_all_numbers_valid(self, parser, number):
         """Test that all number values are recognized."""
-        template = f"[Noun:nom:m:{number.value}]"
+        template = f"[noun:nom:masc:{number.value}]"
         result = parser.parse(template)
         assert result.tokens[0].number == number
 
     @pytest.mark.parametrize("tense", list(Tense))
     def test_all_tenses_valid(self, parser, tense):
         """Test that all tense values are recognized."""
-        template = f"[Verb:{tense.value}:act:3:sg]"
+        template = f"[verb:{tense.value}:active:ter:sg]"
         result = parser.parse(template)
         assert result.tokens[0].tense == tense
 
     @pytest.mark.parametrize("voice", list(Voice))
     def test_all_voices_valid(self, parser, voice):
         """Test that all voice values are recognized."""
-        template = f"[Verb:pres:{voice.value}:3:sg]"
+        template = f"[verb:present:{voice.value}:ter:sg]"
         result = parser.parse(template)
         assert result.tokens[0].voice == voice
 
     @pytest.mark.parametrize("person", list(Person))
     def test_all_persons_valid(self, parser, person):
         """Test that all person values are recognized."""
-        template = f"[Verb:pres:act:{person.value}:sg]"
+        template = f"[verb:present:active:{person.value}:sg]"
         result = parser.parse(template)
         assert result.tokens[0].person == person
 
     def test_parsed_template_iteration(self, parser):
         """Test that ParsedTemplate supports iteration."""
-        template = "[Noun:nom:m:sg] [Verb:pres:act:3:sg]"
+        template = "[noun:nom:masc:sg] [verb:present:active:ter:sg]"
         result = parser.parse(template)
 
         tokens = list(result)
@@ -252,14 +252,14 @@ class TestTemplateParser:
 
     def test_parsed_template_length(self, parser):
         """Test that ParsedTemplate supports len()."""
-        template = "[Noun:nom:m:sg] [Verb:pres:act:3:sg] [Adverb]"
+        template = "[noun:nom:masc:sg] [verb:present:active:ter:sg] [adv]"
         result = parser.parse(template)
 
         assert len(result) == 3
 
     def test_raw_template_preserved(self, parser):
         """Test that raw template string is preserved."""
-        template = "[Article:nom:n:pl] [Noun:nom:n:pl]"
+        template = "[article:nom:neut:pl] [noun:nom:neut:pl]"
         result = parser.parse(template)
 
         assert result.raw_template == template
@@ -271,47 +271,47 @@ class TestTemplateParser:
         [
             # First person (no gender)
             (
-                "[Pronoun:nom:1:sg]",
+                "[pronoun:nom:pri:sg]",
                 Case.NOMINATIVE,
                 Person.FIRST,
                 Number.SINGULAR,
                 None,
             ),
-            ("[Pronoun:acc:1:pl]", Case.ACCUSATIVE, Person.FIRST, Number.PLURAL, None),
-            ("[Pronoun:gen:1:sg]", Case.GENITIVE, Person.FIRST, Number.SINGULAR, None),
+            ("[pronoun:acc:pri:pl]", Case.ACCUSATIVE, Person.FIRST, Number.PLURAL, None),
+            ("[pronoun:gen:pri:sg]", Case.GENITIVE, Person.FIRST, Number.SINGULAR, None),
             # Second person (no gender)
             (
-                "[Pronoun:nom:2:sg]",
+                "[pronoun:nom:sec:sg]",
                 Case.NOMINATIVE,
                 Person.SECOND,
                 Number.SINGULAR,
                 None,
             ),
-            ("[Pronoun:acc:2:pl]", Case.ACCUSATIVE, Person.SECOND, Number.PLURAL, None),
+            ("[pronoun:acc:sec:pl]", Case.ACCUSATIVE, Person.SECOND, Number.PLURAL, None),
             # Third person with gender
             (
-                "[Pronoun:nom:3:sg:m]",
+                "[pronoun:nom:ter:sg:masc]",
                 Case.NOMINATIVE,
                 Person.THIRD,
                 Number.SINGULAR,
                 Gender.MASCULINE,
             ),
             (
-                "[Pronoun:gen:3:sg:f]",
+                "[pronoun:gen:ter:sg:fem]",
                 Case.GENITIVE,
                 Person.THIRD,
                 Number.SINGULAR,
                 Gender.FEMININE,
             ),
             (
-                "[Pronoun:acc:3:pl:n]",
+                "[pronoun:acc:ter:pl:neut]",
                 Case.ACCUSATIVE,
                 Person.THIRD,
                 Number.PLURAL,
                 Gender.NEUTER,
             ),
             (
-                "[Pronoun:voc:3:sg:m]",
+                "[pronoun:voc:ter:sg:masc]",
                 Case.VOCATIVE,
                 Person.THIRD,
                 Number.SINGULAR,
@@ -342,7 +342,7 @@ class TestTemplateParser:
     @pytest.mark.parametrize("case", list(Case))
     def test_parse_pronoun_all_cases(self, parser, case):
         """Test that all cases work with pronouns."""
-        template = f"[Pronoun:{case.value}:1:sg]"
+        template = f"[pronoun:{case.value}:pri:sg]"
         result = parser.parse(template)
         assert result.tokens[0].case == case
         assert result.tokens[0].person == Person.FIRST
@@ -353,15 +353,15 @@ class TestTemplateParser:
         """Test that all persons work with pronouns."""
         # Third person needs gender, others don't
         if person == Person.THIRD:
-            template = f"[Pronoun:nom:{person.value}:sg:m]"
+            template = f"[pronoun:nom:{person.value}:sg:masc]"
         else:
-            template = f"[Pronoun:nom:{person.value}:sg]"
+            template = f"[pronoun:nom:{person.value}:sg]"
         result = parser.parse(template)
         assert result.tokens[0].person == person
 
     def test_parse_pronoun_subject_verb_template(self, parser):
         """Test parsing a template with pronoun subject and verb."""
-        template = "[Pronoun:nom:1:sg] [Verb:pres:act:1:sg]"
+        template = "[pronoun:nom:pri:sg] [verb:present:active:pri:sg]"
         result = parser.parse(template)
 
         assert len(result.tokens) == 2
@@ -372,7 +372,7 @@ class TestTemplateParser:
 
     def test_parse_complex_template_with_pronoun(self, parser):
         """Test parsing a complex template including pronouns."""
-        template = "[Pronoun:nom:3:sg:m] [Verb:aor:act:3:sg] [Article:acc:n:sg] [Noun:acc:n:sg]"
+        template = "[pronoun:nom:ter:sg:masc] [verb:aorist:active:ter:sg] [article:acc:neut:sg] [noun:acc:neut:sg]"
         result = parser.parse(template)
 
         assert len(result.tokens) == 4
@@ -389,18 +389,18 @@ class TestTemplateParser:
         "template,error_match",
         [
             # Wrong number of features
-            ("[Pronoun:nom:1]", "requires 3-4 features"),
-            ("[Pronoun:nom]", "requires 3-4 features"),
-            ("[Pronoun:nom:1:sg:m:extra]", "requires 3-4 features"),
+            ("[pronoun:nom:pri]", "requires 3-4 features"),
+            ("[pronoun:nom]", "requires 3-4 features"),
+            ("[pronoun:nom:pri:sg:masc:extra]", "requires 3-4 features"),
             # Invalid feature values
-            ("[Pronoun:invalid:1:sg]", "Invalid or duplicate feature"),
-            ("[Pronoun:nom:invalid:sg]", "Invalid or duplicate feature"),
-            ("[Pronoun:nom:1:invalid]", "Invalid or duplicate feature"),
-            ("[Pronoun:nom:1:sg:invalid]", "Invalid or duplicate feature"),
+            ("[pronoun:invalid:pri:sg]", "Invalid or duplicate feature"),
+            ("[pronoun:nom:invalid:sg]", "Invalid or duplicate feature"),
+            ("[pronoun:nom:pri:invalid]", "Invalid or duplicate feature"),
+            ("[pronoun:nom:pri:sg:invalid]", "Invalid or duplicate feature"),
             # Duplicate features
-            ("[Pronoun:nom:nom:1:sg]", "Invalid or duplicate feature"),
-            ("[Pronoun:nom:1:1:sg]", "Invalid or duplicate feature"),
-            ("[Pronoun:nom:1:sg:sg]", "Invalid or duplicate feature"),
+            ("[pronoun:nom:nom:pri:sg]", "Invalid or duplicate feature"),
+            ("[pronoun:nom:pri:1:sg]", "Invalid or duplicate feature"),
+            ("[pronoun:nom:pri:sg:sg]", "Invalid or duplicate feature"),
         ],
     )
     def test_parse_invalid_pronoun_templates(self, parser, template, error_match):

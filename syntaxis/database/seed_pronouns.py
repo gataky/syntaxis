@@ -2,6 +2,8 @@
 
 import sqlite3
 
+from syntaxis.models import constants as c
+
 
 def seed_pronouns(conn: sqlite3.Connection) -> None:
     """Populate greek_pronouns table with Modern Greek pronouns.
@@ -15,92 +17,92 @@ def seed_pronouns(conn: sqlite3.Connection) -> None:
     # Format: (lemma, type, person, gender, number, case, validation_status)
     pronouns = [
         # Personal Strong Pronouns - Nominative
-        ("εγώ",   "personal_strong", "1", None, "SINGULAR", "NOMINATIVE", "validated"),
-        ("εσύ",   "personal_strong", "2", None, "SINGULAR", "NOMINATIVE", "validated"),
-        ("αυτός", "personal_strong", "3", "M",  "SINGULAR", "NOMINATIVE", "validated"),
-        ("αυτή",  "personal_strong", "3", "F",  "SINGULAR", "NOMINATIVE", "validated"),
-        ("αυτό",  "personal_strong", "3", "N",  "SINGULAR", "NOMINATIVE", "validated"),
-        ("εμείς", "personal_strong", "1", None, "PLURAL",   "NOMINATIVE", "validated"),
-        ("εσείς", "personal_strong", "2", None, "PLURAL",   "NOMINATIVE", "validated"),
-        ("αυτοί", "personal_strong", "3", "M",  "PLURAL",   "NOMINATIVE", "validated"),
-        ("αυτές", "personal_strong", "3", "F",  "PLURAL",   "NOMINATIVE", "validated"),
-        ("αυτά",  "personal_strong", "3", "N",  "PLURAL",   "NOMINATIVE", "validated"),
+        ("εγώ",   "personal_strong", c.FIRST,  None,       c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("εσύ",   "personal_strong", c.SECOND, None,       c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("αυτός", "personal_strong", c.THIRD,  c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("αυτή",  "personal_strong", c.THIRD,  c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("αυτό",  "personal_strong", c.THIRD,  c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("εμείς", "personal_strong", c.FIRST,  None,       c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("εσείς", "personal_strong", c.SECOND, None,       c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("αυτοί", "personal_strong", c.THIRD,  c.MASCULINE, c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("αυτές", "personal_strong", c.THIRD,  c.FEMININE,  c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("αυτά",  "personal_strong", c.THIRD,  c.NEUTER,    c.PLURAL,   c.NOMINATIVE, "validated"),
 
         # Personal Weak Pronouns - Genitive
-        ("μου",  "personal_weak", "1", None, "SINGULAR", "GENITIVE", "validated"),
-        ("σου",  "personal_weak", "2", None, "SINGULAR", "GENITIVE", "validated"),
-        ("του",  "personal_weak", "3", "M",  "SINGULAR", "GENITIVE", "validated"),
-        ("της",  "personal_weak", "3", "F",  "SINGULAR", "GENITIVE", "validated"),
-        ("μας",  "personal_weak", "1", None, "PLURAL",   "GENITIVE", "validated"),
-        ("σας",  "personal_weak", "2", None, "PLURAL",   "GENITIVE", "validated"),
-        ("τους", "personal_weak", "3", None, "PLURAL",   "GENITIVE", "validated"),
+        ("μου",  "personal_weak", c.FIRST,  None,       c.SINGULAR, c.GENITIVE, "validated"),
+        ("σου",  "personal_weak", c.SECOND, None,       c.SINGULAR, c.GENITIVE, "validated"),
+        ("του",  "personal_weak", c.THIRD,  c.MASCULINE, c.SINGULAR, c.GENITIVE, "validated"),
+        ("της",  "personal_weak", c.THIRD,  c.FEMININE,  c.SINGULAR, c.GENITIVE, "validated"),
+        ("μας",  "personal_weak", c.FIRST,  None,       c.PLURAL,   c.GENITIVE, "validated"),
+        ("σας",  "personal_weak", c.SECOND, None,       c.PLURAL,   c.GENITIVE, "validated"),
+        ("τους", "personal_weak", c.THIRD,  None,       c.PLURAL,   c.GENITIVE, "validated"),
 
         # Personal Weak Pronouns - Accusative
-        ("με",  "personal_weak", "1", None, "SINGULAR", "ACCUSATIVE", "validated"),
-        ("σε",  "personal_weak", "2", None, "SINGULAR", "ACCUSATIVE", "validated"),
-        ("τον", "personal_weak", "3", "M",  "SINGULAR", "ACCUSATIVE", "validated"),
-        ("την", "personal_weak", "3", "F",  "SINGULAR", "ACCUSATIVE", "validated"),
-        ("το",  "personal_weak", "3", "N",  "SINGULAR", "ACCUSATIVE", "validated"),
-        ("μας", "personal_weak", "1", None, "PLURAL",   "ACCUSATIVE", "validated"),
-        ("σας", "personal_weak", "2", None, "PLURAL",   "ACCUSATIVE", "validated"),
-        ("τους","personal_weak", "3", "M",  "PLURAL",   "ACCUSATIVE", "validated"),
-        ("τις", "personal_weak", "3", "F",  "PLURAL",   "ACCUSATIVE", "validated"),
-        ("τα",  "personal_weak", "3", "N",  "PLURAL",   "ACCUSATIVE", "validated"),
+        ("με",  "personal_weak", c.FIRST,  None,       c.SINGULAR, c.ACCUSATIVE, "validated"),
+        ("σε",  "personal_weak", c.SECOND, None,       c.SINGULAR, c.ACCUSATIVE, "validated"),
+        ("τον", "personal_weak", c.THIRD,  c.MASCULINE, c.SINGULAR, c.ACCUSATIVE, "validated"),
+        ("την", "personal_weak", c.THIRD,  c.FEMININE,  c.SINGULAR, c.ACCUSATIVE, "validated"),
+        ("το",  "personal_weak", c.THIRD,  c.NEUTER,    c.SINGULAR, c.ACCUSATIVE, "validated"),
+        ("μας", "personal_weak", c.FIRST,  None,       c.PLURAL,   c.ACCUSATIVE, "validated"),
+        ("σας", "personal_weak", c.SECOND, None,       c.PLURAL,   c.ACCUSATIVE, "validated"),
+        ("τους","personal_weak", c.THIRD,  c.MASCULINE, c.PLURAL,   c.ACCUSATIVE, "validated"),
+        ("τις", "personal_weak", c.THIRD,  c.FEMININE,  c.PLURAL,   c.ACCUSATIVE, "validated"),
+        ("τα",  "personal_weak", c.THIRD,  c.NEUTER,    c.PLURAL,   c.ACCUSATIVE, "validated"),
 
         # Demonstrative Pronouns - sample forms
-        ("τούτος",  "demonstrative", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("τούτη",   "demonstrative", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("τούτο",   "demonstrative", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
-        ("εκείνος", "demonstrative", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("εκείνη",  "demonstrative", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("εκείνο",  "demonstrative", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
+        ("τούτος",  "demonstrative", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("τούτη",   "demonstrative", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("τούτο",   "demonstrative", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("εκείνος", "demonstrative", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("εκείνη",  "demonstrative", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("εκείνο",  "demonstrative", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
 
         # Interrogative Pronouns
-        ("ποιος", "interrogative", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("ποια",  "interrogative", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("ποιο",  "interrogative", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
-        ("τι",    "interrogative", None, None, None, None, "validated"),
-        ("πόσος", "interrogative", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("πόση",  "interrogative", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("πόσο",  "interrogative", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
+        ("ποιος", "interrogative", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("ποια",  "interrogative", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("ποιο",  "interrogative", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("τι",    "interrogative", None, None,       None,       None,         "validated"),
+        ("πόσος", "interrogative", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("πόση",  "interrogative", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("πόσο",  "interrogative", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
 
         # Possessive Pronouns
-        ("δικός", "possessive", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("δική",  "possessive", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("δικό",  "possessive", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
+        ("δικός", "possessive", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("δική",  "possessive", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("δικό",  "possessive", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
 
         # Indefinite Pronouns
-        ("κάποιος", "indefinite", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("κάποια",  "indefinite", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("κάποιο",  "indefinite", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
-        ("κανείς",  "indefinite", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("καμία",   "indefinite", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("κανένα",  "indefinite", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
-        ("κάθε",    "indefinite", None, None, None, None, "validated"),
-        ("όλος",    "indefinite", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("όλη",     "indefinite", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("όλο",     "indefinite", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
-        ("μερικοί", "indefinite", None, "M", "PLURAL", "NOMINATIVE", "validated"),
-        ("μερικές", "indefinite", None, "F", "PLURAL", "NOMINATIVE", "validated"),
-        ("μερικά",  "indefinite", None, "N", "PLURAL", "NOMINATIVE", "validated"),
-        ("κάτι",    "indefinite", None, None, None, None, "validated"),
-        ("τίποτα",  "indefinite", None, None, None, None, "validated"),
+        ("κάποιος", "indefinite", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("κάποια",  "indefinite", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("κάποιο",  "indefinite", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("κανείς",  "indefinite", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("καμία",   "indefinite", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("κανένα",  "indefinite", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("κάθε",    "indefinite", None, None,       None,       None,         "validated"),
+        ("όλος",    "indefinite", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("όλη",     "indefinite", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("όλο",     "indefinite", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("μερικοί", "indefinite", None, c.MASCULINE, c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("μερικές", "indefinite", None, c.FEMININE,  c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("μερικά",  "indefinite", None, c.NEUTER,    c.PLURAL,   c.NOMINATIVE, "validated"),
+        ("κάτι",    "indefinite", None, None,       None,       None,         "validated"),
+        ("τίποτα",  "indefinite", None, None,       None,       None,         "validated"),
 
         # Relative Pronouns
-        ("που",    "relative", None, None, None, None, "validated"),
-        ("οποίος", "relative", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("οποία",  "relative", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("οποίο",  "relative", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
-        ("όποιος", "relative", None, "M", "SINGULAR", "NOMINATIVE", "validated"),
-        ("όποια",  "relative", None, "F", "SINGULAR", "NOMINATIVE", "validated"),
-        ("όποιο",  "relative", None, "N", "SINGULAR", "NOMINATIVE", "validated"),
+        ("που",    "relative", None, None,       None,       None,         "validated"),
+        ("οποίος", "relative", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("οποία",  "relative", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("οποίο",  "relative", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("όποιος", "relative", None, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("όποια",  "relative", None, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated"),
+        ("όποιο",  "relative", None, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated"),
     ]
 
     # Insert pronouns
     cursor.executemany(
         """
         INSERT OR IGNORE INTO greek_pronouns
-        (lemma, type, person, gender, number, case, validation_status)
+        (lemma, type, person, gender, number, form, validation_status)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
         pronouns

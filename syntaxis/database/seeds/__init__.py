@@ -1,3 +1,4 @@
-from .seed_pronouns import seed_pronouns
+from . import pronouns
+from . import articles
 
-__all__ = ["seed_pronouns"]
+__all__ = ["pronouns", "articles"]

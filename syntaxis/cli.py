@@ -40,7 +40,17 @@ def seed_pronouns(db_name: str = "syntaxis.db"):
     Seed the database with pronoun data.
     """
     db = Database(db_name)
-    seeds.seed_pronouns(db._conn)
+    seeds.pronouns.seed(db._conn)
+
+
+@app.command()
+def seed_articles(db_name: str = "syntaxis.db"):
+    """
+    Seed the database with article data.
+    """
+    db = Database(db_name)
+    seeds.articles.seed(db._conn)
+
 
 if __name__ == "__main__":
     app()

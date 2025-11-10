@@ -77,6 +77,7 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS greek_articles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lemma TEXT NOT NULL,
+            type TEXT NOT NULL,
             gender TEXT,
             number TEXT,
             form TEXT,

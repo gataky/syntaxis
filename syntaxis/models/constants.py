@@ -28,6 +28,18 @@ NUMERAL = "numeral"
 PREPOSITION = "prep"
 CONJUNCTION = "conj"
 
+# ---- TODO names these
+DEFINITE = "definite"
+INDEFINITE = "indefinite"
+
+PERSONAL_STRONG = "personal_strong"
+PERSONAL_WEAK = "personal_weak"
+DEMONSTRATIVE = "demonstrative"
+INTERROGATIVE = "interrogative"
+POSSESSIVE = "possessive"
+RELATIVE = "relative"
+# ----
+
 # Gender constants (MGI abbreviations)
 MASCULINE = "masc"
 FEMININE = "fem"
@@ -79,7 +91,7 @@ LEXICAL_MAP = {
     "conjunction" : CONJUNCTION,
 }
 
-
+# SQL table names
 TABLE_NOUN= "greek_nouns"
 TABLE_VERB= "greek_verbs"
 TABLE_ADJECTIVE= "greek_adjectives"

@@ -645,7 +645,6 @@ class Database:
 
         # Extract all valid feature combinations from Morpheus forms
         features_list = self._extract_features_from_morpheus(word, pos)
-        print(features_list)
 
         if not features_list:
             raise ValueError(f"No valid feature combinations found for '{lemma}'")

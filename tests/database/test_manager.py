@@ -17,29 +17,31 @@ def test_create_word_from_row_creates_noun_with_translations():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # Insert test data
+    # Insert test data (with new schema: feature columns required)
     cursor.execute(
-        "INSERT INTO greek_nouns (lemma, gender, validation_status) VALUES (?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "validated"),
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
     )
     cursor.execute(
         "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("person", "NOUN")
     )
     cursor.execute(
-        "INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type) VALUES (?, ?, ?)",
-        (1, 1, "NOUN"),
+        "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
+        (1, "άνθρωπος", "NOUN"),
     )
     conn.commit()
 
-    # Create mock row
+    # Create mock row (using new schema: lemma-based joins)
     cursor.execute(
         """
-        SELECT g.id, g.lemma, GROUP_CONCAT(e.word, '|') as translations
+        SELECT g.lemma,
+               (SELECT GROUP_CONCAT(e.word, '|')
+                FROM translations t
+                JOIN english_words e ON e.id = t.english_word_id
+                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'NOUN') as translations
         FROM greek_nouns g
-        LEFT JOIN translations t ON t.greek_word_id = g.id AND t.greek_pos_type = 'NOUN'
-        LEFT JOIN english_words e ON e.id = t.english_word_id
-        WHERE g.id = 1
-        GROUP BY g.id
+        WHERE g.lemma = 'άνθρωπος'
+        LIMIT 1
         """
     )
     row = cursor.fetchone()
@@ -61,8 +63,8 @@ def test_create_word_from_row_handles_multiple_translations():
     cursor = conn.cursor()
 
     cursor.execute(
-        "INSERT INTO greek_verbs (lemma, validation_status) VALUES (?, ?)",
-        ("τρώω", "validated"),
+        "INSERT INTO greek_verbs (lemma, tense, voice, mood, number, person, case_name, validation_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        ("τρώω", "PRESENT", "ACTIVE", "INDICATIVE", "SINGULAR", "FIRST", None, "validated"),
     )
     cursor.execute(
         "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("eat", "VERB")
@@ -71,23 +73,25 @@ def test_create_word_from_row_handles_multiple_translations():
         "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("consume", "VERB")
     )
     cursor.execute(
-        "INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type) VALUES (?, ?, ?)",
-        (1, 1, "VERB"),
+        "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
+        (1, "τρώω", "VERB"),
     )
     cursor.execute(
-        "INSERT INTO translations (english_word_id, greek_word_id, greek_pos_type) VALUES (?, ?, ?)",
-        (2, 1, "VERB"),
+        "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
+        (2, "τρώω", "VERB"),
     )
     conn.commit()
 
     cursor.execute(
         """
-        SELECT g.id, g.lemma, GROUP_CONCAT(e.word, '|') as translations
+        SELECT g.lemma,
+               (SELECT GROUP_CONCAT(e.word, '|')
+                FROM translations t
+                JOIN english_words e ON e.id = t.english_word_id
+                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'VERB') as translations
         FROM greek_verbs g
-        LEFT JOIN translations t ON t.greek_word_id = g.id AND t.greek_pos_type = 'VERB'
-        LEFT JOIN english_words e ON e.id = t.english_word_id
-        WHERE g.id = 1
-        GROUP BY g.id
+        WHERE g.lemma = 'τρώω'
+        LIMIT 1
         """
     )
     row = cursor.fetchone()
@@ -108,19 +112,21 @@ def test_create_word_from_row_handles_no_translations():
     cursor = conn.cursor()
 
     cursor.execute(
-        "INSERT INTO greek_nouns (lemma, gender, validation_status) VALUES (?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "validated"),
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
     )
     conn.commit()
 
     cursor.execute(
         """
-        SELECT g.id, g.lemma, GROUP_CONCAT(e.word, '|') as translations
+        SELECT g.lemma,
+               (SELECT GROUP_CONCAT(e.word, '|')
+                FROM translations t
+                JOIN english_words e ON e.id = t.english_word_id
+                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'NOUN') as translations
         FROM greek_nouns g
-        LEFT JOIN translations t ON t.greek_word_id = g.id AND t.greek_pos_type = 'NOUN'
-        LEFT JOIN english_words e ON e.id = t.english_word_id
-        WHERE g.id = 1
-        GROUP BY g.id
+        WHERE g.lemma = 'άνθρωπος'
+        LIMIT 1
         """
     )
     row = cursor.fetchone()
@@ -137,14 +143,10 @@ def test_get_random_word_returns_noun_without_features():
     conn = manager._conn
     cursor = conn.cursor()
 
-    # Insert test noun with bitmasks
+    # Insert test noun rows (one per feature combination)
     cursor.execute(
-        """
-        INSERT INTO greek_nouns
-        (lemma, gender, number_mask, case_mask, validation_status)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        ("άνθρωπος", "MASCULINE", 3, 15, "validated"),  # All numbers, all cases
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
     )
     conn.commit()
 
@@ -163,21 +165,15 @@ def test_get_random_word_filters_by_single_feature():
     cursor = conn.cursor()
 
     # Insert nouns with different features
+    # άνθρωπος has SINGULAR
     cursor.execute(
-        """
-        INSERT INTO greek_nouns
-        (lemma, gender, number_mask, case_mask, validation_status)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        ("άνθρωπος", "MASCULINE", 3, 15, "validated"),  # Has SINGULAR (bit 1)
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
     )
+    # ψαλίδι only has PLURAL, no SINGULAR rows
     cursor.execute(
-        """
-        INSERT INTO greek_nouns
-        (lemma, gender, number_mask, case_mask, validation_status)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        ("ψαλίδι", "NEUTER", 2, 15, "validated"),  # Only PLURAL (bit 2), no SINGULAR
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("ψαλίδι", "NEUTER", "PLURAL", "NOMINATIVE", "validated"),
     )
     conn.commit()
 
@@ -195,27 +191,21 @@ def test_get_random_word_filters_by_multiple_features():
     conn = manager._conn
     cursor = conn.cursor()
 
+    # άνθρωπος has all cases including ACCUSATIVE
     cursor.execute(
-        """
-        INSERT INTO greek_nouns
-        (lemma, gender, number_mask, case_mask, validation_status)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        ("άνθρωπος", "MASCULINE", 3, 15, "validated"),  # All cases
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "SINGULAR", "ACCUSATIVE", "validated"),
     )
+    # όνομα only has NOMINATIVE
     cursor.execute(
-        """
-        INSERT INTO greek_nouns
-        (lemma, gender, number_mask, case_mask, validation_status)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        ("όνομα", "NEUTER", 3, 1, "validated"),  # Only NOMINATIVE
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("όνομα", "NEUTER", "SINGULAR", "NOMINATIVE", "validated"),
     )
     conn.commit()
 
-    # Request SINGULAR + ACCUSATIVE - should get άνθρωπος (has bit 4)
+    # Request SINGULAR + ACCUSATIVE - should get άνθρωπος (not όνομα)
     result = manager.get_random_word(
-        POSEnum.NOUN, number=Number.SINGULAR, case=Case.ACCUSATIVE
+        POSEnum.NOUN, number=Number.SINGULAR, case_name=Case.ACCUSATIVE
     )
 
     assert result is not None
@@ -276,11 +266,11 @@ def test_add_word_raises_error_for_duplicate_lemma():
     """Should raise ValueError when word already exists."""
     manager = LexicalManager()
 
-    # Manually insert a word
+    # Manually insert a word (at least one row with this lemma)
     cursor = manager._conn.cursor()
     cursor.execute(
-        "INSERT INTO greek_nouns (lemma, gender, validation_status) VALUES (?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "VALID"),
+        "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
+        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "VALID"),
     )
     manager._conn.commit()
 
@@ -309,17 +299,18 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     # Verify database state
     cursor = manager._conn.cursor()
 
-    # Check Greek word inserted
-    row = cursor.execute(
-        "SELECT lemma, gender, number_mask, case_mask, validation_status FROM greek_nouns WHERE lemma = ?",
+    # Check Greek word inserted (multiple rows expected - one per feature combination)
+    rows = cursor.execute(
+        "SELECT lemma, gender, number, case_name, validation_status FROM greek_nouns WHERE lemma = ?",
         ("άνθρωπος",),
-    ).fetchone()
-    assert row is not None
-    assert row[0] == "άνθρωπος"
-    assert row[1] == "MASCULINE"  # Inferred from forms
-    assert row[2] > 0  # number_mask calculated
-    assert row[3] > 0  # case_mask calculated
-    assert row[4] == "VALID"
+    ).fetchall()
+    assert len(rows) > 0  # Should have multiple rows (one per valid feature combination)
+    # Check first row as sample
+    assert rows[0][0] == "άνθρωπος"
+    assert rows[0][1] == "MASCULINE"  # Inferred from forms
+    assert rows[0][2] in ["SINGULAR", "PLURAL"]  # Has explicit number
+    assert rows[0][3] in ["NOMINATIVE", "GENITIVE", "ACCUSATIVE", "VOCATIVE"]  # Has explicit case
+    assert rows[0][4] == "VALID"
 
     # Check English word inserted
     eng_row = cursor.execute(
@@ -329,11 +320,12 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     assert eng_row[0] == "person"
     assert eng_row[1] == "NOUN"
 
-    # Check translation link created
+    # Check translation link created (linked by lemma, not row ID)
     trans_row = cursor.execute(
-        "SELECT * FROM translations WHERE greek_pos_type = ?", ("NOUN",)
+        "SELECT greek_lemma, greek_pos_type FROM translations WHERE greek_pos_type = ?", ("NOUN",)
     ).fetchone()
     assert trans_row is not None
+    assert trans_row[0] == "άνθρωπος"
 
 
 def test_get_words_by_english_returns_empty_list_for_nonexistent_word():

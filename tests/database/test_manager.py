@@ -2,14 +2,14 @@ import sqlite3
 
 import pytest
 
-from syntaxis.database.manager import LexicalManager
+from syntaxis.database.api import Database
 from syntaxis.models import constants as c
-from syntaxis.models.part_of_speech import Noun, Verb
+from syntaxis.models.lexical import Noun, Verb
 
 
 def test_create_word_from_row_creates_noun_with_translations():
     """Should create Noun object with lemma and translations."""
-    manager = LexicalManager()
+    manager = Database()
 
     # Simulate a database row
     conn = manager._conn
@@ -26,7 +26,7 @@ def test_create_word_from_row_creates_noun_with_translations():
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
-        (1, "άνθρωπος", "NOUN"),
+        (1, "άνθρωπος", "noun"),
     )
     conn.commit()
 
@@ -55,7 +55,7 @@ def test_create_word_from_row_creates_noun_with_translations():
 
 def test_create_word_from_row_handles_multiple_translations():
     """Should split pipe-delimited translations."""
-    manager = LexicalManager()
+    manager = Database()
 
     conn = manager._conn
     conn.row_factory = sqlite3.Row
@@ -73,11 +73,11 @@ def test_create_word_from_row_handles_multiple_translations():
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
-        (1, "τρώω", "VERB"),
+        (1, "τρώω", "verb"),
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
-        (2, "τρώω", "VERB"),
+        (2, "τρώω", "verb"),
     )
     conn.commit()
 
@@ -104,7 +104,7 @@ def test_create_word_from_row_handles_multiple_translations():
 
 def test_create_word_from_row_handles_no_translations():
     """Should set translations to None when no translations exist."""
-    manager = LexicalManager()
+    manager = Database()
 
     conn = manager._conn
     conn.row_factory = sqlite3.Row
@@ -137,7 +137,7 @@ def test_create_word_from_row_handles_no_translations():
 
 def test_get_random_word_returns_noun_without_features():
     """Should return a random noun when no features specified."""
-    manager = LexicalManager()
+    manager = Database()
 
     conn = manager._conn
     cursor = conn.cursor()
@@ -158,7 +158,7 @@ def test_get_random_word_returns_noun_without_features():
 
 def test_get_random_word_filters_by_single_feature():
     """Should filter words by a single feature."""
-    manager = LexicalManager()
+    manager = Database()
 
     conn = manager._conn
     cursor = conn.cursor()
@@ -185,7 +185,7 @@ def test_get_random_word_filters_by_single_feature():
 
 def test_get_random_word_filters_by_multiple_features():
     """Should filter by multiple features simultaneously."""
-    manager = LexicalManager()
+    manager = Database()
 
     conn = manager._conn
     cursor = conn.cursor()
@@ -213,7 +213,7 @@ def test_get_random_word_filters_by_multiple_features():
 
 def test_get_random_word_returns_none_when_no_match():
     """Should return None when no words match criteria."""
-    manager = LexicalManager()
+    manager = Database()
 
     result = manager.get_random_word(c.NOUN, number=c.SINGULAR)
 
@@ -222,7 +222,7 @@ def test_get_random_word_returns_none_when_no_match():
 
 def test_get_random_word_raises_error_for_invalid_feature():
     """Should raise ValueError for invalid feature."""
-    manager = LexicalManager()
+    manager = Database()
 
     with pytest.raises(ValueError) as exc_info:
         manager.get_random_word(c.NOUN, tense="invalid")
@@ -233,7 +233,7 @@ def test_get_random_word_raises_error_for_invalid_feature():
 
 def test_add_word_raises_error_for_empty_translations():
     """Should raise ValueError when translations list is empty."""
-    manager = LexicalManager()
+    manager = Database()
 
     with pytest.raises(ValueError) as exc_info:
         manager.add_word(lemma="άνθρωπος", translations=[], pos=c.NOUN)
@@ -243,7 +243,7 @@ def test_add_word_raises_error_for_empty_translations():
 
 def test_add_word_raises_error_for_none_translations():
     """Should raise ValueError when translations is None."""
-    manager = LexicalManager()
+    manager = Database()
 
     with pytest.raises(ValueError) as exc_info:
         manager.add_word(lemma="άνθρωπος", translations=[], pos=c.NOUN)
@@ -253,7 +253,7 @@ def test_add_word_raises_error_for_none_translations():
 
 def test_add_word_raises_error_for_empty_lemma():
     """Should raise ValueError when lemma is empty string."""
-    manager = LexicalManager()
+    manager = Database()
 
     with pytest.raises(ValueError) as exc_info:
         manager.add_word(lemma="", translations=["person"], pos=c.NOUN)
@@ -263,7 +263,7 @@ def test_add_word_raises_error_for_empty_lemma():
 
 def test_add_word_raises_error_for_duplicate_lemma():
     """Should raise ValueError when word already exists."""
-    manager = LexicalManager()
+    manager = Database()
 
     # Manually insert a word (at least one row with this lemma)
     cursor = manager._conn.cursor()
@@ -283,7 +283,7 @@ def test_add_word_raises_error_for_duplicate_lemma():
 
 def test_add_word_successfully_adds_noun_with_single_translation():
     """Should add noun with translation and return Word object."""
-    manager = LexicalManager()
+    manager = Database()
 
     result = manager.add_word(
         lemma="άνθρωπος", translations=["person"], pos=c.NOUN
@@ -329,7 +329,7 @@ def test_add_word_successfully_adds_noun_with_single_translation():
 
 def test_get_words_by_english_returns_empty_list_for_nonexistent_word():
     """Should return empty list when English word not found."""
-    manager = LexicalManager()
+    manager = Database()
 
     result = manager.get_words_by_english("nonexistent")
 
@@ -338,7 +338,7 @@ def test_get_words_by_english_returns_empty_list_for_nonexistent_word():
 
 def test_get_words_by_english_finds_single_noun():
     """Should find Greek noun by English translation."""
-    manager = LexicalManager()
+    manager = Database()
 
     # Add a word using add_word
     manager.add_word(lemma="άνθρωπος", translations=["person"], pos=c.NOUN)
@@ -354,7 +354,7 @@ def test_get_words_by_english_finds_single_noun():
 
 def test_get_words_by_english_finds_multiple_greek_words():
     """Should find multiple Greek words that share same English translation."""
-    manager = LexicalManager()
+    manager = Database()
 
     # Add two different Greek words with the same English translation
     manager.add_word(
@@ -375,7 +375,7 @@ def test_get_words_by_english_finds_multiple_greek_words():
 
 def test_get_words_by_english_filters_by_pos():
     """Should filter results by part of speech when specified."""
-    manager = LexicalManager()
+    manager = Database()
 
     # Add a noun and verb with same English translation
     manager.add_word(lemma="άνθρωπος", translations=["person"], pos=c.NOUN)
@@ -398,7 +398,7 @@ def test_get_words_by_english_filters_by_pos():
 
 def test_get_words_by_english_handles_word_with_multiple_translations():
     """Should find word even when it has multiple English translations."""
-    manager = LexicalManager()
+    manager = Database()
 
     manager.add_word(
         lemma="άνθρωπος", translations=["person", "human", "man"], pos=c.NOUN

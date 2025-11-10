@@ -3,9 +3,9 @@
 import pytest
 
 from syntaxis.models import constants as c
-from syntaxis.templates.parser import (
+from syntaxis.templates.api import (
     TemplateParseError,
-    TemplateParser,
+    Template,
 )
 
 
@@ -15,7 +15,7 @@ class TestTemplateParser:
     @pytest.fixture
     def parser(self):
         """Create a TemplateParser instance for testing."""
-        return TemplateParser()
+        return Template()
 
     # Valid template tests
 

@@ -1,5 +1,5 @@
 from syntaxis.models import constants as c
-from syntaxis.models.part_of_speech import Adjective, Article, Noun, Verb
+from syntaxis.models.lexical import Adjective, Article, Noun, Verb
 from syntaxis.morpheus import Morpheus
 
 

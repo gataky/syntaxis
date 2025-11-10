@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from syntaxis.models import enums, types
+from syntaxis.models import constants as c
+from syntaxis.models import types
 
 pos = TypeVar("pos")
 
@@ -22,49 +23,37 @@ class PartOfSpeech(Generic[pos]):
 
 @dataclass
 class Adjective(PartOfSpeech[types.Adjective]):
-    def get_form(self, gender: enums.Gender, number: enums.Number, case: enums.Case, **extra) -> set[str]:
+    def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:
         return self.forms["adj"][number][gender][case]
 
 
 @dataclass
 class Adverb(PartOfSpeech[types.Adverb]):
     def get_form(self, **extra) -> set[str]:
-        return self.forms[enums.PartOfSpeech.ADVERB]
+        return self.forms[c.ADVERB]
 
 
 @dataclass
 class Article(PartOfSpeech[types.Article]):
-    def get_form(
-        self, number: enums.Number, gender: enums.Gender, case: enums.Case, **extra
-    ) -> set[str]:
+    def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
         return self.forms[number][gender][case]
 
 
 @dataclass
 class Noun(PartOfSpeech[types.Noun]):
-    def get_form(
-        self,
-        gender: enums.Gender,
-        number: enums.Number,
-        case: enums.Case,
-        **extra
-    ) -> set[str]:
+    def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:
         return self.forms[gender][number][case]
 
 
 @dataclass
 class Numberal(PartOfSpeech[types.Numeral]):
-    def get_form(
-        self, number: enums.Number, gender: enums.Gender, case: enums.Case, **extra
-    ) -> set[str]:
-        return self.forms[enums.PartOfSpeech.ADJECTIVE][number][gender][case]
+    def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        return self.forms[c.ADJECTIVE][number][gender][case]
 
 
 @dataclass
 class Pronoun(PartOfSpeech[types.Pronoun]):
-    def get_form(
-        self, number: enums.Number, gender: enums.Gender, case: enums.Case, **extra
-    ) -> set[str]:
+    def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
         return self.forms[number][gender][case]
 
 
@@ -72,15 +61,14 @@ class Pronoun(PartOfSpeech[types.Pronoun]):
 class Verb(PartOfSpeech[types.Verb]):
     def get_form(
         self,
-        tense: enums.Tense,
-        voice: enums.Voice,
-        number: enums.Number,
-        person: enums.Person,
-        case: enums.Case = enums.Case.NOMINATIVE.value,
-        mood: enums.Mood = enums.Mood.INDICATIVE.value,
+        tense: str,
+        voice: str,
+        number: str,
+        person: str,
+        case: str = c.NOMINATIVE,
+        mood: str = c.INDICATIVE,
         **extra,
     ) -> set[str]:
-        import pudb; pudb.set_trace()
         return self.forms[tense][voice][mood][number][person]
 
 

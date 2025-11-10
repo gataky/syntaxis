@@ -65,19 +65,19 @@ def seed(conn: sqlite3.Connection) -> None:
     for lemma, _, _, _, _, _, english_word in articles_with_translations:
         # Insert English word
         cursor.execute(
-            "INSERT OR IGNORE INTO english_words (word, pos_type) VALUES (?, ?)",
+            "INSERT OR IGNORE INTO english_words (word, lexical) VALUES (?, ?)",
             (english_word, c.ARTICLE),
         )
         # Get English word ID
         eng_id_row = cursor.execute(
-            "SELECT id FROM english_words WHERE word = ? AND pos_type = ?",
+            "SELECT id FROM english_words WHERE word = ? AND lexical = ?",
             (english_word, c.ARTICLE),
         ).fetchone()
         if eng_id_row:
             eng_id = eng_id_row[0]
             # Insert translation link
             cursor.execute(
-                "INSERT OR IGNORE INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
+                "INSERT OR IGNORE INTO translations (english_word_id, greek_lemma, greek_lexical) VALUES (?, ?, ?)",
                 (eng_id, lemma, c.ARTICLE),
             )
 

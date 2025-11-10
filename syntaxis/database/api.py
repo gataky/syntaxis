@@ -1,7 +1,11 @@
 import sqlite3
 from typing import Any
 
-from syntaxis.database.bitmasks import POS_TO_TABLE_MAP, VALID_FEATURES
+from syntaxis.database.bitmasks import (
+    LEXICAL_CONFIG,
+    LEXICAL_TO_TABLE_MAP,
+    VALID_FEATURES,
+)
 from syntaxis.database.schema import create_schema
 from syntaxis.models import constants as c
 from syntaxis.models.lexical import Lexical
@@ -35,11 +39,11 @@ class Database:
     # Storage methods
     # Random selection methods
 
-    def get_random_word(self, pos: str, **features: Any) -> Lexical | None:
+    def get_random_word(self, lexical: str, **features: Any) -> Lexical | None:
         """Get a random word of the specified part of speech.
 
         Args:
-            pos: Part of speech string (c.NOUN, c.VERB, etc.)
+            lexical: Part of speech string (c.NOUN, c.VERB, etc.)
             **features: Feature filters as string constants
                         (gender=c.MASCULINE, case=c.NOMINATIVE, etc.)
 
@@ -48,24 +52,24 @@ class Database:
             translations, or None if no matches
 
         Raises:
-            ValueError: If invalid features provided for the POS type
+            ValueError: If invalid features provided for the lexical type
 
         Examples:
             >>> manager.get_random_word(c.NOUN, number=c.SINGULAR)
             Noun(lemma="άνθρωπος", ...)
         """
         # Validate features
-        valid_features = VALID_FEATURES.get(pos, set())
+        valid_features = VALID_FEATURES.get(lexical, set())
         invalid_features = set(features.keys()) - valid_features
 
         if invalid_features:
             raise ValueError(
-                f"Invalid features {invalid_features} for {pos}. "
+                f"Invalid features {invalid_features} for {lexical}. "
                 + f"Valid features are: {valid_features}"
             )
 
         cursor = self._conn.cursor()
-        table = POS_TO_TABLE_MAP[pos]
+        table = LEXICAL_TO_TABLE_MAP[lexical]
 
         # Build WHERE conditions using direct column comparisons
         conditions = []
@@ -85,7 +89,7 @@ class Database:
                 (SELECT GROUP_CONCAT(e.word, '|')
                  FROM translations t
                  JOIN english_words e ON e.id = t.english_word_id
-                 WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = ?) as translations
+                 WHERE t.greek_lemma = g.lemma AND t.greek_lexical = ?) as translations
             FROM {table} g
             WHERE {where_clause}
             GROUP BY g.lemma
@@ -94,16 +98,17 @@ class Database:
         """
 
         # Parameters must be in the order they appear in the query:
-        # 1. Subquery parameter (pos) comes first
+        # 1. Subquery parameter (lexical) comes first
         # 2. WHERE clause parameters come after
-        params = [pos] + where_params
+        params = [lexical] + where_params
 
         row = cursor.execute(query, params).fetchone()
         if not row:
             return None
 
-        word = self._create_word_from_row(row, pos)
-        return word
+        lex = self._create_word_from_row(row, lexical)
+        lex.apply_features(**features)
+        return lex
 
     # Helper methods
 
@@ -125,90 +130,18 @@ class Database:
         )
         return cursor.fetchone()[0]
 
-    # Reverse lookup methods
-
-    def get_words_by_english(self, english_word: str, pos: str | None = None) -> list:
-        """Find all Greek words that translate to the given English word.
-
-        Args:
-            english_word: English word to search for
-            pos: Optional filter by part of speech
-
-        Returns:
-            List of Word objects (mixed types) with english_translations populated
-        """
-        results = []
-        pos_to_check = [pos] if pos else list(POS_TO_TABLE_MAP.keys())
-
-        for pos_str in pos_to_check:
-            if pos_str not in POS_TO_TABLE_MAP:
-                continue
-
-            table = POS_TO_TABLE_MAP[pos_str]
-            query = f"""
-                SELECT
-                    g.lemma,
-                    (SELECT GROUP_CONCAT(e_all.word, '|')
-                     FROM translations t_all
-                     JOIN english_words e_all ON e_all.id = t_all.english_word_id
-                     WHERE t_all.greek_lemma = g.lemma AND t_all.greek_pos_type = ?) as translations
-                FROM {table} g
-                JOIN translations t ON t.greek_lemma = g.lemma AND t.greek_pos_type = ?
-                JOIN english_words e ON e.id = t.english_word_id
-                WHERE e.word = ?
-                GROUP BY g.lemma
-            """
-            cursor = self._conn.cursor()
-            rows = cursor.execute(query, (pos_str, pos_str, english_word)).fetchall()
-            for row in rows:
-                results.append(self._create_word_from_row(row, pos_str))
-
-        return results
-
-    def _get_word_by_id(self, word_id: int, pos: str):
-        """Helper to retrieve a word by its database ID and POS.
-
-        Args:
-            word_id: Database ID of the Greek word
-            pos: Part of speech
-
-        Returns:
-            Word object or None if not found
-        """
-        cursor = self._conn.cursor()
-        table = POS_TO_TABLE_MAP[pos]
-
-        # Query with JOIN to get lemma and translations
-        query = f"""
-            SELECT
-                g.id,
-                g.lemma,
-                (SELECT GROUP_CONCAT(e.word, '|')
-                 FROM translations t
-                 JOIN english_words e ON e.id = t.english_word_id
-                 WHERE t.greek_word_id = g.id AND t.greek_pos_type = ?) as translations
-            FROM {table} g
-            WHERE g.id = ?
-        """
-
-        row = cursor.execute(query, (pos, word_id)).fetchone()
-        if not row:
-            return None
-
-        return self._create_word_from_row(row, pos)
-
-    def _get_word_by_lemma(self, lemma: str, pos: str):
-        """Helper to retrieve a word by its lemma and POS.
+    def _get_word_by_lemma(self, lemma: str, lexical: str):
+        """Helper to retrieve a word by its lemma and lexical.
 
         Args:
             lemma: Greek word lemma
-            pos: Part of speech
+            lexical: Part of speech
 
         Returns:
             Word object or None if not found
         """
         cursor = self._conn.cursor()
-        table = POS_TO_TABLE_MAP[pos]
+        table = LEXICAL_TO_TABLE_MAP[lexical]
 
         # Query with JOIN to get lemma and translations
         query = f"""
@@ -217,24 +150,24 @@ class Database:
                 (SELECT GROUP_CONCAT(e.word, '|')
                  FROM translations t
                  JOIN english_words e ON e.id = t.english_word_id
-                 WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = ?) as translations
+                 WHERE t.greek_lemma = g.lemma AND t.greek_lexical = ?) as translations
             FROM {table} g
             WHERE g.lemma = ?
             LIMIT 1
         """
 
-        row = cursor.execute(query, (pos, lemma)).fetchone()
+        row = cursor.execute(query, (lexical, lemma)).fetchone()
         if not row:
             return None
 
-        return self._create_word_from_row(row, pos)
+        return self._create_word_from_row(row, lexical)
 
-    def _create_word_from_row(self, row: sqlite3.Row, pos: str) -> Lexical:
+    def _create_word_from_row(self, row: sqlite3.Row, lexical: str) -> Lexical:
         """Create PartOfSpeech object with translations from query result.
 
         Args:
             row: Database row with id, lemma, and translations columns
-            pos: Part of speech enum
+            lexical: Part of speech enum
 
         Returns:
             Complete PartOfSpeech object with forms and translations
@@ -246,7 +179,7 @@ class Database:
         translations = translations_str.split("|") if translations_str else None
 
         # Create word with inflected forms using Morpheus
-        word = Morpheus.create(lemma, pos)
+        word = Morpheus.create(lemma, lexical)
         word.translations = translations
 
         return word
@@ -430,7 +363,7 @@ class Database:
         ]
 
     def _extract_simple_features(self) -> list[dict[str, str | None]]:
-        """Extract features for simple POS (adverbs, prepositions, conjunctions).
+        """Extract features for simple lexical (adverbs, prepositions, conjunctions).
 
         Returns:
             List with single empty dictionary (no features)
@@ -438,13 +371,13 @@ class Database:
         return [{}]
 
     def _extract_features_from_morpheus(
-        self, word: Lexical, pos: str
+        self, word: Lexical, lexical: str
     ) -> list[dict[str, str | None]]:
         """Extract all valid feature combinations from Morpheus-generated forms.
 
         Args:
             word: PartOfSpeech object with forms generated by Morpheus
-            pos: Part of speech type
+            lexical: Part of speech type
 
         Returns:
             List of feature dictionaries, one per valid combination
@@ -456,73 +389,20 @@ class Database:
                 ...
             ]
         """
-        if pos == c.NOUN:
+        if lexical == c.NOUN:
             return self._extract_noun_features(word)
-        elif pos == c.VERB:
+        elif lexical == c.VERB:
             return self._extract_verb_features(word)
-        elif pos in [c.ADJECTIVE, c.ARTICLE]:
+        elif lexical in [c.ADJECTIVE, c.ARTICLE]:
             return self._extract_adjective_features(word)
-        elif pos == c.PRONOUN:
+        elif lexical == c.PRONOUN:
             return self._extract_pronoun_features(word)
-        elif pos in [c.ADVERB, c.PREPOSITION, c.CONJUNCTION]:
+        elif lexical in [c.ADVERB, c.PREPOSITION, c.CONJUNCTION]:
             return self._extract_simple_features()
         return []
 
-    POS_CONFIG = {
-        c.NOUN: {
-            "table": c.TABLE_NOUN,
-            "fields": [c.LEMMA, c.GENDER, c.NUMBER, c.FORM, "validation_status"],
-        },
-        c.VERB: {
-            "table": c.TABLE_VERB,
-            "fields": [
-                c.LEMMA,
-                "verb_group",
-                c.TENSE,
-                c.VOICE,
-                c.MOOD,
-                c.NUMBER,
-                c.PERSON,
-                c.FORM,
-                "validation_status",
-            ],
-        },
-        c.ADJECTIVE: {
-            "table": c.TABLE_ADJECTIVE,
-            "fields": [c.LEMMA, c.GENDER, c.NUMBER, c.FORM, "validation_status"],
-        },
-        c.ARTICLE: {
-            "table": c.TABLE_ARTICLE,
-            "fields": [c.LEMMA, c.GENDER, c.NUMBER, c.FORM, "validation_status"],
-        },
-        c.PRONOUN: {
-            "table": c.TABLE_PRONOUN,
-            "fields": [
-                c.LEMMA,
-                c.TYPE,
-                c.PERSON,
-                c.GENDER,
-                c.NUMBER,
-                c.FORM,
-                "validation_status",
-            ],
-        },
-        c.ADVERB: {
-            "table": c.TABLE_ADVERB,
-            "fields": [c.LEMMA, "validation_status"],
-        },
-        c.PREPOSITION: {
-            "table": c.TABLE_PREPOSITION,
-            "fields": [c.LEMMA, "validation_status"],
-        },
-        c.CONJUNCTION: {
-            "table": c.TABLE_CONJUNCTION,
-            "fields": [c.LEMMA, "validation_status"],
-        },
-    }
-
     def _validate_and_prepare_lemma(
-        self, lemma: str, pos: str, translations: list[str]
+        self, lemma: str, lexical: str, translations: list[str]
     ) -> Lexical:
         """Validate inputs and use Morpheus to create a word object."""
         if not lemma:
@@ -530,16 +410,16 @@ class Database:
         if not translations:
             raise ValueError("At least one translation required")
 
-        table = POS_TO_TABLE_MAP[pos]
+        table = LEXICAL_TO_TABLE_MAP[lexical]
         cursor = self._conn.cursor()
         existing = cursor.execute(
             f"SELECT id FROM {table} WHERE lemma = ?", (lemma,)
         ).fetchone()
         if existing:
-            raise ValueError(f"Word '{lemma}' already exists as {pos}")
+            raise ValueError(f"Word '{lemma}' already exists as {lexical}")
 
         try:
-            word = Morpheus.create(lemma, pos)
+            word = Morpheus.create(lemma, lexical)
         except Exception as e:
             raise ValueError(f"Failed to generate forms for '{lemma}': {e}")
 
@@ -549,20 +429,20 @@ class Database:
         return word
 
     def _prepare_database_values(
-        self, lemma: str, pos: str, word: Lexical, features: dict[str, str | None]
+        self, lemma: str, lexical: str, word: Lexical, features: dict[str, str | None]
     ) -> dict[str, str | int | None]:
         """Prepare values for one database row (one feature combination).
 
         Args:
             lemma: Greek word lemma
-            pos: Part of speech
+            lexical: Part of speech
             word: Morpheus-generated word object
             features: Feature dictionary for this specific row
 
         Returns:
             Dictionary mapping field names to values for INSERT
         """
-        config = self.POS_CONFIG[pos]
+        config = LEXICAL_CONFIG[lexical]
         fields = config["fields"]
 
         values: dict[str, str | int | None] = {
@@ -584,7 +464,7 @@ class Database:
 
     def _execute_add_word_transaction(
         self,
-        pos: str,
+        lexical: str,
         lemma: str,
         values_list: list[dict[str, Any]],
         translations: list[str],
@@ -592,13 +472,13 @@ class Database:
         """Execute database transaction to add word with multiple feature rows.
 
         Args:
-            pos: Part of speech
+            lexical: Part of speech
             lemma: Greek word lemma
             values_list: List of value dictionaries (one per feature combination)
             translations: English translations
         """
-        table = POS_TO_TABLE_MAP[pos]
-        config = self.POS_CONFIG[pos]
+        table = LEXICAL_TO_TABLE_MAP[lexical]
+        config = LEXICAL_CONFIG[lexical]
         fields = config["fields"]
         cursor = self._conn.cursor()
 
@@ -616,12 +496,12 @@ class Database:
             for translation in translations:
                 translation = translation.strip()
                 cursor.execute(
-                    "INSERT OR IGNORE INTO english_words (word, pos_type) VALUES (?, ?)",
-                    (translation, pos),
+                    "INSERT OR IGNORE INTO english_words (word, lexical) VALUES (?, ?)",
+                    (translation, lexical),
                 )
                 eng_id_row = cursor.execute(
-                    "SELECT id FROM english_words WHERE word = ? AND pos_type = ?",
-                    (translation, pos),
+                    "SELECT id FROM english_words WHERE word = ? AND lexical = ?",
+                    (translation, lexical),
                 ).fetchone()
                 if eng_id_row:
                     english_word_ids.append(eng_id_row[0])
@@ -629,8 +509,8 @@ class Database:
             # Step 3: Create translation links (one per lemma, not per row)
             for eng_id in english_word_ids:
                 cursor.execute(
-                    "INSERT OR IGNORE INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
-                    (eng_id, lemma, pos),
+                    "INSERT OR IGNORE INTO translations (english_word_id, greek_lemma, greek_lexical) VALUES (?, ?, ?)",
+                    (eng_id, lemma, lexical),
                 )
 
             self._conn.commit()
@@ -639,13 +519,13 @@ class Database:
             self._conn.rollback()
             raise
 
-    def add_word(self, lemma: str, translations: list[str], pos: str) -> Lexical:
+    def add_word(self, lemma: str, translations: list[str], lexical: str) -> Lexical:
         """Add a word to the lexicon with automatic feature extraction.
 
         Args:
             lemma: Greek word in its base form
             translations: List of English translations (at least one required)
-            pos: Part of speech string constant (c.NOUN, c.VERB, etc.)
+            lexical: Part of speech string constant (c.NOUN, c.VERB, etc.)
 
         Returns:
             Complete PartOfSpeech object with forms and translations
@@ -654,25 +534,25 @@ class Database:
             ValueError: If translations empty, lemma empty, word exists, or Morpheus fails
         """
         # Validate inputs
-        word = self._validate_and_prepare_lemma(lemma, pos, translations)
+        word = self._validate_and_prepare_lemma(lemma, lexical, translations)
 
         # Extract all valid feature combinations from Morpheus forms
-        features_list = self._extract_features_from_morpheus(word, pos)
+        features_list = self._extract_features_from_morpheus(word, lexical)
 
         if not features_list:
             raise ValueError(f"No valid feature combinations found for '{lemma}'")
 
         # Prepare database values for each feature combination
         values_list = [
-            self._prepare_database_values(lemma, pos, word, features)
+            self._prepare_database_values(lemma, lexical, word, features)
             for features in features_list
         ]
 
         # Execute transaction to insert all rows
-        self._execute_add_word_transaction(pos, lemma, values_list, translations)
+        self._execute_add_word_transaction(lexical, lemma, values_list, translations)
 
         # Retrieve and return the word
-        new_word = self._get_word_by_lemma(lemma, pos)
+        new_word = self._get_word_by_lemma(lemma, lexical)
         if not new_word:
             raise RuntimeError(f"Failed to retrieve newly added word '{lemma}'")
         return new_word

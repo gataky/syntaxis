@@ -10,6 +10,7 @@ app = typer.Typer()
 
 DEFAULT_DB_NAME = "syntaxis.db"
 
+
 @app.command()
 def create_db(
     db_name: str = DEFAULT_DB_NAME, clear: bool = typer.Option(False, "--clear")
@@ -25,7 +26,9 @@ def create_db(
 
 
 @app.command()
-def seed_dictionary(db_name: str = DEFAULT_DB_NAME, csv_file: str = "data/dictionary.csv"):
+def seed_dictionary(
+    db_name: str = DEFAULT_DB_NAME, csv_file: str = "data/dictionary.csv"
+):
     """
     Seed the database with words from a CSV file.
     """

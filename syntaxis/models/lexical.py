@@ -4,82 +4,95 @@ from typing import Generic, TypeVar
 from syntaxis.models import constants as c
 from syntaxis.models import types
 
-pos = TypeVar("pos")
+lexical = TypeVar("lexical")
 
 
 @dataclass
-class Lexical(Generic[pos]):
+class Lexical(Generic[lexical]):
     """Base class for all parts of speech with common fields."""
 
+    # The dictionary form of the word in the nom, masc, sg form.
     lemma: str
-    forms: pos
-    word: str | None = None
+    # All the forms for this word from modern-greek-lexical
+    forms: lexical
+    # The final word after declining with a given set of features.  This word is set after
+    # calling apply_features. Based on the features given we will extract from forms to find
+    # the final word.
+    word: set[str] | None = None
+    # The English translations for the given lemma. Note that the forms of these words to not
+    # decline i.e. If the word is in the plural form in Greek it will be in the singular form
+    # here in translations.
     translations: list[str] | None = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.word:
             return list(self.word)[0]
-        return "NONE"
+        else:
+            return self.lemma
+
+    def apply_features(self, *args, **kwargs) -> set[str]:
+        """apply_features will extract the morphed word from forms for the given set of features"""
+        raise NotImplemented("apply_features not implemented for this Lexical")
 
 
-@dataclass
 class Adjective(Lexical[types.Adjective]):
-    def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:
-        return self.forms["adj"][number][gender][case]
+    def apply_features(self, gender: str, number: str, form: str, **extra) -> set[str]:
+        self.word = self.forms["adj"][number][gender][form]
+        return self.word
 
 
-@dataclass
 class Adverb(Lexical[types.Adverb]):
-    def get_form(self, **extra) -> set[str]:
-        return self.forms[c.ADVERB]
+    def apply_features(self, **extra) -> set[str]:
+        self.word = self.forms[c.ADVERB]
+        return self.word
 
 
-@dataclass
 class Article(Lexical[types.Article]):
-    def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        return self.forms[number][gender][case]
+    def apply_features(self, number: str, gender: str, form: str, **extra) -> set[str]:
+        self.word = self.forms[number][gender][form]
+        return self.word
 
 
-@dataclass
 class Noun(Lexical[types.Noun]):
-    def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:
-        return self.forms[gender][number][case]
+    def apply_features(self, gender: str, number: str, form: str, **extra) -> set[str]:
+        self.word = self.forms[gender][number][form]
+        return self.word
 
 
-@dataclass
 class Numberal(Lexical[types.Numeral]):
-    def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        return self.forms[c.ADJECTIVE][number][gender][case]
+    def apply_features(self, number: str, gender: str, form: str, **extra) -> set[str]:
+        self.word = self.forms[c.ADJECTIVE][number][gender][form]
+        return self.word
 
 
-@dataclass
 class Pronoun(Lexical[types.Pronoun]):
-    def get_form(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        return self.forms[number][gender][case]
+    def apply_features(self, number: str, gender: str, form: str, **extra) -> set[str]:
+        self.word = self.forms[number][gender][form]
+        return self.word
 
 
-@dataclass
 class Verb(Lexical[types.Verb]):
-    def get_form(
+    def apply_features(
         self,
         tense: str,
         voice: str,
         number: str,
         person: str,
-        case: str = c.NOMINATIVE,
+        form: str = c.NOMINATIVE,
         mood: str = c.INDICATIVE,
         **extra,
     ) -> set[str]:
-        return self.forms[tense][voice][mood][number][person]
+        self.word = self.forms[tense][voice][mood][number][person]
+        return self.word
 
 
-@dataclass
 class Preposition(Lexical[types.Preposition]):
-    def get_form(self, **extra) -> set[str]:
-        return self.forms["prep"]
+    def apply_features(self, **extra) -> set[str]:
+        self.word = self.forms["prep"]
+        return self.word
 
 
-@dataclass
 class Conjunction(Lexical[types.Conjunction]):
-    def get_form(self, **extra) -> set[str]:
-        return self.forms["conj"]
+    def apply_features(self, **extra) -> set[str]:
+        self.word = self.forms["conj"]
+        return self.word

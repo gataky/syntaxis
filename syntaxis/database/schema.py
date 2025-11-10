@@ -17,7 +17,7 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS english_words (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             word     TEXT NOT NULL,
-            pos_type TEXT NOT NULL
+            lexical TEXT NOT NULL
         )
     """
     )
@@ -144,9 +144,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             english_word_id INTEGER NOT NULL,
             greek_lemma TEXT NOT NULL,
-            greek_pos_type TEXT NOT NULL,
+            greek_lexical TEXT NOT NULL,
             FOREIGN KEY (english_word_id) REFERENCES english_words(id),
-            UNIQUE(english_word_id, greek_lemma, greek_pos_type)
+            UNIQUE(english_word_id, greek_lemma, greek_lexical)
         )
     """
     )

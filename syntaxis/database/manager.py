@@ -7,6 +7,56 @@ from syntaxis.models.enums import PartOfSpeech
 from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
 from syntaxis.morpheus import Morpheus
 
+# Map Morpheus abbreviations to enum name equivalents
+MORPHEUS_TO_ENUM = {
+    # Gender
+    "MASC": "MASCULINE",
+    "FEM": "FEMININE",
+    "NEUT": "NEUTER",
+    # Number
+    "SG": "SINGULAR",
+    "PL": "PLURAL",
+    # Case
+    "NOM": "NOMINATIVE",
+    "GEN": "GENITIVE",
+    "ACC": "ACCUSATIVE",
+    "VOC": "VOCATIVE",
+    # Tense
+    "PRES": "PRESENT",
+    "IMPERF": "IMPERFECT",
+    "AOR": "AORIST",
+    "PERF": "PERFECT",
+    "PLUPERF": "PLUPERFECT",
+    "FUT": "FUTURE",
+    # Voice
+    "ACT": "ACTIVE",
+    "PASS": "PASSIVE",
+    "MID": "MIDDLE",
+    # Mood
+    "IND": "INDICATIVE",
+    "SUBJ": "SUBJUNCTIVE",
+    "IMP": "IMPERATIVE",
+    "PARTICIPLE": "PARTICIPLE",
+    "INF": "INFINITIVE",
+    # Person
+    "1": "FIRST",
+    "2": "SECOND",
+    "3": "THIRD",
+}
+
+
+def normalize_feature(value: str) -> str:
+    """Normalize Morpheus feature value to enum name format.
+
+    Args:
+        value: Morpheus feature value (e.g., 'SG', 'MASC', 'NOM')
+
+    Returns:
+        Enum-compatible name (e.g., 'SINGULAR', 'MASCULINE', 'NOMINATIVE')
+    """
+    upper_value = value.upper()
+    return MORPHEUS_TO_ENUM.get(upper_value, upper_value)
+
 
 class LexicalManager:
     """Manages vocabulary storage and retrieval for sentence generation.
@@ -71,30 +121,35 @@ class LexicalManager:
 
         # Build WHERE conditions using direct column comparisons
         conditions = []
-        params: list[str] = [pos.name]  # For JOIN condition
+        where_params: list[str] = []
 
         for feature_name, feature_value in features.items():
             # Convert enum to string (e.g., Number.SINGULAR -> "SINGULAR")
             feature_str = feature_value.name
             conditions.append(f"g.{feature_name} = ?")
-            params.append(feature_str)
+            where_params.append(feature_str)
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
 
         # Query with DISTINCT to handle multiple rows per lemma
         query = f"""
-            SELECT DISTINCT
+            SELECT
                 g.lemma,
-                GROUP_CONCAT(e.word, '|') as translations
+                (SELECT GROUP_CONCAT(e.word, '|')
+                 FROM translations t
+                 JOIN english_words e ON e.id = t.english_word_id
+                 WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = ?) as translations
             FROM {table} g
-            LEFT JOIN translations t ON t.greek_lemma = g.lemma
-                AND t.greek_pos_type = ?
-            LEFT JOIN english_words e ON e.id = t.english_word_id
             WHERE {where_clause}
             GROUP BY g.lemma
             ORDER BY RANDOM()
             LIMIT 1
         """
+
+        # Parameters must be in the order they appear in the query:
+        # 1. Subquery parameter (pos.name) comes first
+        # 2. WHERE clause parameters come after
+        params = [pos.name] + where_params
 
         row = cursor.execute(query, params).fetchone()
         if not row:
@@ -146,14 +201,15 @@ class LexicalManager:
 
             table = POS_TO_TABLE_MAP[pos_enum]
             query = f"""
-                SELECT DISTINCT
+                SELECT
                     g.lemma,
-                    GROUP_CONCAT(e_all.word, '|') as translations
+                    (SELECT GROUP_CONCAT(e_all.word, '|')
+                     FROM translations t_all
+                     JOIN english_words e_all ON e_all.id = t_all.english_word_id
+                     WHERE t_all.greek_lemma = g.lemma AND t_all.greek_pos_type = ?) as translations
                 FROM {table} g
                 JOIN translations t ON t.greek_lemma = g.lemma AND t.greek_pos_type = ?
                 JOIN english_words e ON e.id = t.english_word_id
-                LEFT JOIN translations t_all ON t_all.greek_lemma = g.lemma AND t_all.greek_pos_type = ?
-                LEFT JOIN english_words e_all ON e_all.id = t_all.english_word_id
                 WHERE e.word = ?
                 GROUP BY g.lemma
             """
@@ -184,13 +240,12 @@ class LexicalManager:
             SELECT
                 g.id,
                 g.lemma,
-                GROUP_CONCAT(e.word, '|') as translations
+                (SELECT GROUP_CONCAT(e.word, '|')
+                 FROM translations t
+                 JOIN english_words e ON e.id = t.english_word_id
+                 WHERE t.greek_word_id = g.id AND t.greek_pos_type = ?) as translations
             FROM {table} g
-            LEFT JOIN translations t ON t.greek_word_id = g.id
-                AND t.greek_pos_type = ?
-            LEFT JOIN english_words e ON e.id = t.english_word_id
             WHERE g.id = ?
-            GROUP BY g.id
         """
 
         row = cursor.execute(query, (pos.name, word_id)).fetchone()
@@ -214,15 +269,15 @@ class LexicalManager:
 
         # Query with JOIN to get lemma and translations
         query = f"""
-            SELECT DISTINCT
+            SELECT
                 g.lemma,
-                GROUP_CONCAT(e.word, '|') as translations
+                (SELECT GROUP_CONCAT(e.word, '|')
+                 FROM translations t
+                 JOIN english_words e ON e.id = t.english_word_id
+                 WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = ?) as translations
             FROM {table} g
-            LEFT JOIN translations t ON t.greek_lemma = g.lemma
-                AND t.greek_pos_type = ?
-            LEFT JOIN english_words e ON e.id = t.english_word_id
             WHERE g.lemma = ?
-            GROUP BY g.lemma
+            LIMIT 1
         """
 
         row = cursor.execute(query, (pos.name, lemma)).fetchone()
@@ -271,9 +326,9 @@ class LexicalManager:
                 for case_name, form in case_dict.items():
                     if form:  # Only if form exists
                         features_list.append({
-                            "gender": gender,
-                            "number": number,
-                            "case_name": case_name,
+                            "gender": normalize_feature(gender),
+                            "number": normalize_feature(number),
+                            "case_name": normalize_feature(case_name),
                         })
         return features_list
 
@@ -296,24 +351,24 @@ class LexicalManager:
                         for person_or_case, form in person_or_case_dict.items():
                             if form:
                                 # Check if this is a participle (has case) or regular verb (has person)
-                                if mood == "PARTICIPLE":
+                                if normalize_feature(mood) == "PARTICIPLE":
                                     features_list.append({
                                         "verb_group": verb_group,
-                                        "tense": tense,
-                                        "voice": voice,
-                                        "mood": mood,
-                                        "number": number,
+                                        "tense": normalize_feature(tense),
+                                        "voice": normalize_feature(voice),
+                                        "mood": normalize_feature(mood),
+                                        "number": normalize_feature(number),
                                         "person": None,
-                                        "case_name": person_or_case,
+                                        "case_name": normalize_feature(person_or_case),
                                     })
                                 else:
                                     features_list.append({
                                         "verb_group": verb_group,
-                                        "tense": tense,
-                                        "voice": voice,
-                                        "mood": mood,
-                                        "number": number,
-                                        "person": person_or_case,
+                                        "tense": normalize_feature(tense),
+                                        "voice": normalize_feature(voice),
+                                        "mood": normalize_feature(mood),
+                                        "number": normalize_feature(number),
+                                        "person": normalize_feature(person_or_case),
                                         "case_name": None,
                                     })
         return features_list
@@ -333,9 +388,9 @@ class LexicalManager:
                 for case_name, form in case_dict.items():
                     if form:
                         features_list.append({
-                            "gender": gender,
-                            "number": number,
-                            "case_name": case_name,
+                            "gender": normalize_feature(gender),
+                            "number": normalize_feature(number),
+                            "case_name": normalize_feature(case_name),
                         })
         return features_list
 

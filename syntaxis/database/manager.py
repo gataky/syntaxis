@@ -146,17 +146,16 @@ class LexicalManager:
 
             table = POS_TO_TABLE_MAP[pos_enum]
             query = f"""
-                SELECT
-                    g.id,
+                SELECT DISTINCT
                     g.lemma,
                     GROUP_CONCAT(e_all.word, '|') as translations
                 FROM {table} g
-                JOIN translations t ON t.greek_word_id = g.id AND t.greek_pos_type = ?
+                JOIN translations t ON t.greek_lemma = g.lemma AND t.greek_pos_type = ?
                 JOIN english_words e ON e.id = t.english_word_id
-                LEFT JOIN translations t_all ON t_all.greek_word_id = g.id AND t_all.greek_pos_type = ?
+                LEFT JOIN translations t_all ON t_all.greek_lemma = g.lemma AND t_all.greek_pos_type = ?
                 LEFT JOIN english_words e_all ON e_all.id = t_all.english_word_id
                 WHERE e.word = ?
-                GROUP BY g.id, g.lemma
+                GROUP BY g.lemma
             """
             cursor = self._conn.cursor()
             rows = cursor.execute(

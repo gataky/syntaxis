@@ -3,8 +3,7 @@ import sqlite3
 import pytest
 
 from syntaxis.database.manager import LexicalManager
-from syntaxis.models.enums import Case, Number
-from syntaxis.models.enums import PartOfSpeech as POSEnum
+from syntaxis.models import constants as c
 from syntaxis.models.part_of_speech import Noun, Verb
 
 
@@ -20,10 +19,10 @@ def test_create_word_from_row_creates_noun_with_translations():
     # Insert test data (with new schema: feature columns required)
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
+        ("άνθρωπος", "masc", "sg", "nom", "validated"),
     )
     cursor.execute(
-        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("person", "NOUN")
+        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("person", "noun")
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
@@ -38,7 +37,7 @@ def test_create_word_from_row_creates_noun_with_translations():
                (SELECT GROUP_CONCAT(e.word, '|')
                 FROM translations t
                 JOIN english_words e ON e.id = t.english_word_id
-                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'NOUN') as translations
+                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'noun') as translations
         FROM greek_nouns g
         WHERE g.lemma = 'άνθρωπος'
         LIMIT 1
@@ -46,7 +45,7 @@ def test_create_word_from_row_creates_noun_with_translations():
     )
     row = cursor.fetchone()
 
-    result = manager._create_word_from_row(row, POSEnum.NOUN)
+    result = manager._create_word_from_row(row, c.NOUN)
 
     assert isinstance(result, Noun)
     assert result.lemma == "άνθρωπος"
@@ -64,13 +63,13 @@ def test_create_word_from_row_handles_multiple_translations():
 
     cursor.execute(
         "INSERT INTO greek_verbs (lemma, tense, voice, mood, number, person, case_name, validation_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        ("τρώω", "PRESENT", "ACTIVE", "INDICATIVE", "SINGULAR", "FIRST", None, "validated"),
+        ("τρώω", "pres", "act", "ind", "sg", "1", None, "validated"),
     )
     cursor.execute(
-        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("eat", "VERB")
+        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("eat", "verb")
     )
     cursor.execute(
-        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("consume", "VERB")
+        "INSERT INTO english_words (word, pos_type) VALUES (?, ?)", ("consume", "verb")
     )
     cursor.execute(
         "INSERT INTO translations (english_word_id, greek_lemma, greek_pos_type) VALUES (?, ?, ?)",
@@ -88,7 +87,7 @@ def test_create_word_from_row_handles_multiple_translations():
                (SELECT GROUP_CONCAT(e.word, '|')
                 FROM translations t
                 JOIN english_words e ON e.id = t.english_word_id
-                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'VERB') as translations
+                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'verb') as translations
         FROM greek_verbs g
         WHERE g.lemma = 'τρώω'
         LIMIT 1
@@ -96,7 +95,7 @@ def test_create_word_from_row_handles_multiple_translations():
     )
     row = cursor.fetchone()
 
-    result = manager._create_word_from_row(row, POSEnum.VERB)
+    result = manager._create_word_from_row(row, c.VERB)
 
     assert isinstance(result, Verb)
     assert result.translations is not None
@@ -113,7 +112,7 @@ def test_create_word_from_row_handles_no_translations():
 
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
+        ("άνθρωπος", "masc", "sg", "nom", "validated"),
     )
     conn.commit()
 
@@ -123,7 +122,7 @@ def test_create_word_from_row_handles_no_translations():
                (SELECT GROUP_CONCAT(e.word, '|')
                 FROM translations t
                 JOIN english_words e ON e.id = t.english_word_id
-                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'NOUN') as translations
+                WHERE t.greek_lemma = g.lemma AND t.greek_pos_type = 'noun') as translations
         FROM greek_nouns g
         WHERE g.lemma = 'άνθρωπος'
         LIMIT 1
@@ -131,7 +130,7 @@ def test_create_word_from_row_handles_no_translations():
     )
     row = cursor.fetchone()
 
-    result = manager._create_word_from_row(row, POSEnum.NOUN)
+    result = manager._create_word_from_row(row, c.NOUN)
 
     assert result.translations is None
 
@@ -146,11 +145,11 @@ def test_get_random_word_returns_noun_without_features():
     # Insert test noun rows (one per feature combination)
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
+        ("άνθρωπος", "masc", "sg", "nom", "validated"),
     )
     conn.commit()
 
-    result = manager.get_random_word(POSEnum.NOUN)
+    result = manager.get_random_word(c.NOUN)
 
     assert result is not None
     assert isinstance(result, Noun)
@@ -168,17 +167,17 @@ def test_get_random_word_filters_by_single_feature():
     # άνθρωπος has SINGULAR
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "validated"),
+        ("άνθρωπος", "masc", "sg", "nom", "validated"),
     )
     # ψαλίδι only has PLURAL, no SINGULAR rows
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("ψαλίδι", "NEUTER", "PLURAL", "NOMINATIVE", "validated"),
+        ("ψαλίδι", "neut", "pl", "nom", "validated"),
     )
     conn.commit()
 
     # Request SINGULAR - should get άνθρωπος, not ψαλίδι
-    result = manager.get_random_word(POSEnum.NOUN, number=Number.SINGULAR)
+    result = manager.get_random_word(c.NOUN, number=c.SINGULAR)
 
     assert result is not None
     assert result.lemma == "άνθρωπος"
@@ -194,18 +193,18 @@ def test_get_random_word_filters_by_multiple_features():
     # άνθρωπος has all cases including ACCUSATIVE
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "SINGULAR", "ACCUSATIVE", "validated"),
+        ("άνθρωπος", "masc", "sg", "acc", "validated"),
     )
     # όνομα only has NOMINATIVE
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("όνομα", "NEUTER", "SINGULAR", "NOMINATIVE", "validated"),
+        ("όνομα", "neut", "sg", "nom", "validated"),
     )
     conn.commit()
 
     # Request SINGULAR + ACCUSATIVE - should get άνθρωπος (not όνομα)
     result = manager.get_random_word(
-        POSEnum.NOUN, number=Number.SINGULAR, case_name=Case.ACCUSATIVE
+        c.NOUN, number=c.SINGULAR, case_name=c.ACCUSATIVE
     )
 
     assert result is not None
@@ -216,7 +215,7 @@ def test_get_random_word_returns_none_when_no_match():
     """Should return None when no words match criteria."""
     manager = LexicalManager()
 
-    result = manager.get_random_word(POSEnum.NOUN, number=Number.SINGULAR)
+    result = manager.get_random_word(c.NOUN, number=c.SINGULAR)
 
     assert result is None
 
@@ -226,7 +225,7 @@ def test_get_random_word_raises_error_for_invalid_feature():
     manager = LexicalManager()
 
     with pytest.raises(ValueError) as exc_info:
-        manager.get_random_word(POSEnum.NOUN, tense="invalid")
+        manager.get_random_word(c.NOUN, tense="invalid")
 
     assert "Invalid features" in str(exc_info.value)
     assert "tense" in str(exc_info.value)
@@ -237,7 +236,7 @@ def test_add_word_raises_error_for_empty_translations():
     manager = LexicalManager()
 
     with pytest.raises(ValueError) as exc_info:
-        manager.add_word(lemma="άνθρωπος", translations=[], pos=POSEnum.NOUN)
+        manager.add_word(lemma="άνθρωπος", translations=[], pos=c.NOUN)
 
     assert "At least one translation required" in str(exc_info.value)
 
@@ -247,7 +246,7 @@ def test_add_word_raises_error_for_none_translations():
     manager = LexicalManager()
 
     with pytest.raises(ValueError) as exc_info:
-        manager.add_word(lemma="άνθρωπος", translations=[], pos=POSEnum.NOUN)
+        manager.add_word(lemma="άνθρωπος", translations=[], pos=c.NOUN)
 
     assert "At least one translation required" in str(exc_info.value)
 
@@ -257,7 +256,7 @@ def test_add_word_raises_error_for_empty_lemma():
     manager = LexicalManager()
 
     with pytest.raises(ValueError) as exc_info:
-        manager.add_word(lemma="", translations=["person"], pos=POSEnum.NOUN)
+        manager.add_word(lemma="", translations=["person"], pos=c.NOUN)
 
     assert "Lemma cannot be empty" in str(exc_info.value)
 
@@ -270,13 +269,13 @@ def test_add_word_raises_error_for_duplicate_lemma():
     cursor = manager._conn.cursor()
     cursor.execute(
         "INSERT INTO greek_nouns (lemma, gender, number, case_name, validation_status) VALUES (?, ?, ?, ?, ?)",
-        ("άνθρωπος", "MASCULINE", "SINGULAR", "NOMINATIVE", "VALID"),
+        ("άνθρωπος", "masc", "sg", "nom", "VALID"),
     )
     manager._conn.commit()
 
     # Try to add the same word
     with pytest.raises(ValueError) as exc_info:
-        manager.add_word(lemma="άνθρωπος", translations=["person"], pos=POSEnum.NOUN)
+        manager.add_word(lemma="άνθρωπος", translations=["person"], pos=c.NOUN)
 
     assert "already exists" in str(exc_info.value)
     assert "άνθρωπος" in str(exc_info.value)
@@ -287,7 +286,7 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     manager = LexicalManager()
 
     result = manager.add_word(
-        lemma="άνθρωπος", translations=["person"], pos=POSEnum.NOUN
+        lemma="άνθρωπος", translations=["person"], pos=c.NOUN
     )
 
     # Verify return value
@@ -307,9 +306,9 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     assert len(rows) > 0  # Should have multiple rows (one per valid feature combination)
     # Check first row as sample
     assert rows[0][0] == "άνθρωπος"
-    assert rows[0][1] == "MASCULINE"  # Inferred from forms
-    assert rows[0][2] in ["SINGULAR", "PLURAL"]  # Has explicit number
-    assert rows[0][3] in ["NOMINATIVE", "GENITIVE", "ACCUSATIVE", "VOCATIVE"]  # Has explicit case
+    assert rows[0][1] == "masc"  # Inferred from forms
+    assert rows[0][2] in ["sg", "pl"]  # Has explicit number
+    assert rows[0][3] in ["nom", "gen", "acc", "voc"]  # Has explicit case
     assert rows[0][4] == "VALID"
 
     # Check English word inserted
@@ -318,11 +317,11 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     ).fetchone()
     assert eng_row is not None
     assert eng_row[0] == "person"
-    assert eng_row[1] == "NOUN"
+    assert eng_row[1] == "noun"
 
     # Check translation link created (linked by lemma, not row ID)
     trans_row = cursor.execute(
-        "SELECT greek_lemma, greek_pos_type FROM translations WHERE greek_pos_type = ?", ("NOUN",)
+        "SELECT greek_lemma, greek_pos_type FROM translations WHERE greek_pos_type = ?", ("noun",)
     ).fetchone()
     assert trans_row is not None
     assert trans_row[0] == "άνθρωπος"
@@ -342,7 +341,7 @@ def test_get_words_by_english_finds_single_noun():
     manager = LexicalManager()
 
     # Add a word using add_word
-    manager.add_word(lemma="άνθρωπος", translations=["person"], pos=POSEnum.NOUN)
+    manager.add_word(lemma="άνθρωπος", translations=["person"], pos=c.NOUN)
 
     result = manager.get_words_by_english("person")
 
@@ -359,9 +358,9 @@ def test_get_words_by_english_finds_multiple_greek_words():
 
     # Add two different Greek words with the same English translation
     manager.add_word(
-        lemma="άνθρωπος", translations=["person", "human"], pos=POSEnum.NOUN
+        lemma="άνθρωπος", translations=["person", "human"], pos=c.NOUN
     )
-    manager.add_word(lemma="άνδρας", translations=["man", "person"], pos=POSEnum.NOUN)
+    manager.add_word(lemma="άνδρας", translations=["man", "person"], pos=c.NOUN)
 
     result = manager.get_words_by_english("person")
 
@@ -379,8 +378,8 @@ def test_get_words_by_english_filters_by_pos():
     manager = LexicalManager()
 
     # Add a noun and verb with same English translation
-    manager.add_word(lemma="άνθρωπος", translations=["person"], pos=POSEnum.NOUN)
-    manager.add_word(lemma="τρώω", translations=["eat"], pos=POSEnum.VERB)
+    manager.add_word(lemma="άνθρωπος", translations=["person"], pos=c.NOUN)
+    manager.add_word(lemma="τρώω", translations=["eat"], pos=c.VERB)
 
     # Search without POS filter
     result_all = manager.get_words_by_english("person")
@@ -388,12 +387,12 @@ def test_get_words_by_english_filters_by_pos():
     assert isinstance(result_all[0], Noun)
 
     # Search with NOUN filter
-    result_noun = manager.get_words_by_english("person", pos=POSEnum.NOUN)
+    result_noun = manager.get_words_by_english("person", pos=c.NOUN)
     assert len(result_noun) == 1
     assert isinstance(result_noun[0], Noun)
 
     # Search with VERB filter (should find nothing)
-    result_verb = manager.get_words_by_english("person", pos=POSEnum.VERB)
+    result_verb = manager.get_words_by_english("person", pos=c.VERB)
     assert len(result_verb) == 0
 
 
@@ -402,7 +401,7 @@ def test_get_words_by_english_handles_word_with_multiple_translations():
     manager = LexicalManager()
 
     manager.add_word(
-        lemma="άνθρωπος", translations=["person", "human", "man"], pos=POSEnum.NOUN
+        lemma="άνθρωπος", translations=["person", "human", "man"], pos=c.NOUN
     )
 
     # Search by each translation

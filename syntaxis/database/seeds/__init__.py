@@ -1,4 +1,3 @@
-from . import pronouns
-from . import articles
+from . import articles, pronouns
 
 __all__ = ["pronouns", "articles"]

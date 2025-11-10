@@ -1,14 +1,18 @@
-import typer
-import os
-from syntaxis.database import Database
-from syntaxis.models.constants import LEXICAL_MAP
-from syntaxis.database import seeds
 import csv
+import os
+
+import typer
+
+from syntaxis.database import Database, seeds
+from syntaxis.models.constants import LEXICAL_MAP
 
 app = typer.Typer()
 
+
 @app.command()
-def create_db(db_name: str = "syntaxis.db", clear: bool = typer.Option(False, "--clear")):
+def create_db(
+    db_name: str = "syntaxis.db", clear: bool = typer.Option(False, "--clear")
+):
     """
     Create the database.
     """
@@ -17,6 +21,7 @@ def create_db(db_name: str = "syntaxis.db", clear: bool = typer.Option(False, "-
         print(f"Existing database '{db_name}' removed.")
     Database(db_name)
     print(f"Database '{db_name}' created.")
+
 
 @app.command()
 def seed_db(db_name: str = "syntaxis.db", csv_file: str = "data/dictionary.csv"):
@@ -33,6 +38,7 @@ def seed_db(db_name: str = "syntaxis.db", csv_file: str = "data/dictionary.csv")
             lemma = line[2]
             m.add_word(lemma, translations, lexical)
     print("Database seeded.")
+
 
 @app.command()
 def seed_pronouns(db_name: str = "syntaxis.db"):

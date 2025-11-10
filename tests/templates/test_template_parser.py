@@ -4,8 +4,8 @@ import pytest
 
 from syntaxis.models import constants as c
 from syntaxis.templates.api import (
-    TemplateParseError,
     Template,
+    TemplateParseError,
 )
 
 
@@ -99,9 +99,7 @@ class TestTemplateParser:
 
     def test_parse_complex_template(self, parser):
         """Test parsing a template with multiple tokens."""
-        template = (
-            "[article:nom:masc:sg] [adj:nom:masc:sg] [noun:nom:masc:sg] [verb:aorist:active:ter:sg]"
-        )
+        template = "[article:nom:masc:sg] [adj:nom:masc:sg] [noun:nom:masc:sg] [verb:aorist:active:ter:sg]"
         result = parser.parse(template)
 
         assert len(result.tokens) == 4
@@ -190,7 +188,9 @@ class TestTemplateParser:
         with pytest.raises(TemplateParseError, match=error_match):
             parser.parse(template)
 
-    @pytest.mark.parametrize("case", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE])
+    @pytest.mark.parametrize(
+        "case", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE]
+    )
     def test_all_cases_valid(self, parser, case):
         """Test that all case values are recognized."""
         template = f"[noun:{case}:masc:sg]"
@@ -331,7 +331,9 @@ class TestTemplateParser:
         assert token.number == expected_number
         assert token.gender == expected_gender
 
-    @pytest.mark.parametrize("case", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE])
+    @pytest.mark.parametrize(
+        "case", [c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE]
+    )
     def test_parse_pronoun_all_cases(self, parser, case):
         """Test that all cases work with pronouns."""
         template = f"[pronoun:{case}:pri:sg]"

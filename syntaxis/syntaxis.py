@@ -1,6 +1,7 @@
 from syntaxis.database import Database
 from syntaxis.templates import Template
 
+
 class Syntaxis:
 
     def __init__(self):

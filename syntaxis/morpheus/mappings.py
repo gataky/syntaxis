@@ -1,6 +1,7 @@
 """Translation mappings between syntaxis and modern_greek_inflexion constants."""
 
 from modern_greek_inflexion import resources
+
 from syntaxis.models import constants as c
 
 # Syntaxis -> modern_greek_inflexion mappings

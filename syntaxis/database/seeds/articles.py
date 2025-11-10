@@ -4,6 +4,7 @@ import sqlite3
 
 from syntaxis.models import constants as c
 
+
 def seed(conn: sqlite3.Connection) -> None:
     """Populate greek_articles table with Modern Greek articles.
 

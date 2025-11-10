@@ -21,6 +21,7 @@ class Lexical(Generic[pos]):
             return list(self.word)[0]
         return "NONE"
 
+
 @dataclass
 class Adjective(Lexical[types.Adjective]):
     def get_form(self, gender: str, number: str, case: str, **extra) -> set[str]:

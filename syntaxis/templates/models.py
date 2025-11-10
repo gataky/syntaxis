@@ -1,9 +1,8 @@
 """Data models for template parsing and representation."""
 
 from dataclasses import dataclass
+
 from syntaxis.models import constants as c
-
-
 
 
 @dataclass

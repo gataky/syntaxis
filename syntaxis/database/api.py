@@ -127,9 +127,7 @@ class Database:
 
     # Reverse lookup methods
 
-    def get_words_by_english(
-        self, english_word: str, pos: str | None = None
-    ) -> list:
+    def get_words_by_english(self, english_word: str, pos: str | None = None) -> list:
         """Find all Greek words that translate to the given English word.
 
         Args:
@@ -161,9 +159,7 @@ class Database:
                 GROUP BY g.lemma
             """
             cursor = self._conn.cursor()
-            rows = cursor.execute(
-                query, (pos_str, pos_str, english_word)
-            ).fetchall()
+            rows = cursor.execute(query, (pos_str, pos_str, english_word)).fetchall()
             for row in rows:
                 results.append(self._create_word_from_row(row, pos_str))
 
@@ -233,9 +229,7 @@ class Database:
 
         return self._create_word_from_row(row, pos)
 
-    def _create_word_from_row(
-        self, row: sqlite3.Row, pos: str
-    ) -> Lexical:
+    def _create_word_from_row(self, row: sqlite3.Row, pos: str) -> Lexical:
         """Create PartOfSpeech object with translations from query result.
 
         Args:
@@ -255,7 +249,6 @@ class Database:
         word = Morpheus.create(lemma, pos)
         word.translations = translations
 
-
         return word
 
     def _extract_noun_features(self, word: Lexical) -> list[dict[str, str | None]]:
@@ -272,11 +265,13 @@ class Database:
             for number, case_dict in number_dict.items():
                 for case, form in case_dict.items():
                     if form:  # Only if form exists
-                        features_list.append({
-                            c.GENDER: gender,
-                            c.NUMBER: number,
-                            c.FORM: case,
-                        })
+                        features_list.append(
+                            {
+                                c.GENDER: gender,
+                                c.NUMBER: number,
+                                c.FORM: case,
+                            }
+                        )
         return features_list
 
     def _extract_verb_features(self, word: Lexical) -> list[dict[str, str | None]]:
@@ -296,44 +291,50 @@ class Database:
         for tense, voice_dict in word.forms.items():
             # Handle case where tense maps directly to a set (shouldn't happen, but defensive)
             if isinstance(voice_dict, set):
-                features_list.append({
-                    "verb_group": verb_group,
-                    c.TENSE: tense,
-                    c.VOICE: None,
-                    c.MOOD: None,
-                    c.NUMBER: None,
-                    c.PERSON: None,
-                    c.FORM: None,
-                })
+                features_list.append(
+                    {
+                        "verb_group": verb_group,
+                        c.TENSE: tense,
+                        c.VOICE: None,
+                        c.MOOD: None,
+                        c.NUMBER: None,
+                        c.PERSON: None,
+                        c.FORM: None,
+                    }
+                )
                 continue
 
             for voice, mood_dict in voice_dict.items():
                 # Handle case where voice maps directly to a set (shouldn't happen, but defensive)
                 if isinstance(mood_dict, set):
-                    features_list.append({
-                        "verb_group": verb_group,
-                        c.TENSE: tense,
-                        c.VOICE: voice,
-                        c.MOOD: None,
-                        c.NUMBER: None,
-                        c.PERSON: None,
-                        c.FORM: None,
-                    })
+                    features_list.append(
+                        {
+                            "verb_group": verb_group,
+                            c.TENSE: tense,
+                            c.VOICE: voice,
+                            c.MOOD: None,
+                            c.NUMBER: None,
+                            c.PERSON: None,
+                            c.FORM: None,
+                        }
+                    )
                     continue
 
                 for mood, mood_value in mood_dict.items():
                     # Check if this is an infinitive (just a set of forms)
                     if isinstance(mood_value, set):
                         # Infinitive: no number/person/case
-                        features_list.append({
-                            "verb_group": verb_group,
-                            c.TENSE: tense,
-                            c.VOICE: voice,
-                            c.MOOD: mood,
-                            c.NUMBER: None,
-                            c.PERSON: None,
-                            c.FORM: None,
-                        })
+                        features_list.append(
+                            {
+                                "verb_group": verb_group,
+                                c.TENSE: tense,
+                                c.VOICE: voice,
+                                c.MOOD: mood,
+                                c.NUMBER: None,
+                                c.PERSON: None,
+                                c.FORM: None,
+                            }
+                        )
                     # Check if this is a participle (has gender level)
                     elif mood == "participle":
                         # Participle: {gender: {number: {case: {forms}}}}
@@ -341,41 +342,47 @@ class Database:
                             for number, case_dict in number_dict.items():
                                 for case, forms in case_dict.items():
                                     if forms:
-                                        features_list.append({
-                                            "verb_group": verb_group,
-                                            c.TENSE: tense,
-                                            c.VOICE: voice,
-                                            c.MOOD: mood,
-                                            c.NUMBER: number,
-                                            c.PERSON: None,
-                                            c.FORM: case,
-                                        })
+                                        features_list.append(
+                                            {
+                                                "verb_group": verb_group,
+                                                c.TENSE: tense,
+                                                c.VOICE: voice,
+                                                c.MOOD: mood,
+                                                c.NUMBER: number,
+                                                c.PERSON: None,
+                                                c.FORM: case,
+                                            }
+                                        )
                     else:
                         # Regular mood: {number: {person: {forms}}}
                         for number, person_dict in mood_value.items():
                             # Handle case where number maps directly to a set (no person level)
                             if isinstance(person_dict, set):
-                                features_list.append({
-                                    "verb_group": verb_group,
-                                    c.TENSE: tense,
-                                    c.VOICE: voice,
-                                    c.MOOD: mood,
-                                    c.NUMBER: number,
-                                    c.PERSON: None,
-                                    c.FORM: None,
-                                })
+                                features_list.append(
+                                    {
+                                        "verb_group": verb_group,
+                                        c.TENSE: tense,
+                                        c.VOICE: voice,
+                                        c.MOOD: mood,
+                                        c.NUMBER: number,
+                                        c.PERSON: None,
+                                        c.FORM: None,
+                                    }
+                                )
                             else:
                                 for person, forms in person_dict.items():
                                     if forms:
-                                        features_list.append({
-                                            "verb_group": verb_group,
-                                            c.TENSE: tense,
-                                            c.VOICE: voice,
-                                            c.MOOD: mood,
-                                            c.NUMBER: number,
-                                            c.PERSON: person,
-                                            c.FORM: None,
-                                        })
+                                        features_list.append(
+                                            {
+                                                "verb_group": verb_group,
+                                                c.TENSE: tense,
+                                                c.VOICE: voice,
+                                                c.MOOD: mood,
+                                                c.NUMBER: number,
+                                                c.PERSON: person,
+                                                c.FORM: None,
+                                            }
+                                        )
         return features_list
 
     def _extract_adjective_features(self, word: Lexical) -> list[dict[str, str | None]]:
@@ -392,11 +399,13 @@ class Database:
             for gender, case_dict in gender_dict.items():
                 for case, form in case_dict.items():
                     if form:
-                        features_list.append({
-                            c.GENDER: gender,
-                            c.NUMBER: number,
-                            c.FORM: case,
-                        })
+                        features_list.append(
+                            {
+                                c.GENDER: gender,
+                                c.NUMBER: number,
+                                c.FORM: case,
+                            }
+                        )
         return features_list
 
     def _extract_pronoun_features(self, word: Lexical) -> list[dict[str, str | None]]:
@@ -410,13 +419,15 @@ class Database:
         """
         # Pronouns are complex - for now, store minimal info
         # Will be populated by seed file with proper type/person/gender/number/case
-        return [{
-            "type": "personal_strong",  # Default, will be overridden by seed
-            c.PERSON: None,
-            c.GENDER: None,
-            c.NUMBER: None,
-            c.FORM: None,
-        }]
+        return [
+            {
+                "type": "personal_strong",  # Default, will be overridden by seed
+                c.PERSON: None,
+                c.GENDER: None,
+                c.NUMBER: None,
+                c.FORM: None,
+            }
+        ]
 
     def _extract_simple_features(self) -> list[dict[str, str | None]]:
         """Extract features for simple POS (adverbs, prepositions, conjunctions).
@@ -572,7 +583,11 @@ class Database:
         return values
 
     def _execute_add_word_transaction(
-        self, pos: str, lemma: str, values_list: list[dict[str, Any]], translations: list[str]
+        self,
+        pos: str,
+        lemma: str,
+        values_list: list[dict[str, Any]],
+        translations: list[str],
     ) -> None:
         """Execute database transaction to add word with multiple feature rows.
 
@@ -624,9 +639,7 @@ class Database:
             self._conn.rollback()
             raise
 
-    def add_word(
-        self, lemma: str, translations: list[str], pos: str
-    ) -> Lexical:
+    def add_word(self, lemma: str, translations: list[str], pos: str) -> Lexical:
         """Add a word to the lexicon with automatic feature extraction.
 
         Args:

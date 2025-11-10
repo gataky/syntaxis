@@ -203,9 +203,7 @@ def test_get_random_word_filters_by_multiple_features():
     conn.commit()
 
     # Request SINGULAR + ACCUSATIVE - should get άνθρωπος (not όνομα)
-    result = manager.get_random_word(
-        c.NOUN, number=c.SINGULAR, case_name=c.ACCUSATIVE
-    )
+    result = manager.get_random_word(c.NOUN, number=c.SINGULAR, case_name=c.ACCUSATIVE)
 
     assert result is not None
     assert result.lemma == "άνθρωπος"
@@ -285,9 +283,7 @@ def test_add_word_successfully_adds_noun_with_single_translation():
     """Should add noun with translation and return Word object."""
     manager = Database()
 
-    result = manager.add_word(
-        lemma="άνθρωπος", translations=["person"], pos=c.NOUN
-    )
+    result = manager.add_word(lemma="άνθρωπος", translations=["person"], pos=c.NOUN)
 
     # Verify return value
     assert isinstance(result, Noun)
@@ -303,7 +299,9 @@ def test_add_word_successfully_adds_noun_with_single_translation():
         "SELECT lemma, gender, number, case_name, validation_status FROM greek_nouns WHERE lemma = ?",
         ("άνθρωπος",),
     ).fetchall()
-    assert len(rows) > 0  # Should have multiple rows (one per valid feature combination)
+    assert (
+        len(rows) > 0
+    )  # Should have multiple rows (one per valid feature combination)
     # Check first row as sample
     assert rows[0][0] == "άνθρωπος"
     assert rows[0][1] == "masc"  # Inferred from forms
@@ -321,7 +319,8 @@ def test_add_word_successfully_adds_noun_with_single_translation():
 
     # Check translation link created (linked by lemma, not row ID)
     trans_row = cursor.execute(
-        "SELECT greek_lemma, greek_pos_type FROM translations WHERE greek_pos_type = ?", ("noun",)
+        "SELECT greek_lemma, greek_pos_type FROM translations WHERE greek_pos_type = ?",
+        ("noun",),
     ).fetchone()
     assert trans_row is not None
     assert trans_row[0] == "άνθρωπος"
@@ -357,9 +356,7 @@ def test_get_words_by_english_finds_multiple_greek_words():
     manager = Database()
 
     # Add two different Greek words with the same English translation
-    manager.add_word(
-        lemma="άνθρωπος", translations=["person", "human"], pos=c.NOUN
-    )
+    manager.add_word(lemma="άνθρωπος", translations=["person", "human"], pos=c.NOUN)
     manager.add_word(lemma="άνδρας", translations=["man", "person"], pos=c.NOUN)
 
     result = manager.get_words_by_english("person")

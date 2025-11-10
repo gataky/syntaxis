@@ -26,8 +26,17 @@ class Template:
     TOKEN_PATTERN = re.compile(r"\[([^\]]+)\]")
 
     # Valid string constants for validation
-    POS_VALUES = {c.NOUN, c.VERB, c.ADJECTIVE, c.ADVERB, c.ARTICLE, c.PRONOUN,
-                  c.NUMERAL, c.PREPOSITION, c.CONJUNCTION}
+    POS_VALUES = {
+        c.NOUN,
+        c.VERB,
+        c.ADJECTIVE,
+        c.ADVERB,
+        c.ARTICLE,
+        c.PRONOUN,
+        c.NUMERAL,
+        c.PREPOSITION,
+        c.CONJUNCTION,
+    }
     FORM_VALUES = {c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE}
     GENDER_VALUES = {c.MASCULINE, c.FEMININE, c.NEUTER}
     NUMBER_VALUES = {c.SINGULAR, c.PLURAL}

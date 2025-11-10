@@ -1,12 +1,7 @@
 import sqlite3
 from typing import Any
 
-from syntaxis.database.bitmasks import (
-    POS_TO_TABLE_MAP,
-    VALID_FEATURES,
-    enum_to_bit,
-)
-from syntaxis.database.mask_calculator import STRING_TO_ENUM, calculate_masks_for_word
+from syntaxis.database.bitmasks import POS_TO_TABLE_MAP, VALID_FEATURES
 from syntaxis.database.schema import create_schema
 from syntaxis.models.enums import PartOfSpeech
 from syntaxis.models.part_of_speech import PartOfSpeech as PartOfSpeechBase
@@ -48,7 +43,7 @@ class LexicalManager:
         Args:
             pos: Part of speech enum (PartOfSpeech.NOUN, PartOfSpeech.VERB, etc.)
             **features: Feature filters as enum values
-                        (gender=Gender.MASCULINE, case=Case.NOMINATIVE, etc.)
+                        (gender=Gender.MASCULINE, case_name=Case.NOMINATIVE, etc.)
 
         Returns:
             Instance of appropriate PartOfSpeech subclass with forms and
@@ -74,34 +69,29 @@ class LexicalManager:
         cursor = self._conn.cursor()
         table = POS_TO_TABLE_MAP[pos]
 
-        # Dynamically build WHERE conditions for each feature using bitmasks.
-        # This allows filtering words that have the required features.
-        # For example, `(g.number_mask & 1) != 0` checks for SINGULAR.
+        # Build WHERE conditions using direct column comparisons
         conditions = []
-        params: list[str | int] = [pos.name]  # For JOIN condition
+        params: list[str] = [pos.name]  # For JOIN condition
 
         for feature_name, feature_value in features.items():
-            bit = enum_to_bit(feature_value)
-            conditions.append(f"(g.{feature_name}_mask & ?) != 0")
-            params.append(bit)
+            # Convert enum to string (e.g., Number.SINGULAR -> "SINGULAR")
+            feature_str = feature_value.name
+            conditions.append(f"g.{feature_name} = ?")
+            params.append(feature_str)
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
 
-        # A single query retrieves a random word and all its translations.
-        # - LEFT JOINs ensure that words are returned even if they have no translations.
-        # - GROUP_CONCAT aggregates multiple translation rows into a single pipe-delimited string.
-        # - ORDER BY RANDOM() LIMIT 1 provides efficient random selection.
+        # Query with DISTINCT to handle multiple rows per lemma
         query = f"""
-            SELECT
-                g.id,
+            SELECT DISTINCT
                 g.lemma,
                 GROUP_CONCAT(e.word, '|') as translations
             FROM {table} g
-            LEFT JOIN translations t ON t.greek_word_id = g.id
+            LEFT JOIN translations t ON t.greek_lemma = g.lemma
                 AND t.greek_pos_type = ?
             LEFT JOIN english_words e ON e.id = t.english_word_id
             WHERE {where_clause}
-            GROUP BY g.id
+            GROUP BY g.lemma
             ORDER BY RANDOM()
             LIMIT 1
         """

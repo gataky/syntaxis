@@ -4,6 +4,19 @@ These constants define the canonical string representations used throughout
 syntaxis. The morpheus module handles translation to/from modern_greek_inflexion.
 """
 
+
+LEMMA = "lemma"
+
+# Features
+GENDER = "gender"
+NUMBER = "number"
+FORM = "form"
+TENSE = "tense"
+VOICE = "voice"
+MOOD = "mood"
+PERSON = "person"
+TYPE = "type"
+
 # Part of speech constants (using template-friendly abbreviations)
 NOUN = "noun"
 VERB = "verb"
@@ -53,3 +66,25 @@ THIRD = "ter"
 # Aspect constants (MGI abbreviations)
 PERFECT = "perf"
 IMPERFECT = "imperf"
+
+LEXICAL_MAP = {
+    "noun" : NOUN,
+    "verb" : VERB,
+    "adjective" : ADJECTIVE,
+    "adverb" : ADVERB,
+    "article" : ARTICLE,
+    "pronoun" : PRONOUN,
+    "numeral" : NUMERAL,
+    "preposition" : PREPOSITION,
+    "conjunction" : CONJUNCTION,
+}
+
+
+TABLE_NOUN= "greek_nouns"
+TABLE_VERB= "greek_verbs"
+TABLE_ADJECTIVE= "greek_adjectives"
+TABLE_ARTICLE= "greek_articles"
+TABLE_PRONOUN= "greek_pronouns"
+TABLE_ADVERB= "greek_adverbs"
+TABLE_PREPOSITION= "greek_prepositions"
+TABLE_CONJUNCTION= "greek_conjunctions"

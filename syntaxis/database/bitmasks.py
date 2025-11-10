@@ -4,11 +4,11 @@ from syntaxis.models import constants as c
 
 # Maps POS to its valid feature names
 VALID_FEATURES: dict[str, set[str]] = {
-    c.NOUN: {"gender", "number", "case_name"},
-    c.VERB: {"tense", "voice", "mood", "number", "person", "case_name"},
-    c.ADJECTIVE: {"gender", "number", "case_name"},
-    c.ARTICLE: {"gender", "number", "case_name"},
-    c.PRONOUN: {"gender", "number", "case_name", "person", "type"},
+    c.NOUN: {c.GENDER, c.NUMBER, c.FORM},
+    c.VERB: {c.TENSE, c.VOICE, c.MOOD, c.NUMBER, c.PERSON, c.FORM},
+    c.ADJECTIVE: {c.GENDER, c.NUMBER, c.FORM},
+    c.ARTICLE: {c.GENDER, c.NUMBER, c.FORM},
+    c.PRONOUN: {c.GENDER, c.NUMBER, c.FORM, c.PERSON, c.TYPE},
     c.ADVERB: set(),
     c.PREPOSITION: set(),
     c.CONJUNCTION: set(),
@@ -16,12 +16,12 @@ VALID_FEATURES: dict[str, set[str]] = {
 
 # Maps POS string to database table name
 POS_TO_TABLE_MAP: dict[str, str] = {
-    c.NOUN: "greek_nouns",
-    c.VERB: "greek_verbs",
-    c.ADJECTIVE: "greek_adjectives",
-    c.ARTICLE: "greek_articles",
-    c.PRONOUN: "greek_pronouns",
-    c.ADVERB: "greek_adverbs",
-    c.PREPOSITION: "greek_prepositions",
-    c.CONJUNCTION: "greek_conjunctions",
+    c.ADJECTIVE: c.TABLE_ADJECTIVE,
+    c.ADVERB: c.TABLE_ADVERB,
+    c.ARTICLE: c.TABLE_ARTICLE,
+    c.CONJUNCTION: c.TABLE_CONJUNCTION,
+    c.NOUN: c.TABLE_NOUN,
+    c.PREPOSITION: c.TABLE_PREPOSITION,
+    c.PRONOUN: c.TABLE_PRONOUN,
+    c.VERB: c.TABLE_VERB,
 }

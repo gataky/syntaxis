@@ -12,7 +12,7 @@ def seed_pronouns(conn: sqlite3.Connection) -> None:
     cursor = conn.cursor()
 
     # Define pronouns by type with explicit feature combinations
-    # Format: (lemma, type, person, gender, number, case_name, validation_status)
+    # Format: (lemma, type, person, gender, number, case, validation_status)
     pronouns = [
         # Personal Strong Pronouns - Nominative
         ("εγώ",   "personal_strong", "1", None, "SINGULAR", "NOMINATIVE", "validated"),
@@ -100,7 +100,7 @@ def seed_pronouns(conn: sqlite3.Connection) -> None:
     cursor.executemany(
         """
         INSERT OR IGNORE INTO greek_pronouns
-        (lemma, type, person, gender, number, case_name, validation_status)
+        (lemma, type, person, gender, number, case, validation_status)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
         pronouns

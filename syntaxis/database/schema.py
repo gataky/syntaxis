@@ -30,9 +30,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             lemma TEXT NOT NULL,
             gender TEXT NOT NULL,
             number TEXT NOT NULL,
-            case_name TEXT NOT NULL,
+            form TEXT NOT NULL,
             validation_status TEXT NOT NULL,
-            UNIQUE(lemma, gender, number, case_name)
+            UNIQUE(lemma, gender, number, form)
         )
     """
     )
@@ -49,9 +49,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             mood TEXT,
             number TEXT,
             person TEXT,
-            case_name TEXT,
+            form TEXT,
             validation_status TEXT NOT NULL,
-            UNIQUE(lemma, verb_group, tense, voice, mood, number, person, case_name)
+            UNIQUE(lemma, verb_group, tense, voice, mood, number, person, form)
         )
     """
     )
@@ -64,9 +64,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             lemma TEXT NOT NULL,
             gender TEXT,
             number TEXT,
-            case_name TEXT,
+            form TEXT,
             validation_status TEXT NOT NULL,
-            UNIQUE(lemma, gender, number, case_name)
+            UNIQUE(lemma, gender, number, form)
         )
     """
     )
@@ -79,9 +79,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             lemma TEXT NOT NULL,
             gender TEXT,
             number TEXT,
-            case_name TEXT,
+            form TEXT,
             validation_status TEXT NOT NULL,
-            UNIQUE(lemma, gender, number, case_name)
+            UNIQUE(lemma, gender, number, form)
         )
     """
     )
@@ -96,9 +96,9 @@ def create_schema(conn: sqlite3.Connection) -> None:
             person TEXT,
             gender TEXT,
             number TEXT,
-            case_name TEXT,
+            form TEXT,
             validation_status TEXT NOT NULL,
-            UNIQUE(lemma, type, person, gender, number, case_name)
+            UNIQUE(lemma, type, person, gender, number, form)
         )
     """
     )

@@ -270,12 +270,12 @@ class Database:
         features_list = []
         for gender, number_dict in word.forms.items():
             for number, case_dict in number_dict.items():
-                for case_name, form in case_dict.items():
+                for case, form in case_dict.items():
                     if form:  # Only if form exists
                         features_list.append({
-                            "gender": gender,
-                            "number": number,
-                            "case_name": case_name,
+                            c.GENDER: gender,
+                            c.NUMBER: number,
+                            c.FORM: case,
                         })
         return features_list
 
@@ -298,12 +298,12 @@ class Database:
             if isinstance(voice_dict, set):
                 features_list.append({
                     "verb_group": verb_group,
-                    "tense": tense,
-                    "voice": None,
-                    "mood": None,
-                    "number": None,
-                    "person": None,
-                    "case_name": None,
+                    c.TENSE: tense,
+                    c.VOICE: None,
+                    c.MOOD: None,
+                    c.NUMBER: None,
+                    c.PERSON: None,
+                    c.FORM: None,
                 })
                 continue
 
@@ -312,12 +312,12 @@ class Database:
                 if isinstance(mood_dict, set):
                     features_list.append({
                         "verb_group": verb_group,
-                        "tense": tense,
-                        "voice": voice,
-                        "mood": None,
-                        "number": None,
-                        "person": None,
-                        "case_name": None,
+                        c.TENSE: tense,
+                        c.VOICE: voice,
+                        c.MOOD: None,
+                        c.NUMBER: None,
+                        c.PERSON: None,
+                        c.FORM: None,
                     })
                     continue
 
@@ -327,28 +327,28 @@ class Database:
                         # Infinitive: no number/person/case
                         features_list.append({
                             "verb_group": verb_group,
-                            "tense": tense,
-                            "voice": voice,
-                            "mood": mood,
-                            "number": None,
-                            "person": None,
-                            "case_name": None,
+                            c.TENSE: tense,
+                            c.VOICE: voice,
+                            c.MOOD: mood,
+                            c.NUMBER: None,
+                            c.PERSON: None,
+                            c.FORM: None,
                         })
                     # Check if this is a participle (has gender level)
                     elif mood == "participle":
                         # Participle: {gender: {number: {case: {forms}}}}
                         for gender, number_dict in mood_value.items():
                             for number, case_dict in number_dict.items():
-                                for case_name, forms in case_dict.items():
+                                for case, forms in case_dict.items():
                                     if forms:
                                         features_list.append({
                                             "verb_group": verb_group,
-                                            "tense": tense,
-                                            "voice": voice,
-                                            "mood": mood,
-                                            "number": number,
-                                            "person": None,
-                                            "case_name": case_name,
+                                            c.TENSE: tense,
+                                            c.VOICE: voice,
+                                            c.MOOD: mood,
+                                            c.NUMBER: number,
+                                            c.PERSON: None,
+                                            c.FORM: case,
                                         })
                     else:
                         # Regular mood: {number: {person: {forms}}}
@@ -357,24 +357,24 @@ class Database:
                             if isinstance(person_dict, set):
                                 features_list.append({
                                     "verb_group": verb_group,
-                                    "tense": tense,
-                                    "voice": voice,
-                                    "mood": mood,
-                                    "number": number,
-                                    "person": None,
-                                    "case_name": None,
+                                    c.TENSE: tense,
+                                    c.VOICE: voice,
+                                    c.MOOD: mood,
+                                    c.NUMBER: number,
+                                    c.PERSON: None,
+                                    c.FORM: None,
                                 })
                             else:
                                 for person, forms in person_dict.items():
                                     if forms:
                                         features_list.append({
                                             "verb_group": verb_group,
-                                            "tense": tense,
-                                            "voice": voice,
-                                            "mood": mood,
-                                            "number": number,
-                                            "person": person,
-                                            "case_name": None,
+                                            c.TENSE: tense,
+                                            c.VOICE: voice,
+                                            c.MOOD: mood,
+                                            c.NUMBER: number,
+                                            c.PERSON: person,
+                                            c.FORM: None,
                                         })
         return features_list
 
@@ -388,14 +388,14 @@ class Database:
             List of feature dictionaries
         """
         features_list = []
-        for gender, number_dict in word.forms.items():
-            for number, case_dict in number_dict.items():
-                for case_name, form in case_dict.items():
+        for number, gender_dict in word.forms.get("adj", {}).items():
+            for gender, case_dict in gender_dict.items():
+                for case, form in case_dict.items():
                     if form:
                         features_list.append({
-                            "gender": gender,
-                            "number": number,
-                            "case_name": case_name,
+                            c.GENDER: gender,
+                            c.NUMBER: number,
+                            c.FORM: case,
                         })
         return features_list
 
@@ -412,10 +412,10 @@ class Database:
         # Will be populated by seed file with proper type/person/gender/number/case
         return [{
             "type": "personal_strong",  # Default, will be overridden by seed
-            "person": None,
-            "gender": None,
-            "number": None,
-            "case_name": None,
+            c.PERSON: None,
+            c.GENDER: None,
+            c.NUMBER: None,
+            c.FORM: None,
         }]
 
     def _extract_simple_features(self) -> list[dict[str, str | None]]:
@@ -440,8 +440,8 @@ class Database:
 
         Examples:
             For a noun: [
-                {"gender": "masc", "number": "sg", "case_name": "nom"},
-                {"gender": "masc", "number": "sg", "case_name": "gen"},
+                {"gender": "masc", "number": "sg", "case": "nom"},
+                {"gender": "masc", "number": "sg", "case": "gen"},
                 ...
             ]
         """
@@ -459,54 +459,54 @@ class Database:
 
     POS_CONFIG = {
         c.NOUN: {
-            "table": "greek_nouns",
-            "fields": ["lemma", "gender", "number", "case_name", "validation_status"],
+            "table": c.TABLE_NOUN,
+            "fields": [c.LEMMA, c.GENDER, c.NUMBER, c.FORM, "validation_status"],
         },
         c.VERB: {
-            "table": "greek_verbs",
+            "table": c.TABLE_VERB,
             "fields": [
-                "lemma",
+                c.LEMMA,
                 "verb_group",
-                "tense",
-                "voice",
-                "mood",
-                "number",
-                "person",
-                "case_name",
+                c.TENSE,
+                c.VOICE,
+                c.MOOD,
+                c.NUMBER,
+                c.PERSON,
+                c.FORM,
                 "validation_status",
             ],
         },
         c.ADJECTIVE: {
-            "table": "greek_adjectives",
-            "fields": ["lemma", "gender", "number", "case_name", "validation_status"],
+            "table": c.TABLE_ADJECTIVE,
+            "fields": [c.LEMMA, c.GENDER, c.NUMBER, c.FORM, "validation_status"],
         },
         c.ARTICLE: {
-            "table": "greek_articles",
-            "fields": ["lemma", "gender", "number", "case_name", "validation_status"],
+            "table": c.TABLE_ARTICLE,
+            "fields": [c.LEMMA, c.GENDER, c.NUMBER, c.FORM, "validation_status"],
         },
         c.PRONOUN: {
-            "table": "greek_pronouns",
+            "table": c.TABLE_PRONOUN,
             "fields": [
-                "lemma",
-                "type",
-                "person",
-                "gender",
-                "number",
-                "case_name",
+                c.LEMMA,
+                c.TYPE,
+                c.PERSON,
+                c.GENDER,
+                c.NUMBER,
+                c.FORM,
                 "validation_status",
             ],
         },
         c.ADVERB: {
-            "table": "greek_adverbs",
-            "fields": ["lemma", "validation_status"],
+            "table": c.TABLE_ADVERB,
+            "fields": [c.LEMMA, "validation_status"],
         },
         c.PREPOSITION: {
-            "table": "greek_prepositions",
-            "fields": ["lemma", "validation_status"],
+            "table": c.TABLE_PREPOSITION,
+            "fields": [c.LEMMA, "validation_status"],
         },
         c.CONJUNCTION: {
-            "table": "greek_conjunctions",
-            "fields": ["lemma", "validation_status"],
+            "table": c.TABLE_CONJUNCTION,
+            "fields": [c.LEMMA, "validation_status"],
         },
     }
 
@@ -645,6 +645,7 @@ class Database:
 
         # Extract all valid feature combinations from Morpheus forms
         features_list = self._extract_features_from_morpheus(word, pos)
+        print(features_list)
 
         if not features_list:
             raise ValueError(f"No valid feature combinations found for '{lemma}'")

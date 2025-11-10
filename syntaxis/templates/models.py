@@ -4,68 +4,6 @@ from dataclasses import dataclass
 from syntaxis.models import constants as c
 
 
-# class PartOfSpeech(Enum):
-#     """Part of speech types supported in templates."""
-#
-#     NOUN = "Noun"
-#     VERB = "Verb"
-#     ADJECTIVE = "Adj"
-#     ARTICLE = "Article"
-#     PRONOUN = "Pronoun"
-#     PREPOSITION = "Preposition"
-#     CONJUNCTION = "Conjunction"
-#     ADVERB = "Adverb"
-#
-#
-# class Case(Enum):
-#     """Greek grammatical cases."""
-#
-#     NOMINATIVE = "nom"
-#     GENITIVE = "gen"
-#     ACCUSATIVE = "acc"
-#     VOCATIVE = "voc"
-#
-#
-# class Gender(Enum):
-#     """Greek grammatical genders."""
-#
-#     MASCULINE = "m"
-#     FEMININE = "f"
-#     NEUTER = "n"
-#
-#
-# class Number(Enum):
-#     """Greek grammatical numbers."""
-#
-#     SINGULAR = "sg"
-#     PLURAL = "pl"
-#
-#
-# class Voice(Enum):
-#     """Greek verb voices."""
-#
-#     ACTIVE = "act"
-#     PASSIVE = "pass"
-#
-#
-# class Tense(Enum):
-#     """Greek verb tenses."""
-#
-#     AORIST = "aor"
-#     FUTURE_PERFECT = "futperf"
-#     IMPERFECT = "impf"
-#     PERFECT = "perf"
-#     PLUPERFECT = "plup"
-#     PRESENT = "pres"
-#     SIMPLE_FUTURE = "fut"
-#
-#
-# class Person(Enum):
-#     """Greek grammatical persons."""
-#
-#     FIRST = "1"
-#     SECOND = "2"
-#     THIRD = "3"
 
 
 @dataclass
@@ -74,7 +12,7 @@ class TokenFeatures:
 
     Attributes:
         pos: Part of speech (required for all tokens)
-        case: Grammatical case (required for nouns, adjectives, articles)
+        form: Grammatical form (required for nouns, adjectives, articles)
         gender: Grammatical gender (required for nouns, adjectives, articles)
         number: Grammatical number (required for nouns, adjectives, articles, verbs)
         tense: Verb tense (required for verbs)
@@ -83,7 +21,7 @@ class TokenFeatures:
     """
 
     pos: str
-    case: str | None = None
+    form: str | None = None
     gender: str | None = None
     number: str | None = None
     tense: str | None = None

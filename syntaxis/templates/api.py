@@ -28,7 +28,7 @@ class Template:
     # Valid string constants for validation
     POS_VALUES = {c.NOUN, c.VERB, c.ADJECTIVE, c.ADVERB, c.ARTICLE, c.PRONOUN,
                   c.NUMERAL, c.PREPOSITION, c.CONJUNCTION}
-    CASE_VALUES = {c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE}
+    FORM_VALUES = {c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE}
     GENDER_VALUES = {c.MASCULINE, c.FEMININE, c.NEUTER}
     NUMBER_VALUES = {c.SINGULAR, c.PLURAL}
     VOICE_VALUES = {c.ACTIVE, c.PASSIVE}
@@ -122,7 +122,7 @@ class Template:
     ) -> TokenFeatures:
         """Parse features for nouns, adjectives, and articles.
 
-        Required features: case, gender, number (in any order)
+        Required features: form, gender, number (in any order)
 
         Args:
             token: TokenFeatures object to populate
@@ -137,14 +137,14 @@ class Template:
         """
         if len(features) != 3:
             raise TemplateParseError(
-                f"{pos_str} requires exactly 3 features (case, gender, number), "
+                f"{pos_str} requires exactly 3 features (form, gender, number), "
                 f"but got {len(features)}: {':'.join(features)}"
             )
 
-        # Parse each feature - try to match against case, gender, or number
+        # Parse each feature - try to match against form, gender, or number
         for feature in features:
-            if feature in self.CASE_VALUES and token.case is None:
-                token.case = feature
+            if feature in self.FORM_VALUES and token.form is None:
+                token.form = feature
             elif feature in self.GENDER_VALUES and token.gender is None:
                 token.gender = feature
             elif feature in self.NUMBER_VALUES and token.number is None:
@@ -155,9 +155,9 @@ class Template:
                 )
 
         # Verify all required features are present
-        if token.case is None or token.gender is None or token.number is None:
+        if token.form is None or token.gender is None or token.number is None:
             raise TemplateParseError(
-                f"{pos_str} must have case, gender, and number. Got: {':'.join(features)}"
+                f"{pos_str} must have form, gender, and number. Got: {':'.join(features)}"
             )
 
         return token
@@ -220,7 +220,7 @@ class Template:
     ) -> TokenFeatures:
         """Parse features for pronouns.
 
-        Required features: case, person, number
+        Required features: form, person, number
         Optional features: gender (required for 3rd person)
 
         Args:
@@ -236,14 +236,14 @@ class Template:
         """
         if len(features) < 3 or len(features) > 4:
             raise TemplateParseError(
-                f"{pos_str} requires 3-4 features (case, person, number, [gender]), "
+                f"{pos_str} requires 3-4 features (form, person, number, [gender]), "
                 f"but got {len(features)}: {':'.join(features)}"
             )
 
-        # Parse each feature - try to match against case, person, number, or gender
+        # Parse each feature - try to match against form, person, number, or gender
         for feature in features:
-            if feature in self.CASE_VALUES and token.case is None:
-                token.case = feature
+            if feature in self.FORM_VALUES and token.form is None:
+                token.form = feature
             elif feature in self.PERSON_VALUES and token.person is None:
                 token.person = feature
             elif feature in self.NUMBER_VALUES and token.number is None:
@@ -256,9 +256,9 @@ class Template:
                 )
 
         # Verify all required features are present
-        if token.case is None or token.person is None or token.number is None:
+        if token.form is None or token.person is None or token.number is None:
             raise TemplateParseError(
-                f"{pos_str} must have case, person, and number. Got: {':'.join(features)}"
+                f"{pos_str} must have form, person, and number. Got: {':'.join(features)}"
             )
 
         return token

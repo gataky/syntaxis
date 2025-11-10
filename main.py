@@ -3,6 +3,7 @@ import csv
 import random
 
 from prettytable import PrettyTable
+from syntaxis.models.constants import LEXICAL_MAP
 from syntaxis.syntaxis import Syntaxis
 from syntaxis.database import Database
 from syntaxis.templates import Template
@@ -14,17 +15,14 @@ def populate_db():
         r = csv.reader(f)
         next(r)
         for line in r:
-            pos = PartOfSpeechMap[line[0]]
+            pos = LEXICAL_MAP[line[0]]
             lemma = line[2]
             translations = line[1].split(",")
+            print(lemma, pos)
             m.add_word(lemma, translations, pos)
 
 
 def plumbing():
-    pass
-
-if __name__ == "__main__":
-    # populate_db()
     p = Template()
     l = Database("syntaxis.db")
 
@@ -50,7 +48,7 @@ if __name__ == "__main__":
         table = PrettyTable()
         field_names = []
         for i, token in enumerate(parts.tokens):
-            field_names.append(f"{i}:{token.case.value}:{token.number.value}")
+            field_names.append(f"{i}:{token.form}:{token.number}")
 
         table.field_names = field_names
 
@@ -60,9 +58,11 @@ if __name__ == "__main__":
 
             features = {k: v for k, v in token.__dict__.items() if v is not None}
 
+            print(features)
             word = l.get_random_word(**features)
+            print(word)
 
-            f = {k: v.value for k, v in token.__dict__.items() if v is not None}
+            f = {k: v for k, v in token.__dict__.items() if v is not None}
             word.word = word.get_form(**f)
 
             words.append(word)
@@ -77,3 +77,7 @@ if __name__ == "__main__":
         table.add_row(gr_sentence)
         print(table)
         input("")
+
+if __name__ == "__main__":
+    # populate_db()
+    plumbing()

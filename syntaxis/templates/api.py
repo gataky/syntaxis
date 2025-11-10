@@ -25,25 +25,6 @@ class Template:
     # Regex pattern to match tokens in format [lexical:feature:feature:...]
     TOKEN_PATTERN = re.compile(r"\[([^\]]+)\]")
 
-    # Valid string constants for validation
-    LEXICAL_VALUES = {
-        c.NOUN,
-        c.VERB,
-        c.ADJECTIVE,
-        c.ADVERB,
-        c.ARTICLE,
-        c.PRONOUN,
-        c.NUMERAL,
-        c.PREPOSITION,
-        c.CONJUNCTION,
-    }
-    CASE_VALUES = {c.NOMINATIVE, c.ACCUSATIVE, c.GENITIVE, c.VOCATIVE}
-    GENDER_VALUES = {c.MASCULINE, c.FEMININE, c.NEUTER}
-    NUMBER_VALUES = {c.SINGULAR, c.PLURAL}
-    VOICE_VALUES = {c.ACTIVE, c.PASSIVE}
-    TENSE_VALUES = {c.PRESENT, c.AORIST, c.PARATATIKOS}
-    PERSON_VALUES = {c.FIRST, c.SECOND, c.THIRD}
-
     def parse(self, template: str) -> ParsedTemplate:
         """Parse a template string into a ParsedTemplate object.
 
@@ -89,10 +70,10 @@ class Template:
 
         # Parse part of speech
         lexical = parts[0]
-        if lexical not in self.LEXICAL_VALUES:
+        if lexical not in c.LEXICAL_VALUES:
             raise TemplateParseError(
                 f"Unknown part of speech: {lexical}. "
-                f"Valid options: {sorted(self.LEXICAL_VALUES)}"
+                f"Valid options: {sorted(c.LEXICAL_VALUES)}"
             )
 
         features = parts[1:]
@@ -110,17 +91,11 @@ class Template:
 
         # Parse features based on lexical type
         if lexical in {c.NOUN, c.ADJECTIVE, c.ARTICLE}:
-            token = self._parse_nominal_features(
-                token, features, lexical
-            )
+            token = self._parse_nominal_features(token, features, lexical)
         elif lexical == c.VERB:
-            token = self._parse_verbal_features(
-                token, features, lexical
-            )
+            token = self._parse_verbal_features(token, features, lexical)
         elif lexical == c.PRONOUN:
-            token = self._parse_pronoun_features(
-                token, features, lexical
-            )
+            token = self._parse_pronoun_features(token, features, lexical)
 
         return token
 
@@ -150,11 +125,11 @@ class Template:
 
         # Parse each feature - try to match against case, gender, or number
         for feature in features:
-            if feature in self.CASE_VALUES and token.case is None:
+            if feature in c.CASE_VALUES and token.case is None:
                 token.case = feature
-            elif feature in self.GENDER_VALUES and token.gender is None:
+            elif feature in c.GENDER_VALUES and token.gender is None:
                 token.gender = feature
-            elif feature in self.NUMBER_VALUES and token.number is None:
+            elif feature in c.NUMBER_VALUES and token.number is None:
                 token.number = feature
             else:
                 raise TemplateParseError(
@@ -195,13 +170,13 @@ class Template:
 
         # Parse each feature
         for feature in features:
-            if feature in self.TENSE_VALUES and token.tense is None:
+            if feature in c.TENSE_VALUES and token.tense is None:
                 token.tense = feature
-            elif feature in self.VOICE_VALUES and token.voice is None:
+            elif feature in c.VOICE_VALUES and token.voice is None:
                 token.voice = feature
-            elif feature in self.PERSON_VALUES and token.person is None:
+            elif feature in c.PERSON_VALUES and token.person is None:
                 token.person = feature
-            elif feature in self.NUMBER_VALUES and token.number is None:
+            elif feature in c.NUMBER_VALUES and token.number is None:
                 token.number = feature
             else:
                 raise TemplateParseError(
@@ -249,13 +224,13 @@ class Template:
 
         # Parse each feature - try to match against case, person, number, or gender
         for feature in features:
-            if feature in self.CASE_VALUES and token.case is None:
+            if feature in c.CASE_VALUES and token.case is None:
                 token.case = feature
-            elif feature in self.PERSON_VALUES and token.person is None:
+            elif feature in c.PERSON_VALUES and token.person is None:
                 token.person = feature
-            elif feature in self.NUMBER_VALUES and token.number is None:
+            elif feature in c.NUMBER_VALUES and token.number is None:
                 token.number = feature
-            elif feature in self.GENDER_VALUES and token.gender is None:
+            elif feature in c.GENDER_VALUES and token.gender is None:
                 token.gender = feature
             else:
                 raise TemplateParseError(

@@ -22,7 +22,7 @@ class Lexical(Generic[lexical]):
     # The English translations for the given lemma. Note that the forms of these words to not
     # decline i.e. If the word is in the plural form in Greek it will be in the singular form
     # here in translations.
-    translations: list[str] | None = None
+    translations: set[str] | None = None
 
     case:   str | None = None
     gender: str | None = None
@@ -31,6 +31,7 @@ class Lexical(Generic[lexical]):
     person: str | None = None
     tense:  str | None = None
     voice:  str | None = None
+    type:   str | None = None
 
     def __str__(self) -> str:
         if self.word is not None:
@@ -41,6 +42,19 @@ class Lexical(Generic[lexical]):
     def apply_features(self, *args, **kwargs) -> set[str]:
         """apply_features will extract the morphed word from forms for the given set of features"""
         raise NotImplementedError("apply_features not implemented for this Lexical")
+
+    def to_json(self) -> dict[str, str | None | set[str] | dict[str, str]]:
+        features = {}
+        for feature in c.LEXICAL_FEATURES:
+            value = getattr(self, feature)
+            if value is not None:
+                features[feature] = value
+        return {
+            "lemma": self.lemma,
+            "word": self.word,
+            "translations": self.translations,
+            "features": features,
+        }
 
 
 class Adjective(Lexical[types.Adjective]):
@@ -63,8 +77,10 @@ class Adjective(Lexical[types.Adjective]):
     """
 
     def apply_features(self, gender: str, number: str, case: str, **extra) -> set[str]:
-        adjective_forms: types.Adjective = self.forms
-        self.word = adjective_forms["adj"][number][gender][case]
+        self.gender = gender
+        self.number = number
+        self.case = case
+        self.word = self.forms["adj"][number][gender][case]
         return self.word
 
 
@@ -112,6 +128,9 @@ class Article(Lexical[types.Article]):
     """
 
     def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.gender = gender
+        self.number = number
+        self.case = case
         self.word = cast(set[str], self.forms[number][gender][case])
         return self.word
 
@@ -137,6 +156,9 @@ class Noun(Lexical[types.Noun]):
     """
 
     def apply_features(self, gender: str, number: str, case: str, **extra) -> set[str]:
+        self.gender = gender
+        self.number = number
+        self.case = case
         self.word = cast(set[str], self.forms[gender][number][case])
         return self.word
 
@@ -164,6 +186,9 @@ class Numeral(Lexical[types.Numeral]):
     """
 
     def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.gender = gender
+        self.number = number
+        self.case = case
         self.word = cast(set[str], self.forms[c.ADJECTIVE][number][gender][case])
         return self.word
 
@@ -192,6 +217,9 @@ class Pronoun(Lexical[types.Pronoun]):
     """
 
     def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.gender = gender
+        self.number = number
+        self.case = case
         self.word = cast(set[str], self.forms[number][gender][case])
         return self.word
 
@@ -230,6 +258,12 @@ class Verb(Lexical[types.Verb]):
         mood: str = c.INDICATIVE,
         **extra,
     ) -> set[str]:
+        self.tense = tense
+        self.voice = voice
+        self.number = number
+        self.person = person
+        self.case = case
+        self.mood = mood
         self.word = cast(set[str], self.forms[tense][voice][mood][number][person])
         return self.word
 

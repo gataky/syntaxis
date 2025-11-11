@@ -42,11 +42,11 @@
   - [x] 3.5 In `Word.vue`, display the `englishWord` and a "Show Answer" button.
   - [x] 3.6 Add the "Regenerate" and "Back" buttons at the bottom of the `TranslationExerciseView.vue` template.
 
-- [ ] 4.0 Integrate with the `syntaxis` backend API
-  - [ ] 4.1 Create the `api.js` file in `client/src/services`.
-  - [ ] 4.2 In `api.js`, create a function `generateSentence(template)` that performs a `POST` request to `/api/v1/generate` using Axios.
-  - [ ] 4.3 The function should send the `template` string in the request body.
-  - [ ] 4.4 Implement error handling within the service to catch API errors and return a consistent error format.
+- [x] 4.0 Integrate with the `syntaxis` backend API
+  - [x] 4.1 Create the `api.js` file in `client/src/services`.
+  - [x] 4.2 In `api.js`, create a function `generateSentence(template)` that performs a `POST` request to `/api/v1/generate` using Axios.
+  - [x] 4.3 The function should send the `template` string in the request body.
+  - [x] 4.4 Implement error handling within the service to catch API errors and return a consistent error format.
 
 - [ ] 5.0 Implement the core exercise logic and user interactions
   - [ ] 5.1 In `TranslationExerciseView.vue`, import and use the `generateSentence` service. When the "Generate" button is clicked, call this service with the content of the text area.

@@ -69,7 +69,8 @@ class Morpheus:
         mgi_class = getattr(mgi, lexical_class.__name__)
         mgi_forms = mgi_class(lemma).all()
         syntaxis_forms = cast(dict, translate_forms(mgi_forms))
-        return lexical_class(lemma, syntaxis_forms)
+        lexical_name = lexical_class.__name__.lower()
+        return lexical_class(lexical_name, lemma, syntaxis_forms)
 
     @staticmethod
     def adjective(lemma: str) -> Adjective:
@@ -106,8 +107,8 @@ class Morpheus:
 
     @staticmethod
     def preposition(lemma: str) -> Preposition:
-        return Preposition(lemma, forms={"prep": {lemma}})
+        return Preposition(c.PREPOSITION, lemma, forms={"prep": {lemma}})
 
     @staticmethod
     def conjunction(lemma: str) -> Conjunction:
-        return Conjunction(lemma, forms={"conj": {lemma}})
+        return Conjunction(c.CONJUNCTION, lemma, forms={"conj": {lemma}})

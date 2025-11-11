@@ -15,6 +15,12 @@ class LexicalResponse(BaseModel):
         features: Dictionary of grammatical features
     """
 
+    pos: str = Field(
+        ...,
+        description="The part of speach this word belongs to (noun, verb, adjective, etc.)",
+        examples=["noun"],
+    )
+
     lemma: str = Field(
         ...,
         description="Dictionary form of the Greek word",

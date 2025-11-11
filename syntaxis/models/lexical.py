@@ -11,6 +11,8 @@ lexical = TypeVar("lexical")
 class Lexical(Generic[lexical]):
     """Base class for all parts of speech with common fields."""
 
+    pos: str
+
     # The dictionary form of the word in the nom, masc, sg form.
     lemma: str
     # All the forms for this word from modern-greek-lexical
@@ -50,6 +52,7 @@ class Lexical(Generic[lexical]):
             if value is not None:
                 features[feature] = value
         return {
+            "pos": self.pos,
             "lemma": self.lemma,
             "word": self.word,
             "translations": self.translations,

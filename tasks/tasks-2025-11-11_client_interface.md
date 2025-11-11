@@ -26,13 +26,13 @@
   - [x] 1.5 Import Bootstrap's CSS in the main entry file (`client/src/main.js`).
   - [x] 1.6 Create the proposed directory structure: `client/src/views`, `client/src/components`, `client/src/services`.
 
-- [ ] 2.0 Implement application routing and main page layout
-  - [ ] 2.1 Create the `HomeView.vue` and `TranslationExerciseView.vue` files inside the `client/src/views` directory.
-  - [ ] 2.2 Configure the Vue Router in `client/src/router/index.js` to define two routes:
+- [x] 2.0 Implement application routing and main page layout
+  - [x] 2.1 Create the `HomeView.vue` and `TranslationExerciseView.vue` files inside the `client/src/views` directory.
+  - [x] 2.2 Configure the Vue Router in `client/src/router/index.js` to define two routes:
     - `{ path: '/', name: 'home', component: HomeView }`
     - `{ path: '/exercise/translation', name: 'translation', component: TranslationExerciseView }`
-  - [ ] 2.3 Update `App.vue` to include a basic layout with a header and the `<router-view>` element.
-  - [ ] 2.4 In `HomeView.vue`, implement the UI to show a list containing a single item, "Translation," which links to the `/exercise/translation` route.
+  - [x] 2.3 Update `App.vue` to include a basic layout with a header and the `<router-view>` element.
+  - [x] 2.4 In `HomeView.vue`, implement the UI to show a list containing a single item, "Translation," which links to the `/exercise/translation` route.
 
 - [ ] 3.0 Develop the Translation Exercise page UI
   - [ ] 3.1 In `TranslationExerciseView.vue`, add a `<textarea>` for the user to input the grammar template and a "Generate" `<button>`.

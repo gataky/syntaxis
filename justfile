@@ -12,3 +12,11 @@ seed:
     python -m syntaxis.cli seed-dictionary
     python -m syntaxis.cli seed-pronouns
     python -m syntaxis.cli seed-articles
+
+# Setup the development environment
+setup:
+    rm -rf .venv
+    ASDF_PYTHON=$(asdf which python) && \
+    uv venv --python "$ASDF_PYTHON" .venv && \
+    UV_PROJECT_ENVIRONMENT=.venv uv sync --all-extras && \
+    UV_PROJECT_ENVIRONMENT=.venv uv pip install -e .

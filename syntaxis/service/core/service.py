@@ -1,6 +1,6 @@
 """Business logic layer for Syntaxis API service."""
 
-from syntaxis.api import Syntaxis
+from syntaxis import Syntaxis
 
 
 class SyntaxisService:

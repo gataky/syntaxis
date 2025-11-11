@@ -208,15 +208,22 @@ This document tracks cleanup opportunities identified in the Syntaxis codebase (
   - Multiple usage examples showing different template types
 - **Status:** ✅ Completed
 
-#### ❌ syntaxis/models/lexical.py - All Subclasses
-- **Location:** `syntaxis/models/lexical.py:39-98`
+#### ✅ syntaxis/models/lexical.py - All Subclasses
+- **Location:** `syntaxis/models/lexical.py:46-290`
 - **Issue:** 9 subclasses lack docstrings: Adjective, Adverb, Article, Noun, Numeral, Pronoun, Verb, Preposition, Conjunction
 - **Impact:** HIGH - Core data model
 - **Action:** Add docstring to each class explaining:
   - What part of speech it represents
   - Structure of the forms dictionary
   - Example of usage
-- **Status:** ⬜ Not Started
+- **Completed:** Added comprehensive docstrings to all 9 subclasses:
+  - Each includes grammatical explanation (gender, number, case, etc.)
+  - Forms dictionary structure documented with Format examples
+  - Usage examples with Greek words
+  - Special notes where applicable
+  - Also fixed typo: `Numberal` → `Numeral` throughout codebase
+  - All 147 tests passing ✅
+- **Status:** ✅ Completed
 
 #### ❌ Complex Methods Need Inline Comments
 - **Location:** `syntaxis/database/api.py`
@@ -276,7 +283,7 @@ This document tracks cleanup opportunities identified in the Syntaxis codebase (
 **Goal:** Fix highest-impact documentation and remove dead code
 
 - [x] Add docstrings to `Syntaxis` class and `generate_sentence()` method
-- [ ] Add docstrings to all 9 `Lexical` subclasses
+- [x] Add docstrings to all 9 `Lexical` subclasses
 - [ ] Remove unused `FUTURE` and `FUTURE_SIMPLE` constants
 - [ ] Remove or document `count_total_words()` method
 - [ ] Clean up debug comment in `scripts/exp.py`
@@ -313,9 +320,9 @@ This document tracks cleanup opportunities identified in the Syntaxis codebase (
 ## Progress Tracking
 
 - **Total Items:** 32
-- **Completed:** 3
+- **Completed:** 4
 - **In Progress:** 0
-- **Not Started:** 29
+- **Not Started:** 28
 
 **Last Updated:** 2025-11-10
 

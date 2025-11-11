@@ -11,14 +11,14 @@ from syntaxis.models.lexical import (
     Article,
     Conjunction,
     Noun,
-    Numberal,
+    Numeral,
     Preposition,
     Pronoun,
     Verb,
 )
 from syntaxis.morpheus.translator import translate_forms
 
-T = TypeVar("T", Adjective, Adverb, Article, Noun, Numberal, Pronoun, Verb, Preposition)
+T = TypeVar("T", Adjective, Adverb, Article, Noun, Numeral, Pronoun, Verb, Preposition)
 
 
 class Morpheus:
@@ -88,8 +88,8 @@ class Morpheus:
         return Morpheus._get_inflected_forms(lemma, Noun)
 
     @staticmethod
-    def numeral(lemma: str) -> Numberal:
-        return Morpheus._get_inflected_forms(lemma, Numberal)
+    def numeral(lemma: str) -> Numeral:
+        return Morpheus._get_inflected_forms(lemma, Numeral)
 
     @staticmethod
     def pronoun(lemma: str) -> Pronoun:

@@ -20,3 +20,6 @@ setup:
     uv venv --python "$ASDF_PYTHON" .venv && \
     UV_PROJECT_ENVIRONMENT=.venv uv sync --all-extras && \
     UV_PROJECT_ENVIRONMENT=.venv uv pip install -e .
+
+dev:
+    uv run uvicorn syntaxis.service.app:app --reload --port 5000

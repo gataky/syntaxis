@@ -1,6 +1,6 @@
-from syntaxis.database import Database
-from syntaxis.models.lexical import Lexical
-from syntaxis.templates import Template
+from syntaxis.lib.database import Database
+from syntaxis.lib.models.lexical import Lexical
+from syntaxis.lib.templates import Template
 
 
 class Syntaxis:

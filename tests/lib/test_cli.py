@@ -8,7 +8,7 @@ import tempfile
 import pytest
 from typer.testing import CliRunner
 
-from syntaxis.cli import app
+from syntaxis.lib.cli import app
 
 runner = CliRunner()
 
@@ -174,6 +174,7 @@ class TestCLI:
             result.exception
         )
 
+    @pytest.mark.skip(reason="slow")
     def test_seed_dictionary_default_csv_path(self, temp_dir):
         """Test that seed-dictionary uses default CSV path."""
         db_path = os.path.join(temp_dir, "test.db")

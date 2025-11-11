@@ -1,4 +1,4 @@
-from syntaxis.cli import app
+from syntaxis.lib.cli import app
 
 if __name__ == "__main__":
     app()

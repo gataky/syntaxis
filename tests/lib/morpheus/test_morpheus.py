@@ -1,6 +1,6 @@
-from syntaxis.models import constants as c
-from syntaxis.models.lexical import Adjective, Article, Noun, Verb
-from syntaxis.morpheus import Morpheus
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.models.lexical import Adjective, Article, Noun, Verb
+from syntaxis.lib.morpheus import Morpheus
 
 
 def test_morpheus_create_returns_noun_for_noun_lexical():

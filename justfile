@@ -8,18 +8,17 @@ format:
 
 # Reset and seed the database
 seed:
-    python -m syntaxis.cli create-db --clear
-    python -m syntaxis.cli seed-dictionary
-    python -m syntaxis.cli seed-pronouns
-    python -m syntaxis.cli seed-articles
+    python -m syntaxis.lib.cli create-db --clear
+    python -m syntaxis.lib.cli seed-dictionary
+    python -m syntaxis.lib.cli seed-pronouns
+    python -m syntaxis.lib.cli seed-articles
 
-# Setup the development environment
-setup:
+# Setup the development environment from a fresh start
+fresh:
     rm -rf .venv
-    ASDF_PYTHON=$(asdf which python) && \
-    uv venv --python "$ASDF_PYTHON" .venv && \
-    UV_PROJECT_ENVIRONMENT=.venv uv sync --all-extras && \
-    UV_PROJECT_ENVIRONMENT=.venv uv pip install -e .
+    uv venv .venv
+    uv sync --all-extras
+    uv pip install -e .
 
 dev:
-    uv run uvicorn syntaxis:app --reload --port 5000
+    uvicorn syntaxis:app --reload --port 5000

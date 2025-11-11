@@ -1,7 +1,7 @@
 from modern_greek_inflexion import resources
 
-from syntaxis.models import constants as c
-from syntaxis.morpheus.translator import translate_forms
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.morpheus.translator import translate_forms
 
 
 def test_translate_forms_set():

@@ -4,8 +4,8 @@ from typing import TypeVar, cast
 
 import modern_greek_inflexion as mgi
 
-from syntaxis.models import constants as c
-from syntaxis.models.lexical import (
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.models.lexical import (
     Adjective,
     Adverb,
     Article,
@@ -16,7 +16,7 @@ from syntaxis.models.lexical import (
     Pronoun,
     Verb,
 )
-from syntaxis.morpheus.translator import translate_forms
+from .translator import translate_forms
 
 T = TypeVar("T", Adjective, Adverb, Article, Noun, Numeral, Pronoun, Verb, Preposition)
 

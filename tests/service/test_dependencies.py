@@ -1,4 +1,4 @@
-from syntaxis.api import Syntaxis
+from syntaxis.lib.syntaxis import Syntaxis
 from syntaxis.service.core.service import SyntaxisService
 from syntaxis.service.dependencies import get_service, get_syntaxis
 

@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from fastapi import Depends
 
-from syntaxis import Syntaxis
+from syntaxis.lib.syntaxis import Syntaxis
 from syntaxis.service.core.service import SyntaxisService
 
 

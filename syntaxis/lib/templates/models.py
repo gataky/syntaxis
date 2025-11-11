@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from syntaxis.models import constants as c
+from syntaxis.lib.models import constants as c
 
 
 @dataclass

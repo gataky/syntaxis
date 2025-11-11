@@ -1,15 +1,15 @@
 import sqlite3
 from typing import Any
 
-from syntaxis.database.bitmasks import (
+from .bitmasks import (
     LEXICAL_CONFIG,
     LEXICAL_TO_TABLE_MAP,
     VALID_FEATURES,
 )
-from syntaxis.database.schema import create_schema
-from syntaxis.models import constants as c
-from syntaxis.models.lexical import Lexical
-from syntaxis.morpheus import Morpheus
+from .schema import create_schema
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.models.lexical import Lexical
+from syntaxis.lib.morpheus import Morpheus
 
 
 class Database:

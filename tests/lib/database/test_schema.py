@@ -1,6 +1,6 @@
 import sqlite3
 
-from syntaxis.database.schema import create_schema
+from syntaxis.lib.database.schema import create_schema
 
 
 def test_schema_creates_greek_nouns_with_bitmask_columns():

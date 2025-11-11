@@ -2,9 +2,9 @@ import sqlite3
 
 import pytest
 
-from syntaxis.database.api import Database
-from syntaxis.models import constants as c
-from syntaxis.models.lexical import Noun, Verb
+from syntaxis.lib.database.api import Database
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.models.lexical import Noun, Verb
 
 
 def test_create_word_from_row_creates_noun_with_translations():

@@ -2,8 +2,8 @@
 
 import pytest
 
-from syntaxis.models import constants as c
-from syntaxis.templates.api import (
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.templates.api import (
     Template,
     TemplateParseError,
 )

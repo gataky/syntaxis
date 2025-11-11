@@ -3,8 +3,8 @@ import os
 
 import typer
 
-from syntaxis.database import Database, seeds
-from syntaxis.models.constants import LEXICAL_MAP
+from syntaxis.lib.database import Database, seeds
+from syntaxis.lib.models.constants import LEXICAL_MAP
 
 app = typer.Typer()
 

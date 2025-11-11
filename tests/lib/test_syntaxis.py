@@ -2,11 +2,11 @@
 
 import pytest
 
-from syntaxis.api import Syntaxis
-from syntaxis.database import seeds
-from syntaxis.database.api import Database
-from syntaxis.models import constants as c
-from syntaxis.models.lexical import (
+from syntaxis.lib.syntaxis import Syntaxis
+from syntaxis.lib.database import seeds
+from syntaxis.lib.database.api import Database
+from syntaxis.lib.models import constants as c
+from syntaxis.lib.models.lexical import (
     Adjective,
     Adverb,
     Article,
@@ -17,7 +17,7 @@ from syntaxis.models.lexical import (
     Pronoun,
     Verb,
 )
-from syntaxis.templates.api import TemplateParseError
+from syntaxis.lib.templates.api import TemplateParseError
 
 
 class TestSyntaxisAPI:

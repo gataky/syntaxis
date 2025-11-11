@@ -40,8 +40,8 @@ curl -X POST "http://localhost:8000/api/v1/generate" \
   "template": "[article:nom:masc:sg] [noun:nom:masc:sg]",
   "lexicals": [
     {
-      "lemma": "¿",
-      "word": ["¿"],
+      "lemma": "o",
+      "word": ["o"],
       "translations": ["the"],
       "features": {
         "case": "nom",
@@ -50,8 +50,8 @@ curl -X POST "http://localhost:8000/api/v1/generate" \
       }
     },
     {
-      "lemma": "¬½´Á±Â",
-      "word": ["¬½´Á±Â"],
+      "lemma": "greek text",
+      "word": ["greek text"],
       "translations": ["man", "male"],
       "features": {
         "case": "nom",

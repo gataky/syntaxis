@@ -1,5 +1,7 @@
 """FastAPI application setup and configuration."""
 
+import logging
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
@@ -26,9 +28,10 @@ async def global_exception_handler(request: Request, exc: Exception):
     Returns:
         JSON response with error details
     """
+    logging.exception(f"Unhandled exception for request: {request.method} {request.url}")
     return JSONResponse(
         status_code=500,
-        content={"detail": f"Internal server error: {str(exc)}"},
+        content={"detail": "Internal server error"},
     )
 
 

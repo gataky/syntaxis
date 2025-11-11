@@ -4,6 +4,7 @@ from syntaxis.service.schemas.responses import GenerateResponse, LexicalResponse
 def test_lexical_response_minimal():
     """LexicalResponse with minimal fields."""
     lexical = LexicalResponse(
+        pos="noun",
         lemma="άνδρας",
         word={"άνδρας"},
         translations={"man", "male"},
@@ -17,6 +18,7 @@ def test_lexical_response_minimal():
 def test_lexical_response_allows_none_word():
     """LexicalResponse allows None for word field."""
     lexical = LexicalResponse(
+        pos="noun",
         lemma="test",
         word=None,
         translations={"test"},
@@ -28,6 +30,7 @@ def test_lexical_response_allows_none_word():
 def test_lexical_response_allows_none_translations():
     """LexicalResponse allows None for translations field."""
     lexical = LexicalResponse(
+        pos="noun",
         lemma="test",
         word={"test"},
         translations=None,
@@ -40,12 +43,14 @@ def test_generate_response_with_lexicals():
     """GenerateResponse contains template and lexicals."""
     lexicals = [
         LexicalResponse(
+            pos="article",
             lemma="ο",
             word={"ο"},
             translations={"the"},
             features={"case": "nom", "gender": "masc", "number": "sg"},
         ),
         LexicalResponse(
+            pos="noun",
             lemma="άνδρας",
             word={"άνδρας"},
             translations={"man"},

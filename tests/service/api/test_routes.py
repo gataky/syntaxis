@@ -21,6 +21,7 @@ async def test_generate_endpoint_success(mock_service):
 
     mock_service.generate_from_template.return_value = [
         {
+            "pos": "noun",
             "lemma": "άνδρας",
             "word": {"άνδρας"},
             "translations": {"man"},
@@ -75,12 +76,14 @@ async def test_generate_endpoint_multiple_lexicals(mock_service):
 
     mock_service.generate_from_template.return_value = [
         {
+            "pos": "article",
             "lemma": "ο",
             "word": {"ο"},
             "translations": {"the"},
             "features": {"case": "nom", "gender": "masc", "number": "sg"},
         },
         {
+            "pos": "noun",
             "lemma": "άνδρας",
             "word": {"άνδρας"},
             "translations": {"man"},

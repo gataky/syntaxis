@@ -1,6 +1,6 @@
 """Translation logic for forms dictionaries."""
 
-from syntaxis.morpheus.mappings import MGI_TO_SYNTAXIS
+from .mappings import MGI_TO_SYNTAXIS
 
 
 def translate_forms(forms: dict | set) -> dict | set:

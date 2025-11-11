@@ -1,6 +1,6 @@
 """Mapping constants for database tables and valid features."""
 
-from syntaxis.models import constants as c
+from syntaxis.lib.models import constants as c
 
 # Maps lexical to its valid feature names
 VALID_FEATURES = {

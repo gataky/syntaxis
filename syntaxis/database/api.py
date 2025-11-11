@@ -28,9 +28,9 @@ class Database:
         self._db_path = db_path
 
         if db_path is None:
-            self._conn = sqlite3.connect(":memory:")
+            self._conn = sqlite3.connect(":memory:", check_same_thread=False)
         else:
-            self._conn = sqlite3.connect(db_path)
+            self._conn = sqlite3.connect(db_path, check_same_thread=False)
 
         self._conn.row_factory = sqlite3.Row  # Enable column access by name
         create_schema(self._conn)

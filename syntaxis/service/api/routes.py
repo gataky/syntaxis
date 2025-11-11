@@ -6,14 +6,20 @@ from syntaxis.service.core.service import SyntaxisService
 from syntaxis.service.dependencies import get_service, get_syntaxis
 from syntaxis.service.schemas.requests import GenerateRequest
 from syntaxis.service.schemas.responses import GenerateResponse, LexicalResponse
+from syntaxis.templates.api import TemplateParseError
 
 router = APIRouter(prefix="/api/v1", tags=["generate"])
+
+
+def get_service_dependency(syntaxis=Depends(get_syntaxis)):
+    """Dependency chain for service injection."""
+    return get_service(syntaxis)
 
 
 @router.post("/generate", response_model=GenerateResponse)
 async def generate(
     request: GenerateRequest,
-    service: SyntaxisService = Depends(lambda: get_service(get_syntaxis())),
+    service: SyntaxisService = Depends(get_service_dependency),
 ) -> GenerateResponse:
     """Generate Greek lexicals from a grammatical template.
 
@@ -34,6 +40,10 @@ async def generate(
         lexicals = [LexicalResponse(**lex) for lex in lexicals_json]
 
         return GenerateResponse(template=request.template, lexicals=lexicals)
+
+    except TemplateParseError as e:
+        # Template parse errors return 400
+        raise HTTPException(status_code=400, detail=f"Invalid template: {str(e)}")
 
     except ValueError as e:
         error_msg = str(e)

@@ -26,14 +26,14 @@ class Lexical(Generic[lexical]):
     # here in translations.
     translations: set[str] | None = None
 
-    case:   str | None = None
+    case: str | None = None
     gender: str | None = None
-    mood:   str | None = None
+    mood: str | None = None
     number: str | None = None
     person: str | None = None
-    tense:  str | None = None
-    voice:  str | None = None
-    type:   str | None = None
+    tense: str | None = None
+    voice: str | None = None
+    type: str | None = None
 
     def __str__(self) -> str:
         if self.word is not None:

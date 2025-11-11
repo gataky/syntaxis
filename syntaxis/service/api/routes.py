@@ -11,8 +11,6 @@ from syntaxis.templates.api import TemplateParseError
 router = APIRouter(prefix="/api/v1", tags=["generate"])
 
 
-
-
 @router.post("/generate", response_model=GenerateResponse)
 async def generate(
     request: GenerateRequest,
@@ -47,7 +45,9 @@ async def generate(
 
         # Template parse errors return 400
         if "template" in error_msg.lower() or "invalid" in error_msg.lower():
-            raise HTTPException(status_code=400, detail=f"Invalid template: {error_msg}")
+            raise HTTPException(
+                status_code=400, detail=f"Invalid template: {error_msg}"
+            )
 
         # No matching words returns 500
         raise HTTPException(status_code=500, detail=error_msg)

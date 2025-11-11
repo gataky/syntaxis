@@ -42,7 +42,9 @@ async def test_generate_endpoint_template_parse_error(mock_service):
     request = GenerateRequest(template="[invalid")
 
     # Simulate template parse error
-    mock_service.generate_from_template.side_effect = ValueError("Invalid template syntax")
+    mock_service.generate_from_template.side_effect = ValueError(
+        "Invalid template syntax"
+    )
 
     with pytest.raises(HTTPException) as exc_info:
         await generate(request=request, service=mock_service)

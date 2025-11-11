@@ -1,6 +1,5 @@
 """Integration tests for REST API endpoints."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 from syntaxis.service.app import app

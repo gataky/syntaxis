@@ -1,0 +1,36 @@
+graph TD
+    subgraph "Syntaxis Project"
+        direction LR
+
+        subgraph "Core Library (syntaxis.lib)"
+            direction TB
+            %% CLI["CLI (cli.py)"]
+            SyntaxisAPI["Syntaxis API (syntaxis.py)"]
+            Database["Database (database)"]
+            Models["Data Models (models)"]
+            Morpheus["Morphology (morpheus)"]
+            Templates["Template Parser (templates)"]
+        end
+
+        subgraph "Service (syntaxis.service)"
+            direction TB
+            FastAPIApp["FastAPI App (app.py)"]
+            APIRoutes["API Routes (api)"]
+            ServiceLayer["Service Layer (core)"]
+        end
+    end
+
+    %% Dependencies
+
+    SyntaxisAPI --> Database
+    SyntaxisAPI --> Templates
+
+    Database --> Models
+    Database --> Morpheus
+
+    Morpheus --> Models
+    Templates --> Models
+
+    FastAPIApp --> APIRoutes
+    APIRoutes --> ServiceLayer
+    ServiceLayer --> SyntaxisAPI

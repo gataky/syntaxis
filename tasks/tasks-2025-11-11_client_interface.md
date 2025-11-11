@@ -34,13 +34,13 @@
   - [x] 2.3 Update `App.vue` to include a basic layout with a header and the `<router-view>` element.
   - [x] 2.4 In `HomeView.vue`, implement the UI to show a list containing a single item, "Translation," which links to the `/exercise/translation` route.
 
-- [ ] 3.0 Develop the Translation Exercise page UI
-  - [ ] 3.1 In `TranslationExerciseView.vue`, add a `<textarea>` for the user to input the grammar template and a "Generate" `<button>`.
-  - [ ] 3.2 Create the `ExerciseDisplay.vue` component file in `client/src/components`. This component should accept `template`, `englishSentence`, and `greekSentence` as props.
-  - [ ] 3.3 Inside `ExerciseDisplay.vue`, use Bootstrap's grid system (`row`, `col`) to render the three lines of text in aligned columns.
-  - [ ] 3.4 Create the `Word.vue` component file. It should accept `englishWord` and `greekWord` as props.
-  - [ ] 3.5 In `Word.vue`, display the `englishWord` and a "Show Answer" button.
-  - [ ] 3.6 Add the "Regenerate" and "Back" buttons at the bottom of the `TranslationExerciseView.vue` template.
+- [x] 3.0 Develop the Translation Exercise page UI
+  - [x] 3.1 In `TranslationExerciseView.vue`, add a `<textarea>` for the user to input the grammar template and a "Generate" `<button>`.
+  - [x] 3.2 Create the `ExerciseDisplay.vue` component file in `client/src/components`. This component should accept `template` (string) and `lexicals` (array of objects) as props.
+  - [x] 3.3 Inside `ExerciseDisplay.vue`, use Bootstrap's grid system (`row`, `col`) to render the three lines of text in aligned columns.
+  - [x] 3.4 Create the `Word.vue` component file. It should accept `englishWord` and `greekWord` as props.
+  - [x] 3.5 In `Word.vue`, display the `englishWord` and a "Show Answer" button.
+  - [x] 3.6 Add the "Regenerate" and "Back" buttons at the bottom of the `TranslationExerciseView.vue` template.
 
 - [ ] 4.0 Integrate with the `syntaxis` backend API
   - [ ] 4.1 Create the `api.js` file in `client/src/services`.

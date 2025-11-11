@@ -45,7 +45,7 @@ class Syntaxis:
         Inflected: γυναίκες
     """
 
-    def __init__(self):
+    def __init__(self, db_path: str = "./syntaxis.db"):
         """Initialize the Syntaxis sentence generator.
 
         Creates a new Syntaxis instance with:
@@ -59,7 +59,7 @@ class Syntaxis:
             FileNotFoundError: If syntaxis.db does not exist in the current directory
             sqlite3.DatabaseError: If the database file is corrupted or invalid
         """
-        self.database: Database = Database("./syntaxis.db")
+        self.database: Database = Database(db_path)
         self.template: Template = Template()
 
     def generate_sentence(self, template: str) -> list[Lexical]:

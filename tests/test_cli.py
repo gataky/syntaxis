@@ -4,7 +4,6 @@ import csv
 import os
 import sqlite3
 import tempfile
-from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
@@ -61,9 +60,7 @@ class TestCLI:
             conn = sqlite3.connect("syntaxis.db")
             cursor = conn.cursor()
             # Check that tables exist
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cursor.fetchall()]
             assert "greek_nouns" in tables
             assert "greek_verbs" in tables
@@ -130,7 +127,8 @@ class TestCLI:
 
         # Seed dictionary
         result = runner.invoke(
-            app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path]
+            app,
+            ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path],
         )
 
         assert result.exit_code == 0
@@ -160,12 +158,21 @@ class TestCLI:
         runner.invoke(app, ["create-db", "--db-name", temp_db_path])
 
         result = runner.invoke(
-            app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", "nonexistent.csv"]
+            app,
+            [
+                "seed-dictionary",
+                "--db-name",
+                temp_db_path,
+                "--csv-file",
+                "nonexistent.csv",
+            ],
         )
 
         # Should fail with file not found error
         assert result.exit_code != 0
-        assert isinstance(result.exception, FileNotFoundError) or "No such file" in str(result.exception)
+        assert isinstance(result.exception, FileNotFoundError) or "No such file" in str(
+            result.exception
+        )
 
     def test_seed_dictionary_default_csv_path(self, temp_dir):
         """Test that seed-dictionary uses default CSV path."""
@@ -182,7 +189,10 @@ class TestCLI:
     def test_seed_dictionary_with_translations(self, temp_db_path, temp_csv_path):
         """Test that translations are properly stored."""
         runner.invoke(app, ["create-db", "--db-name", temp_db_path])
-        runner.invoke(app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path])
+        runner.invoke(
+            app,
+            ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path],
+        )
 
         # Verify translations were added
         conn = sqlite3.connect(temp_db_path)
@@ -208,7 +218,9 @@ class TestCLI:
             writer.writerow(["lexical", "translations", "lemma"])
 
         runner.invoke(app, ["create-db", "--db-name", temp_db_path])
-        result = runner.invoke(app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", empty_csv])
+        result = runner.invoke(
+            app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", empty_csv]
+        )
 
         assert result.exit_code == 0
         assert "Seeded 0 words" in result.stdout
@@ -327,11 +339,16 @@ class TestCLI:
     def test_full_workflow(self, temp_db_path, temp_csv_path):
         """Test complete workflow: create DB, seed dictionary, seed pronouns, seed articles."""
         # Step 1: Create database with --clear
-        result1 = runner.invoke(app, ["create-db", "--db-name", temp_db_path, "--clear"])
+        result1 = runner.invoke(
+            app, ["create-db", "--db-name", temp_db_path, "--clear"]
+        )
         assert result1.exit_code == 0
 
         # Step 2: Seed dictionary
-        result2 = runner.invoke(app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path])
+        result2 = runner.invoke(
+            app,
+            ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path],
+        )
         assert result2.exit_code == 0
 
         # Step 3: Seed pronouns
@@ -369,11 +386,17 @@ class TestCLI:
         runner.invoke(app, ["create-db", "--db-name", temp_db_path])
 
         # Seed dictionary twice
-        result1 = runner.invoke(app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path])
+        result1 = runner.invoke(
+            app,
+            ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path],
+        )
         assert result1.exit_code == 0
 
         # Second time should fail due to duplicate lemmas
-        result2 = runner.invoke(app, ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path])
+        result2 = runner.invoke(
+            app,
+            ["seed-dictionary", "--db-name", temp_db_path, "--csv-file", temp_csv_path],
+        )
         assert result2.exit_code != 0  # Should fail on duplicate
 
     def test_seed_commands_create_db_if_missing(self, temp_db_path):

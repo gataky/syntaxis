@@ -399,7 +399,9 @@ class TestSyntaxisAPI:
     def test_generate_sentence_can_join_to_sentence(self, syntaxis_with_test_db):
         """Test that generated words can be joined into a sentence string."""
         sx = syntaxis_with_test_db
-        template = "[article:nom:masc:sg] [noun:nom:masc:sg] [verb:present:active:ter:sg]"
+        template = (
+            "[article:nom:masc:sg] [noun:nom:masc:sg] [verb:present:active:ter:sg]"
+        )
 
         result = sx.generate_sentence(template)
         sentence = " ".join(str(word) for word in result)

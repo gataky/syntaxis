@@ -16,6 +16,7 @@ from syntaxis.lib.models.lexical import (
     Pronoun,
     Verb,
 )
+
 from .translator import translate_forms
 
 T = TypeVar("T", Adjective, Adverb, Article, Noun, Numeral, Pronoun, Verb, Preposition)

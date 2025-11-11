@@ -2,7 +2,6 @@
 
 import pytest
 
-from syntaxis.lib.syntaxis import Syntaxis
 from syntaxis.lib.database import seeds
 from syntaxis.lib.database.api import Database
 from syntaxis.lib.models import constants as c
@@ -17,6 +16,7 @@ from syntaxis.lib.models.lexical import (
     Pronoun,
     Verb,
 )
+from syntaxis.lib.syntaxis import Syntaxis
 from syntaxis.lib.templates.api import TemplateParseError
 
 

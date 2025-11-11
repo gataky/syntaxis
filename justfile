@@ -8,10 +8,10 @@ format:
 
 # Reset and seed the database
 seed:
-    python -m syntaxis.lib.cli create-db --clear
-    python -m syntaxis.lib.cli seed-dictionary
-    python -m syntaxis.lib.cli seed-pronouns
-    python -m syntaxis.lib.cli seed-articles
+    python -m syntaxis.cli create-db --clear
+    python -m syntaxis.cli seed-dictionary
+    python -m syntaxis.cli seed-pronouns
+    python -m syntaxis.cli seed-articles
 
 # Setup the development environment from a fresh start
 fresh:

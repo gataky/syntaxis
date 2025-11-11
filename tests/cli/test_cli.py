@@ -8,7 +8,7 @@ import tempfile
 import pytest
 from typer.testing import CliRunner
 
-from syntaxis.lib.cli import app
+from syntaxis.cli import app
 
 runner = CliRunner()
 

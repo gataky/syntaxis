@@ -2,8 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from syntaxis.lib.syntaxis import Syntaxis
 from syntaxis.lib.models.lexical import Noun
+from syntaxis.lib.syntaxis import Syntaxis
 from syntaxis.service.core.service import SyntaxisService
 
 

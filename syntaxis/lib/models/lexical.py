@@ -110,34 +110,6 @@ class Adverb(Lexical[types.Adverb]):
         return self.word
 
 
-class Article(Lexical[types.Article]):
-    """Greek article (definite or indefinite).
-
-    Articles in Greek decline for gender, number, and case to agree with
-    the noun they modify. Both definite (ο, η, το) and indefinite (ένας, μία, ένα)
-    articles are represented by this class.
-
-    Attributes:
-        lemma: Base form of the article (e.g., "ο" for definite masculine)
-        forms: Nested dictionary structure containing all declined forms
-            Format: forms[number][gender][case] -> set[str]
-        word: The specific declined form after applying features
-        translations: English translation (typically "the" or "a/an")
-
-    Example:
-        >>> art = Article(lemma="ο", forms=..., translations=["the"])
-        >>> art.apply_features(number="pl", gender="masc", case="acc")
-        {"τους"}
-    """
-
-    def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        self.gender = gender
-        self.number = number
-        self.case = case
-        self.word = cast(set[str], self.forms[number][gender][case])
-        return self.word
-
-
 class Noun(Lexical[types.Noun]):
     """Greek noun with full declension forms.
 
@@ -271,6 +243,35 @@ class Verb(Lexical[types.Verb]):
         return self.word
 
 
+class Article(Lexical[types.Article]):
+    """Greek article (definite or indefinite).
+
+    Articles in Greek decline for gender, number, and case to agree with
+    the noun they modify. Both definite (ο, η, το) and indefinite (ένας, μία, ένα)
+    articles are represented by this class.
+
+    Attributes:
+        lemma: Base form of the article (e.g., "ο" for definite masculine)
+        forms: Nested dictionary structure containing all declined forms
+            Format: forms[number][gender][case] -> set[str]
+        word: The specific declined form after applying features
+        translations: English translation (typically "the" or "a/an")
+
+    Example:
+        >>> art = Article(lemma="ο", forms=..., translations=["the"])
+        >>> art.apply_features(number="pl", gender="masc", case="acc")
+        {"τους"}
+    """
+
+    def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
+        self.gender = gender
+        self.number = number
+        self.case = case
+        self.type = extra.get("type", None)
+        self.word = self.forms[number][gender][case]
+        return self.word
+
+
 class Preposition(Lexical[types.Preposition]):
     """Greek preposition (invariable word).
 
@@ -295,7 +296,7 @@ class Preposition(Lexical[types.Preposition]):
     """
 
     def apply_features(self, **extra) -> set[str]:
-        self.word = self.forms["prep"]
+        self.word = self.forms[c.PREPOSITION]
         return self.word
 
 
@@ -323,5 +324,5 @@ class Conjunction(Lexical[types.Conjunction]):
     """
 
     def apply_features(self, **extra) -> set[str]:
-        self.word = self.forms["conj"]
+        self.word = self.forms[c.CONJUNCTION]
         return self.word

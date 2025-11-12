@@ -1,10 +1,9 @@
 type Adjective = dict[str, dict[str, dict[str, dict[str, set[str]]]]]
 type Adverb = dict[str, set[str]]
 type Article = dict[str, dict[str, dict[str, set[str]]]]
+type Conjunction = dict[str, set[str]]
 type Noun = dict[str, dict[str, dict[str, set[str]]]]
 type Numeral = dict[str, dict[str, dict[str, dict[str, set[str]]]]]
+type Preposition = dict[str, set[str]]
 type Pronoun = dict[str, dict[str, dict[str, set[str]]]]
 type Verb = dict[str, dict[str, dict[str, dict[str, dict[str, dict[str, set[str]]]]]]]
-
-type Preposition = dict[str, set[str]]
-type Conjunction = dict[str, set[str]]

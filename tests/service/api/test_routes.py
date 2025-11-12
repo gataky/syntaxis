@@ -62,11 +62,8 @@ async def test_generate_endpoint_no_matching_words(mock_service):
     # Simulate no matching words
     mock_service.generate_from_template.side_effect = ValueError("No words found")
 
-    with pytest.raises(HTTPException) as exc_info:
+    with pytest.raises(ValueError) as exc_info:
         await generate(request=request, service=mock_service)
-
-    assert exc_info.value.status_code == 500
-    assert "No words found" in exc_info.value.detail
 
 
 @pytest.mark.asyncio

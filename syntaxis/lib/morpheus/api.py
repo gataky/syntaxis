@@ -82,10 +82,6 @@ class Morpheus:
         return Morpheus._get_inflected_forms(lemma, Adverb)
 
     @staticmethod
-    def article(lemma: str) -> Article:
-        return Morpheus._get_inflected_forms(lemma, Article)
-
-    @staticmethod
     def noun(lemma: str) -> Noun:
         return Morpheus._get_inflected_forms(lemma, Noun)
 
@@ -108,8 +104,16 @@ class Morpheus:
 
     @staticmethod
     def preposition(lemma: str) -> Preposition:
-        return Preposition(c.PREPOSITION, lemma, forms={"prep": {lemma}})
+        return Preposition(c.PREPOSITION, lemma, forms={c.PREPOSITION: {lemma}})
 
     @staticmethod
     def conjunction(lemma: str) -> Conjunction:
-        return Conjunction(c.CONJUNCTION, lemma, forms={"conj": {lemma}})
+        return Conjunction(c.CONJUNCTION, lemma, forms={c.CONJUNCTION: {lemma}})
+
+    # TODO include another feature for articles.  Articles have a definite and indefinite
+    # forms which we'll call "type" to not conflict with other features. However, MGI
+    # does not distinguish between these. So when MGI returns its dict it won't have those
+    # values and we'll need to work around this when we apply_features to the Lexical
+    @staticmethod
+    def article(lemma: str) -> Article:
+        return Morpheus._get_inflected_forms(lemma, Article)

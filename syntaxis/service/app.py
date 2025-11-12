@@ -3,9 +3,9 @@
 import logging
 import sys
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from syntaxis.service.api.routes import router
 
@@ -13,11 +13,9 @@ from syntaxis.service.api.routes import router
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s:     %(name)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 log = logging.getLogger("syntaxis.service")
-
-log.info("wtf")
 
 # Create FastAPI application
 app = FastAPI(
@@ -31,27 +29,30 @@ app = FastAPI(
 # Added CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], # Allow client origin
+    allow_origins=["http://localhost:5173"],  # Allow client origin
     allow_credentials=True,
-    allow_methods=["*"], # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"], # Allow all headers
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """Global exception handler for unexpected errors.
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """Handler for expected HTTP errors (validation, business logic).
+
+    Logs at warning level since these are expected error cases.
 
     Args:
         request: The request that caused the exception
-        exc: The exception that was raised
+        exc: The HTTPException that was raised
 
     Returns:
         JSON response with error details
     """
-    log.error(str(exc))
+    log.warning(f"{exc.status_code} {request.method} {request.url.path}: {exc.detail}")
     return JSONResponse(
-        status_code=500,
-        content={"detail": f"Internal server error: {str(exc)}"},
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
     )
 
 

@@ -49,9 +49,5 @@ async def generate(
                 status_code=400, detail=f"Invalid template: {error_msg}"
             )
 
-        # No matching words returns 500
-        raise HTTPException(status_code=500, detail=error_msg)
-
-    except Exception as e:
-        # Unexpected errors return 500
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        # No matching words is unexpected - let Exception handler catch it
+        raise

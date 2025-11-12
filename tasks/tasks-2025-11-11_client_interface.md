@@ -48,10 +48,10 @@
   - [x] 4.3 The function should send the `template` string in the request body.
   - [x] 4.4 Implement error handling within the service to catch API errors and return a consistent error format.
 
-- [ ] 5.0 Implement the core exercise logic and user interactions
-  - [ ] 5.1 In `TranslationExerciseView.vue`, import and use the `generateSentence` service. When the "Generate" button is clicked, call this service with the content of the text area.
-  - [ ] 5.2 Store the API response data in the component's state and pass it as props to the `ExerciseDisplay` component.
-  - [ ] 5.3 In the `Word.vue` component, implement the local state and logic to toggle the visibility of the `greekWord` when the "Show Answer" / "Hide Answer" button is clicked.
-  - [ ] 5.4 In `TranslationExerciseView.vue`, wire up the "Regenerate" button to call the `generateSentence` service again with the current template.
-  - [ ] 5.5 Wire up the "Back" button to navigate to the home route (`/`) using Vue Router's programmatic navigation.
-  - [ ] 5.6 Add a data property to `TranslationExerciseView.vue` to hold error messages, and display them in the template if an API call fails.
+- [x] 5.0 Implement the core exercise logic and user interactions
+  - [x] 5.1 In `TranslationExerciseView.vue`, import and use the `generateSentence` service. When the "Generate" button is clicked, call this service with the content of the text area.
+  - [x] 5.2 Store the API response data in the component's state and pass it as props to the `ExerciseDisplay` component.
+  - [x] 5.3 In the `Word.vue` component, implement the local state and logic to toggle the visibility of the `greekWord` when the "Show Answer" / "Hide Answer" button is clicked.
+  - [x] 5.4 In `TranslationExerciseView.vue`, wire up the "Regenerate" button to call the `generateSentence` service again with the current template.
+  - [x] 5.5 Wire up the "Back" button to navigate to the home route (`/`) using Vue Router's programmatic navigation.
+  - [x] 5.6 Add a data property to `TranslationExerciseView.vue` to hold error messages, and display them in the template if an API call fails.

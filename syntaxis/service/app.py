@@ -1,11 +1,23 @@
 """FastAPI application setup and configuration."""
 
 import logging
+import sys
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from syntaxis.service.api.routes import router
+
+# Configure logging to stdout with uvicorn-style format
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:     %(name)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+log = logging.getLogger("syntaxis.service")
+
+log.info("wtf")
 
 # Create FastAPI application
 app = FastAPI(
@@ -16,6 +28,14 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# Added CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"], # Allow client origin
+    allow_credentials=True,
+    allow_methods=["*"], # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"], # Allow all headers
+)
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -28,10 +48,10 @@ async def global_exception_handler(request: Request, exc: Exception):
     Returns:
         JSON response with error details
     """
-    logging.exception(f"Unhandled exception for request: {request.method} {request.url}")
+    log.error(str(exc))
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error"},
+        content={"detail": f"Internal server error: {str(exc)}"},
     )
 
 

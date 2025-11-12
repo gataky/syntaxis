@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1'; // Assuming backend runs on port 8000
+const API_BASE_URL = 'http://localhost:5000/api/v1'; // Assuming backend runs on port 8000
 
 export default {
   async generateSentence(template) {

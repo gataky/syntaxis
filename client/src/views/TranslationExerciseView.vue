@@ -9,7 +9,11 @@
 
     <button class="btn btn-primary" @click="generateExercise">Generate</button>
 
-    <!-- Exercise Display will go here -->
+    <div v-if="error" class="alert alert-danger mt-4" role="alert">
+      {{ error }}
+    </div>
+
+    <ExerciseDisplay v-if="exerciseData" :template="exerciseData.template" :lexicals="exerciseData.lexicals" />
 
     <div class="d-flex justify-content-between mt-4">
       <button class="btn btn-secondary" @click="goBack">Back</button>
@@ -19,26 +23,36 @@
 </template>
 
 <script>
+import api from '@/services/api';
+import ExerciseDisplay from '@/components/ExerciseDisplay.vue';
+
 export default {
   name: 'TranslationExerciseView',
+  components: {
+    ExerciseDisplay
+  },
   data() {
     return {
       template: '',
-      // Other data properties will be added later
+      exerciseData: null,
+      error: null,
     }
   },
   methods: {
-    generateExercise() {
-      // Logic to generate exercise will be added here
-      console.log('Generating exercise with template:', this.template);
+    async generateExercise() {
+      this.error = null;
+      this.exerciseData = null;
+      try {
+        this.exerciseData = await api.generateSentence(this.template);
+      } catch (error) {
+        this.error = error.message;
+      }
     },
     goBack() {
-      // Logic to go back to main page
-      console.log('Going back to main page');
+      this.$router.push('/');
     },
     regenerateExercise() {
-      // Logic to regenerate exercise with same template
-      console.log('Regenerating exercise with same template');
+      this.generateExercise();
     }
   }
 }

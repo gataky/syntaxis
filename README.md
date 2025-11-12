@@ -77,3 +77,23 @@ curl http://localhost:8000/health
   "service": "syntaxis-api"
 }
 ```
+
+## Template Syntax
+
+Syntaxis supports two template syntax versions:
+
+### V1 Syntax (Original)
+
+```
+[article:nom:masc:sg] [noun:nom:masc:sg] [verb:pres:act:ter:sg]
+```
+
+### V2 Syntax (Recommended)
+
+More concise with feature grouping:
+
+```
+(article noun)@{nom:masc:sg} (verb)@{pres:act:ter:sg}
+```
+
+See [V2 Syntax Guide](docs/v2-syntax-guide.md) for complete documentation.

@@ -93,3 +93,136 @@ async def test_generate_endpoint_multiple_lexicals(mock_service):
     assert len(response.lexicals) == 2
     assert response.lexicals[0].lemma == "ο"
     assert response.lexicals[1].lemma == "άνδρας"
+
+
+class TestV2TemplateRoutes:
+    """Tests for V2 template support in API routes."""
+
+    @pytest.mark.asyncio
+    async def test_generate_endpoint_v2_template(self, mock_service):
+        """POST /generate should accept V2 templates"""
+        request = GenerateRequest(template="(noun)@{nom:masc:sg}")
+
+        mock_service.generate_from_template.return_value = [
+            {
+                "pos": "noun",
+                "lemma": "άνδρας",
+                "word": {"άνδρας"},
+                "translations": {"man"},
+                "features": {"case": "nom", "gender": "masc", "number": "sg"},
+            }
+        ]
+
+        response = await generate(request=request, service=mock_service)
+
+        assert response.template == "(noun)@{nom:masc:sg}"
+        assert len(response.lexicals) == 1
+        assert response.lexicals[0].lemma == "άνδρας"
+        mock_service.generate_from_template.assert_called_once_with("(noun)@{nom:masc:sg}")
+
+    @pytest.mark.asyncio
+    async def test_generate_endpoint_v2_with_reference(self, mock_service):
+        """POST /generate should handle V2 references"""
+        request = GenerateRequest(template="(article)@{nom:sg} (noun)@$1")
+
+        mock_service.generate_from_template.return_value = [
+            {
+                "pos": "article",
+                "lemma": "ο",
+                "word": {"ο"},
+                "translations": {"the"},
+                "features": {"case": "nom", "number": "sg"},
+            },
+            {
+                "pos": "noun",
+                "lemma": "άνδρας",
+                "word": {"άνδρας"},
+                "translations": {"man"},
+                "features": {"case": "nom", "number": "sg"},
+            },
+        ]
+
+        response = await generate(request=request, service=mock_service)
+
+        assert response.template == "(article)@{nom:sg} (noun)@$1"
+        assert len(response.lexicals) == 2
+
+    @pytest.mark.asyncio
+    async def test_generate_endpoint_v2_multiple_groups(self, mock_service):
+        """POST /generate should handle V2 multiple groups"""
+        request = GenerateRequest(template="(article noun)@{nom:masc:sg} (verb)@{pres:act:ter:sg}")
+
+        mock_service.generate_from_template.return_value = [
+            {
+                "pos": "article",
+                "lemma": "ο",
+                "word": {"ο"},
+                "translations": {"the"},
+                "features": {"case": "nom", "gender": "masc", "number": "sg"},
+            },
+            {
+                "pos": "noun",
+                "lemma": "άνδρας",
+                "word": {"άνδρας"},
+                "translations": {"man"},
+                "features": {"case": "nom", "gender": "masc", "number": "sg"},
+            },
+            {
+                "pos": "verb",
+                "lemma": "βλέπω",
+                "word": {"βλέπει"},
+                "translations": {"sees"},
+                "features": {"tense": "present", "voice": "active", "person": "ter", "number": "sg"},
+            },
+        ]
+
+        response = await generate(request=request, service=mock_service)
+
+        assert len(response.lexicals) == 3
+        assert response.lexicals[0].lemma == "ο"
+        assert response.lexicals[1].lemma == "άνδρας"
+        assert response.lexicals[2].lemma == "βλέπω"
+
+    @pytest.mark.asyncio
+    async def test_generate_endpoint_v2_direct_features(self, mock_service):
+        """POST /generate should handle V2 direct feature overrides"""
+        request = GenerateRequest(template="(article noun{fem})@{nom:masc:sg}")
+
+        mock_service.generate_from_template.return_value = [
+            {
+                "pos": "article",
+                "lemma": "ο",
+                "word": {"ο"},
+                "translations": {"the"},
+                "features": {"case": "nom", "gender": "masc", "number": "sg"},
+            },
+            {
+                "pos": "noun",
+                "lemma": "γυναίκα",
+                "word": {"γυναίκα"},
+                "translations": {"woman"},
+                "features": {"case": "nom", "gender": "fem", "number": "sg"},
+            },
+        ]
+
+        response = await generate(request=request, service=mock_service)
+
+        assert len(response.lexicals) == 2
+        assert response.lexicals[0].features["gender"] == "masc"
+        assert response.lexicals[1].features["gender"] == "fem"
+
+    @pytest.mark.asyncio
+    async def test_generate_endpoint_v2_invalid_syntax(self, mock_service):
+        """POST /generate should handle V2 syntax errors"""
+        request = GenerateRequest(template="(noun@{nom:sg}")  # Missing closing parenthesis
+
+        # V2 parser raises ValueError with "Invalid" or "template" to trigger 400 response
+        mock_service.generate_from_template.side_effect = ValueError(
+            "Invalid template syntax: Unclosed group (mismatched parentheses)"
+        )
+
+        with pytest.raises(HTTPException) as exc_info:
+            await generate(request=request, service=mock_service)
+
+        assert exc_info.value.status_code == 400
+        assert "Invalid template" in exc_info.value.detail

@@ -1,6 +1,13 @@
+import logging
+
 from syntaxis.lib.database import Database
 from syntaxis.lib.models.lexical import Lexical
 from syntaxis.lib.templates import Template
+from syntaxis.lib.templates.ast import Feature, Group, TemplateAST
+from syntaxis.lib.templates.v1_parser import V1Parser
+from syntaxis.lib.templates.v2_parser import V2Parser
+
+logger = logging.getLogger(__name__)
 
 
 class Syntaxis:
@@ -72,9 +79,11 @@ class Syntaxis:
 
         Args:
             template: A template string specifying the sentence structure.
-                Format: "[lexical:feature1:feature2:...] [lexical:...]"
+                V1 Format: "[lexical:feature1:feature2:...] [lexical:...]"
+                V2 Format: "(lexical1 lexical2)@{feature1:feature2:...}"
                 Examples:
                 - "[article:nom:masc:sg] [noun:nom:masc:sg]"
+                - "(article noun)@{nom:masc:sg}"
                 - "[verb:aorist:active:pri:pl]"
                 - "[prep] [article:acc:fem:pl] [noun:acc:fem:pl]"
 
@@ -86,7 +95,8 @@ class Syntaxis:
         Raises:
             TemplateParseError: If the template syntax is invalid or features are
                 incorrectly specified for a lexical type
-            ValueError: If no words in the database match the specified features
+            ValueError: If template format is invalid or no words in the database
+                match the specified features
 
         Example:
             Simple nominative phrase:
@@ -106,22 +116,127 @@ class Syntaxis:
             >>> print(sentence)
             άνδρας βλέπει γυναίκα
 
-            Mixed with invariable words:
+            V2 syntax with grouping:
 
-            >>> template = "[article:nom:masc:sg] [noun:nom:masc:sg] [prep] [article:acc:neut:sg] [noun:acc:neut:sg]"
+            >>> template = "(article noun)@{nom:masc:sg}"
             >>> words = sx.generate_sentence(template)
             >>> print(" ".join(str(w) for w in words))
-            ο άνδρας με το παιδί
+            ο άνδρας
 
         Note:
             The order and specific words returned will vary on each call since
             words are selected randomly from the database. Only the grammatical
             structure is guaranteed to match the template.
         """
-        parsed = self.template.parse(template)
-        words = []
-        for token in parsed.tokens:
-            word = self.database.get_random_word(token.lexical, **token.features())
-            words.append(word)
+        template = template.strip()
 
-        return words
+        # Version detection
+        if not template:
+            raise ValueError("Invalid template format: empty template")
+
+        if template[0] == "[":
+            # V1 format
+            ast = V1Parser.parse(template)
+        elif template[0] == "(":
+            # V2 format
+            ast = V2Parser.parse(template)
+        else:
+            raise ValueError(
+                f"Invalid template format: must start with '[' (V1) or '(' (V2), "
+                f"got '{template[0]}'"
+            )
+
+        # Generate sentence from AST
+        return self._generate_from_ast(ast)
+
+    def _generate_from_ast(self, ast: TemplateAST) -> list[Lexical]:
+        """Generate lexicals from AST by resolving features and querying database
+
+        Args:
+            ast: Parsed template AST
+
+        Returns:
+            List of Lexical objects with inflected forms
+        """
+        lexicals = []
+
+        for group in ast.groups:
+            # Resolve group features (handle references)
+            resolved_group_features = self._resolve_group_features(group, ast.groups)
+
+            # Generate lexical for each token in group
+            for token in group.tokens:
+                # Merge features: group features + direct features (with warnings)
+                final_features = self._merge_features(
+                    resolved_group_features,
+                    token.direct_features,
+                    warn_on_override=True,
+                    context=f"Token '{token.lexical}' ",
+                )
+
+                # Convert features to kwargs for database query
+                feature_dict = {f.category: f.name for f in final_features}
+
+                # Get word from database
+                lexical = self.database.get_random_word(token.lexical, **feature_dict)
+                lexicals.append(lexical)
+
+        return lexicals
+
+    def _resolve_group_features(
+        self, group: Group, all_groups: list[Group]
+    ) -> list[Feature]:
+        """Resolve group features, following references if present
+
+        Args:
+            group: The group to resolve features for
+            all_groups: All groups in the template (for reference lookup)
+
+        Returns:
+            List of resolved features
+        """
+        if group.references is None:
+            # No reference, just return group features
+            return group.group_features.copy()
+
+        # Find referenced group
+        referenced_group = all_groups[group.references - 1]  # Convert to 0-indexed
+
+        # Start with referenced group's features (recursively resolve)
+        features = self._resolve_group_features(referenced_group, all_groups)
+
+        # Merge in current group features (override by category)
+        return self._merge_features(features, group.group_features)
+
+    def _merge_features(
+        self,
+        base_features: list[Feature],
+        override_features: list[Feature],
+        warn_on_override: bool = False,
+        context: str = "",
+    ) -> list[Feature]:
+        """Merge two feature lists, with overrides replacing by category
+
+        Args:
+            base_features: Base feature list
+            override_features: Features to override/add
+            warn_on_override: If True, emit warning when override occurs
+            context: Context string for warning message
+
+        Returns:
+            Merged feature list
+        """
+        # Build dict of category -> feature from base
+        merged = {f.category: f for f in base_features}
+
+        # Override with new features
+        for feature in override_features:
+            if warn_on_override and feature.category in merged:
+                old_feature = merged[feature.category]
+                logger.warning(
+                    f"{context}overrides feature '{feature.category}': "
+                    f"{old_feature.name} -> {feature.name}"
+                )
+            merged[feature.category] = feature
+
+        return list(merged.values())

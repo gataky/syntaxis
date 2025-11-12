@@ -424,3 +424,109 @@ class TestSyntaxisAPI:
         assert len(result2) == 1
         assert isinstance(result1[0], Noun)
         assert isinstance(result2[0], Noun)
+
+
+class TestVersionDetection:
+    """Test suite for version detection in Syntaxis."""
+
+    @pytest.fixture
+    def test_db(self):
+        """Create an in-memory test database with sample data."""
+        db = Database()  # Uses in-memory database by default
+
+        # Add sample nouns
+        db.add_word(lemma="άνθρωπος", translations=["person"], lexical=c.NOUN)
+        db.add_word(lemma="γυναίκα", translations=["woman"], lexical=c.NOUN)
+
+        # Add sample verbs
+        db.add_word(lemma="βλέπω", translations=["see"], lexical=c.VERB)
+
+        # Add sample articles
+        seeds.articles.seed(db._conn)
+
+        return db
+
+    @pytest.fixture
+    def syntaxis_instance(self, test_db, monkeypatch):
+        """Create a Syntaxis instance with test database."""
+        sx = Syntaxis()
+        monkeypatch.setattr(sx, "database", test_db)
+        return sx
+
+    def test_detect_v1_template(self, syntaxis_instance):
+        """Should detect V1 template starting with ["""
+        template = "[noun:nom:masc:sg]"
+        # This should not raise an error
+        result = syntaxis_instance.generate_sentence(template)
+        assert len(result) == 1
+
+    def test_detect_v2_template(self, syntaxis_instance):
+        """Should detect V2 template starting with ("""
+        template = "(noun)@{nom:masc:sg}"
+        # This should not raise an error
+        result = syntaxis_instance.generate_sentence(template)
+        assert len(result) == 1
+
+    def test_invalid_template_start(self, syntaxis_instance):
+        """Should raise error for invalid template format"""
+        template = "noun:nom:masc:sg"
+        with pytest.raises(ValueError, match="Invalid template format"):
+            syntaxis_instance.generate_sentence(template)
+
+
+class TestFeatureOverrideWarnings:
+    """Test suite for feature override warnings."""
+
+    @pytest.fixture
+    def test_db(self):
+        """Create an in-memory test database with sample data."""
+        db = Database()  # Uses in-memory database by default
+
+        # Add sample nouns
+        db.add_word(lemma="άνθρωπος", translations=["person"], lexical=c.NOUN)
+
+        # Add sample verbs
+        db.add_word(lemma="βλέπω", translations=["see"], lexical=c.VERB)
+
+        # Add sample articles
+        seeds.articles.seed(db._conn)
+
+        # Add sample pronouns
+        seeds.pronouns.seed(db._conn)
+
+        return db
+
+    @pytest.fixture
+    def syntaxis_instance(self, test_db, monkeypatch):
+        """Create a Syntaxis instance with test database."""
+        sx = Syntaxis()
+        monkeypatch.setattr(sx, "database", test_db)
+        return sx
+
+    def test_override_warning_emitted(self, syntaxis_instance, caplog):
+        """Should warn when direct feature overrides group/reference feature"""
+        import logging
+
+        caplog.set_level(logging.WARNING)
+
+        # Group 1 has 'masc' (gender), direct feature on noun overrides with 'fem'
+        template = "(article noun{fem})@{nom:masc:sg}"
+        syntaxis_instance.generate_sentence(template)
+
+        # Check warning was logged
+        assert any(
+            "overrides feature 'gender'" in record.message for record in caplog.records
+        )
+
+    def test_no_warning_when_no_conflict(self, syntaxis_instance, caplog):
+        """Should not warn when direct feature doesn't conflict"""
+        import logging
+
+        caplog.set_level(logging.WARNING)
+
+        # Group features have nom:sg, direct feature adds masc (no conflict)
+        template = "(article{masc} noun{masc})@{nom:sg}"
+        syntaxis_instance.generate_sentence(template)
+
+        # No warnings
+        assert not any("overrides" in record.message for record in caplog.records)

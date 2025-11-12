@@ -73,3 +73,83 @@ def test_generate_from_template_empty_result(service, mock_syntaxis):
     result = service.generate_from_template("[noun:nom:masc:sg]")
 
     assert result == []
+
+
+class TestServiceV2Templates:
+    """Tests for V2 template support in service layer."""
+
+    def test_generate_from_v2_template(self, service, mock_syntaxis):
+        """Service should handle V2 templates"""
+        template = "(noun)@{nom:masc:sg}"
+
+        mock_noun = Mock(spec=Noun)
+        mock_noun.to_json.return_value = {
+            "lemma": "άνδρας",
+            "word": {"άνδρας"},
+            "translations": {"man"},
+            "features": {"case": "nom", "gender": "masc", "number": "sg"},
+        }
+
+        mock_syntaxis.generate_sentence.return_value = [mock_noun]
+
+        result = service.generate_from_template(template)
+
+        mock_syntaxis.generate_sentence.assert_called_once_with(template)
+        assert len(result) == 1
+        assert result[0]["lemma"] == "άνδρας"
+
+    def test_generate_from_v2_template_with_reference(self, service, mock_syntaxis):
+        """Service should handle V2 templates with references"""
+        template = "(article)@{nom:sg} (noun)@$1"
+
+        mock_article = Mock()
+        mock_article.to_json.return_value = {"lemma": "ο", "features": {}}
+
+        mock_noun = Mock()
+        mock_noun.to_json.return_value = {"lemma": "άνδρας", "features": {}}
+
+        mock_syntaxis.generate_sentence.return_value = [mock_article, mock_noun]
+
+        result = service.generate_from_template(template)
+
+        mock_syntaxis.generate_sentence.assert_called_once_with(template)
+        assert len(result) == 2
+
+    def test_generate_from_v2_template_with_multiple_groups(self, service, mock_syntaxis):
+        """Service should handle V2 templates with multiple groups"""
+        template = "(article noun)@{nom:masc:sg} (verb)@{pres:act:ter:sg}"
+
+        mock_article = Mock()
+        mock_article.to_json.return_value = {"lemma": "ο", "features": {}}
+
+        mock_noun = Mock()
+        mock_noun.to_json.return_value = {"lemma": "άνδρας", "features": {}}
+
+        mock_verb = Mock()
+        mock_verb.to_json.return_value = {"lemma": "βλέπω", "features": {}}
+
+        mock_syntaxis.generate_sentence.return_value = [mock_article, mock_noun, mock_verb]
+
+        result = service.generate_from_template(template)
+
+        mock_syntaxis.generate_sentence.assert_called_once_with(template)
+        assert len(result) == 3
+
+    def test_generate_from_v2_template_with_direct_features(self, service, mock_syntaxis):
+        """Service should handle V2 templates with direct feature overrides"""
+        template = "(article noun{fem})@{nom:masc:sg}"
+
+        mock_article = Mock()
+        mock_article.to_json.return_value = {"lemma": "ο", "features": {"gender": "masc"}}
+
+        mock_noun = Mock()
+        mock_noun.to_json.return_value = {"lemma": "γυναίκα", "features": {"gender": "fem"}}
+
+        mock_syntaxis.generate_sentence.return_value = [mock_article, mock_noun]
+
+        result = service.generate_from_template(template)
+
+        mock_syntaxis.generate_sentence.assert_called_once_with(template)
+        assert len(result) == 2
+        assert result[0]["features"]["gender"] == "masc"
+        assert result[1]["features"]["gender"] == "fem"

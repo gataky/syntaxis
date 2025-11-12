@@ -106,6 +106,33 @@ PERSON_VALUES = {FIRST, SECOND, THIRD}
 PERFECT = "perf"
 IMPERFECT = "imperf"
 
+# Feature category mappings from design document
+FEATURE_CATEGORIES = {
+    # Case
+    NOMINATIVE: CASE,
+    GENITIVE: CASE,
+    ACCUSATIVE: CASE,
+    VOCATIVE: CASE,
+    # Gender
+    MASCULINE: GENDER,
+    FEMININE: GENDER,
+    NEUTER: GENDER,
+    # Number
+    SINGULAR: NUMBER,
+    PLURAL: NUMBER,
+    # Tense
+    PRESENT: TENSE,
+    AORIST: TENSE,
+    PARATATIKOS: TENSE,
+    # Voice
+    ACTIVE: VOICE,
+    PASSIVE: VOICE,
+    # Person
+    FIRST: PERSON,
+    SECOND: PERSON,
+    THIRD: PERSON,
+}
+
 # Mapping between CSV dictionary and internal lexical types.
 # TODO: do we really need this? Perhaps just force the csv to follow conventions here.
 LEXICAL_MAP = {

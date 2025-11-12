@@ -1,15 +1,10 @@
 import sqlite3
 from typing import Any
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 from syntaxis.lib.models.lexical import Lexical
 from syntaxis.lib.morpheus import Morpheus
 
-from .bitmasks import (
-    LEXICAL_CONFIG,
-    LEXICAL_TO_TABLE_MAP,
-    VALID_FEATURES,
-)
 from .schema import create_schema
 
 
@@ -60,7 +55,7 @@ class Database:
             Noun(lemma="άνθρωπος", ...)
         """
         # Validate features
-        valid_features = VALID_FEATURES.get(lexical, set())
+        valid_features = c.VALID_CASE_FEATURES.get(lexical, set())
         invalid_features = set(features.keys()) - valid_features
 
         if invalid_features:
@@ -70,7 +65,7 @@ class Database:
             )
 
         cursor = self._conn.cursor()
-        table = LEXICAL_TO_TABLE_MAP[lexical]
+        table = c.LEXICAL_TO_TABLE_MAP[lexical]
 
         # Build WHERE conditions using direct column comparisons
         conditions = []
@@ -143,7 +138,7 @@ class Database:
             Word object or None if not found
         """
         cursor = self._conn.cursor()
-        table = LEXICAL_TO_TABLE_MAP[lexical]
+        table = c.LEXICAL_TO_TABLE_MAP[lexical]
 
         # Query with JOIN to get lemma and translations
         query = f"""
@@ -412,7 +407,7 @@ class Database:
         if not translations:
             raise ValueError("At least one translation required")
 
-        table = LEXICAL_TO_TABLE_MAP[lexical]
+        table = c.LEXICAL_TO_TABLE_MAP[lexical]
         cursor = self._conn.cursor()
         existing = cursor.execute(
             f"SELECT id FROM {table} WHERE lemma = ?", (lemma,)
@@ -444,7 +439,7 @@ class Database:
         Returns:
             Dictionary mapping field names to values for INSERT
         """
-        config = LEXICAL_CONFIG[lexical]
+        config = c.LEXICAL_CONFIG[lexical]
         fields = config["fields"]
 
         values: dict[str, str | int | None] = {
@@ -479,8 +474,8 @@ class Database:
             values_list: List of value dictionaries (one per feature combination)
             translations: English translations
         """
-        table = LEXICAL_TO_TABLE_MAP[lexical]
-        config = LEXICAL_CONFIG[lexical]
+        table = c.LEXICAL_TO_TABLE_MAP[lexical]
+        config = c.LEXICAL_CONFIG[lexical]
         fields = config["fields"]
         cursor = self._conn.cursor()
 

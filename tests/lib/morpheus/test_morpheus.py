@@ -1,4 +1,4 @@
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 from syntaxis.lib.models.lexical import Adjective, Article, Noun, Verb
 from syntaxis.lib.morpheus import Morpheus
 

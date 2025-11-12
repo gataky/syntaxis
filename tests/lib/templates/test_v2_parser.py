@@ -1,6 +1,6 @@
 import pytest
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 from syntaxis.lib.templates.ast import TemplateAST
 from syntaxis.lib.templates.v2_parser import V2Parser
 

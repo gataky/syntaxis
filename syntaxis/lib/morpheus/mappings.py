@@ -2,7 +2,7 @@
 
 from modern_greek_inflexion import resources
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 
 # Syntaxis -> modern_greek_inflexion mappings
 SYNTAXIS_TO_MGI = {

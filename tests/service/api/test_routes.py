@@ -118,7 +118,9 @@ class TestV2TemplateRoutes:
         assert response.template == "(noun)@{nom:masc:sg}"
         assert len(response.lexicals) == 1
         assert response.lexicals[0].lemma == "άνδρας"
-        mock_service.generate_from_template.assert_called_once_with("(noun)@{nom:masc:sg}")
+        mock_service.generate_from_template.assert_called_once_with(
+            "(noun)@{nom:masc:sg}"
+        )
 
     @pytest.mark.asyncio
     async def test_generate_endpoint_v2_with_reference(self, mock_service):
@@ -150,7 +152,9 @@ class TestV2TemplateRoutes:
     @pytest.mark.asyncio
     async def test_generate_endpoint_v2_multiple_groups(self, mock_service):
         """POST /generate should handle V2 multiple groups"""
-        request = GenerateRequest(template="(article noun)@{nom:masc:sg} (verb)@{pres:act:ter:sg}")
+        request = GenerateRequest(
+            template="(article noun)@{nom:masc:sg} (verb)@{pres:act:ter:sg}"
+        )
 
         mock_service.generate_from_template.return_value = [
             {
@@ -172,7 +176,12 @@ class TestV2TemplateRoutes:
                 "lemma": "βλέπω",
                 "word": {"βλέπει"},
                 "translations": {"sees"},
-                "features": {"tense": "present", "voice": "active", "person": "ter", "number": "sg"},
+                "features": {
+                    "tense": "present",
+                    "voice": "active",
+                    "person": "ter",
+                    "number": "sg",
+                },
             },
         ]
 
@@ -214,7 +223,9 @@ class TestV2TemplateRoutes:
     @pytest.mark.asyncio
     async def test_generate_endpoint_v2_invalid_syntax(self, mock_service):
         """POST /generate should handle V2 syntax errors"""
-        request = GenerateRequest(template="(noun@{nom:sg}")  # Missing closing parenthesis
+        request = GenerateRequest(
+            template="(noun@{nom:sg}"
+        )  # Missing closing parenthesis
 
         # V2 parser raises ValueError with "Invalid" or "template" to trigger 400 response
         mock_service.generate_from_template.side_effect = ValueError(

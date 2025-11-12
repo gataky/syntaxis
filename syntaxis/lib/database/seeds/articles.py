@@ -2,7 +2,7 @@
 
 import sqlite3
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 
 
 def seed(conn: sqlite3.Connection) -> None:

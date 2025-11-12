@@ -3,8 +3,8 @@ import os
 
 import typer
 
+from syntaxis.lib import constants as c
 from syntaxis.lib.database import Database, seeds
-from syntaxis.lib.models.constants import LEXICAL_MAP
 
 app = typer.Typer()
 
@@ -38,7 +38,7 @@ def seed_dictionary(
         next(r)
         count = 0
         for line in r:
-            lexical = LEXICAL_MAP[line[0]]
+            lexical = c.LEXICAL_MAP[line[0]]
             translations = line[1].split(",")
             lemma = line[2]
             m.add_word(lemma, translations, lexical)

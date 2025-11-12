@@ -2,7 +2,7 @@
 
 import pytest
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 from syntaxis.lib.templates.api import (
     Template,
     TemplateParseError,

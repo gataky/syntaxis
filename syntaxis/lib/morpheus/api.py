@@ -4,7 +4,7 @@ from typing import TypeVar, cast
 
 import modern_greek_inflexion as mgi
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 from syntaxis.lib.models.lexical import (
     Adjective,
     Adverb,

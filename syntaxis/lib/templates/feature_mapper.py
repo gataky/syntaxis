@@ -1,6 +1,6 @@
 """Maps feature names to their grammatical categories"""
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 
 
 class FeatureMapper:

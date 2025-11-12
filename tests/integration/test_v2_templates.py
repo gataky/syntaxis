@@ -1,9 +1,10 @@
 # tests/integration/test_v2_templates.py
 import pytest
-from syntaxis.lib.syntaxis import Syntaxis
+
+from syntaxis.lib import constants as c
 from syntaxis.lib.database import seeds
 from syntaxis.lib.database.api import Database
-from syntaxis.lib.models import constants as c
+from syntaxis.lib.syntaxis import Syntaxis
 
 
 @pytest.fixture
@@ -43,7 +44,8 @@ class TestV2BasicGrouping:
 
         assert len(result) == 3
         # Check the types of the returned objects
-        from syntaxis.lib.models.lexical import Article, Adjective, Noun
+        from syntaxis.lib.models.lexical import Adjective, Article, Noun
+
         assert isinstance(result[0], Article)
         assert isinstance(result[1], Adjective)
         assert isinstance(result[2], Noun)
@@ -55,6 +57,7 @@ class TestV2BasicGrouping:
 
         assert len(result) == 3
         from syntaxis.lib.models.lexical import Verb
+
         assert isinstance(result[2], Verb)
 
 

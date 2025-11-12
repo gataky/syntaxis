@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Generic, TypeVar, cast
 
-from . import constants as c
-from . import types
+from syntaxis.lib import constants as c
+from syntaxis.lib import types
 
 lexical = TypeVar("lexical")
 

@@ -2,9 +2,9 @@
 
 import pytest
 
+from syntaxis.lib import constants as c
 from syntaxis.lib.database import seeds
 from syntaxis.lib.database.api import Database
-from syntaxis.lib.models import constants as c
 from syntaxis.lib.models.lexical import (
     Adjective,
     Adverb,

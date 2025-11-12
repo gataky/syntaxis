@@ -133,6 +133,18 @@ FEATURE_CATEGORIES = {
     THIRD: PERSON,
 }
 
+VALID_CASE_FEATURES = {
+    NOUN: {GENDER, NUMBER, CASE},
+    VERB: {TENSE, VOICE, MOOD, NUMBER, PERSON, CASE},
+    ADJECTIVE: {GENDER, NUMBER, CASE},
+    ARTICLE: {GENDER, NUMBER, CASE},
+    PRONOUN: {GENDER, NUMBER, CASE, PERSON, TYPE},
+    ADVERB: set(),
+    PREPOSITION: set(),
+    CONJUNCTION: set(),
+}
+
+
 # Mapping between CSV dictionary and internal lexical types.
 # TODO: do we really need this? Perhaps just force the csv to follow conventions here.
 LEXICAL_MAP = {
@@ -156,3 +168,67 @@ TABLE_PRONOUN = "greek_pronouns"
 TABLE_ADVERB = "greek_adverbs"
 TABLE_PREPOSITION = "greek_prepositions"
 TABLE_CONJUNCTION = "greek_conjunctions"
+
+LEXICAL_TO_TABLE_MAP = {
+    NOUN: TABLE_NOUN,
+    VERB: TABLE_VERB,
+    ADJECTIVE: TABLE_ADJECTIVE,
+    ARTICLE: TABLE_ARTICLE,
+    PRONOUN: TABLE_PRONOUN,
+    ADVERB: TABLE_ADVERB,
+    PREPOSITION: TABLE_PREPOSITION,
+    CONJUNCTION: TABLE_CONJUNCTION,
+}
+
+LEXICAL_CONFIG = {
+    NOUN: {
+        "table": TABLE_NOUN,
+        "fields": [LEMMA, GENDER, NUMBER, CASE, "validation_status"],
+    },
+    VERB: {
+        "table": TABLE_VERB,
+        "fields": [
+            LEMMA,
+            "verb_group",
+            TENSE,
+            VOICE,
+            MOOD,
+            NUMBER,
+            PERSON,
+            CASE,
+            "validation_status",
+        ],
+    },
+    ADJECTIVE: {
+        "table": TABLE_ADJECTIVE,
+        "fields": [LEMMA, GENDER, NUMBER, CASE, "validation_status"],
+    },
+    ARTICLE: {
+        "table": TABLE_ARTICLE,
+        "fields": [LEMMA, TYPE, GENDER, NUMBER, CASE, "validation_status"],
+    },
+    PRONOUN: {
+        "table": TABLE_PRONOUN,
+        "fields": [
+            LEMMA,
+            TYPE,
+            PERSON,
+            GENDER,
+            NUMBER,
+            CASE,
+            "validation_status",
+        ],
+    },
+    ADVERB: {
+        "table": TABLE_ADVERB,
+        "fields": [LEMMA, "validation_status"],
+    },
+    PREPOSITION: {
+        "table": TABLE_PREPOSITION,
+        "fields": [LEMMA, "validation_status"],
+    },
+    CONJUNCTION: {
+        "table": TABLE_CONJUNCTION,
+        "fields": [LEMMA, "validation_status"],
+    },
+}

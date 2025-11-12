@@ -3,7 +3,7 @@
 import re
 from typing import List
 
-from syntaxis.lib.models import constants as c
+from syntaxis.lib import constants as c
 
 from .models import (
     ParsedTemplate,

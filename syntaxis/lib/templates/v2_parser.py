@@ -107,7 +107,9 @@ class V2Parser:
                 direct_features = []
 
             sanitized_lexical = LexicalMapper.get_lexical(lexical)
-            tokens.append(POSToken(lexical=sanitized_lexical, direct_features=direct_features))
+            tokens.append(
+                POSToken(lexical=sanitized_lexical, direct_features=direct_features)
+            )
 
         return tokens
 

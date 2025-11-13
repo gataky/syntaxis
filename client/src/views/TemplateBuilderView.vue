@@ -159,13 +159,14 @@
           <div v-if="!group.reference" class="mb-3">
             <label class="form-label fw-bold">Features</label>
 
+            <!-- Required Features -->
             <div
               v-for="category in store.requiredFeaturesForGroup(group.id)"
               :key="category"
               class="mb-2"
             >
               <label :for="`feature-${group.id}-${category}`" class="form-label text-capitalize">
-                {{ category }}:
+                {{ category }}<span class="text-danger">*</span>:
               </label>
               <select
                 :id="`feature-${group.id}-${category}`"
@@ -185,7 +186,34 @@
               </select>
             </div>
 
-            <div v-if="store.requiredFeaturesForGroup(group.id).length === 0" class="text-muted">
+            <!-- Optional Features -->
+            <div
+              v-for="category in store.optionalFeaturesForGroup(group.id)"
+              :key="`optional-${category}`"
+              class="mb-2"
+            >
+              <label :for="`feature-${group.id}-${category}`" class="form-label text-capitalize">
+                {{ category }} <span class="text-muted small">(optional)</span>:
+              </label>
+              <select
+                :id="`feature-${group.id}-${category}`"
+                class="form-select"
+                style="max-width: 300px;"
+                :value="group.features[category] || ''"
+                @change="store.setFeature(group.id, category, $event.target.value)"
+              >
+                <option value="">-- Select {{ category }} --</option>
+                <option
+                  v-for="value in store.features[category]"
+                  :key="value"
+                  :value="value"
+                >
+                  {{ value }}
+                </option>
+              </select>
+            </div>
+
+            <div v-if="store.requiredFeaturesForGroup(group.id).length === 0 && store.optionalFeaturesForGroup(group.id).length === 0" class="text-muted">
               <em>Add lexicals to see feature options</em>
             </div>
           </div>
@@ -319,7 +347,14 @@ function toggleOverride(groupId, lexicalIndex) {
 function getLexicalRequiredFeatures(lexicalType) {
   if (!store.schema) return []
   const lexicalSchema = store.schema.lexicals[lexicalType]
-  return lexicalSchema ? lexicalSchema.required : []
+  if (!lexicalSchema) return []
+
+  // For pronouns, include both required and optional features
+  const allFeatures = [...lexicalSchema.required]
+  if (lexicalSchema.optional) {
+    allFeatures.push(...lexicalSchema.optional)
+  }
+  return allFeatures
 }
 
 function updateOverride(groupId, lexicalIndex, category, value) {

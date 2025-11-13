@@ -5,7 +5,7 @@ from typing import Any
 
 from syntaxis.lib import constants as c
 from syntaxis.lib.logging import log_calls
-from syntaxis.lib.models.lexical import Lexical
+from syntaxis.lib.models.lexical import Lexical, Pronoun
 from syntaxis.lib.morpheus import Morpheus
 
 from .schema import create_schema
@@ -181,6 +181,9 @@ class Database:
 
         Returns:
             Complete PartOfSpeech object with forms and translations
+
+        Note:
+            Pronouns bypass MGI - lemma from database is the final word form
         """
         lemma = row["lemma"]
         translations_str = row["translations"]
@@ -188,10 +191,14 @@ class Database:
         # Parse translations (GROUP_CONCAT returns pipe-delimited string)
         translations = translations_str.split("|") if translations_str else None
 
-        # Create word with inflected forms using Morpheus
-        word = Morpheus.create(lemma, lexical)
-        word.translations = translations
-
+        # For pronouns, bypass MGI and use lemma directly as the word
+        if lexical == c.PRONOUN:
+            word = Pronoun(pos=c.PRONOUN, lemma=lemma, forms=None)
+            word.translations = translations
+        else:
+            # For all other lexicals, create word with inflected forms using Morpheus
+            word = Morpheus.create(lemma, lexical)
+            word.translations = translations
         return word
 
     def _extract_noun_features(self, word: Lexical) -> list[dict[str, str | None]]:
@@ -413,7 +420,9 @@ class Database:
         else:
             features_list = []
 
-        logger.debug(f"Extracted {len(features_list)} feature combinations for {lexical}")
+        logger.debug(
+            f"Extracted {len(features_list)} feature combinations for {lexical}"
+        )
         return features_list
 
     def _validate_and_prepare_lemma(
@@ -572,5 +581,7 @@ class Database:
         if not new_word:
             raise RuntimeError(f"Failed to retrieve newly added word '{lemma}'")
 
-        logger.info(f"Added word '{lemma}' ({lexical}) with {len(translations)} translations")
+        logger.info(
+            f"Added word '{lemma}' ({lexical}) with {len(translations)} translations"
+        )
         return new_word

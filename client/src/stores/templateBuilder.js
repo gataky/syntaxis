@@ -49,6 +49,22 @@ export const useTemplateBuilderStore = defineStore('templateBuilder', () => {
     }
   })
 
+  const optionalFeaturesForGroup = computed(() => {
+    return (groupId) => {
+      const group = groups.value.find(g => g.id === groupId)
+      if (!group || !schema.value) return []
+
+      const optional = new Set()
+      group.lexicals.forEach(lex => {
+        const lexicalSchema = schema.value.lexicals[lex.type]
+        if (lexicalSchema && lexicalSchema.optional) {
+          lexicalSchema.optional.forEach(cat => optional.add(cat))
+        }
+      })
+      return Array.from(optional)
+    }
+  })
+
   const availableReferences = computed(() => {
     return (groupId) => {
       return groups.value.filter(g => g.id < groupId)
@@ -172,6 +188,7 @@ export const useTemplateBuilderStore = defineStore('templateBuilder', () => {
     // Getters
     generatedTemplate,
     requiredFeaturesForGroup,
+    optionalFeaturesForGroup,
     availableReferences,
     // Actions
     fetchMetadata,

@@ -169,33 +169,44 @@ class Numeral(Lexical[types.Numeral]):
 
 
 class Pronoun(Lexical[types.Pronoun]):
-    """Greek pronoun with full declension forms.
+    """Greek pronoun retrieved directly from database (bypassing MGI).
 
-    Pronouns in Greek decline for person (1st, 2nd, 3rd), number (singular, plural),
-    case (nominative, genitive, accusative), and gender (for 3rd person only).
+    Pronouns are queried from the database using type and optional features
+    (person, number, case, gender). The lemma stored in the database IS the
+    final word form - no declension is performed.
 
     Attributes:
-        lemma: Base form of the pronoun (e.g., "εγώ" for "I")
-        forms: Nested dictionary structure containing all declined forms
-            Format: forms[number][gender][case] -> set[str]
-        word: The specific declined form after applying features
-        translations: English translations (e.g., ["I"], ["he"], ["they"])
+        lemma: The pronoun in its stored form (this IS the final word)
+        forms: Not used for pronouns (set to None)
+        word: Set to lemma (no declension needed)
+        translations: English translations from database
+        type: Pronoun type (personal_strong, personal_weak, demonstrative, etc.)
 
     Example:
-        >>> pron = Pronoun(lemma="εγώ", forms=..., translations=["I"])
-        >>> pron.apply_features(number="sg", gender="masc", case="acc")
-        {"με"}
+        >>> pron = Pronoun(lemma="εγώ", forms=None, translations=["I"])
+        >>> pron.apply_features(type="personal_strong", person="pri", number="sg", case="nom")
+        {"εγώ"}
 
     Note:
-        Gender is only required for 3rd person pronouns. For 1st and 2nd person,
-        the gender parameter is present but not used in some forms.
+        Features are optional and depend on the pronoun type. Database stores
+        the actual pronoun forms directly (e.g., "εγώ", "με", "του", etc.).
     """
 
-    def apply_features(self, number: str, gender: str, case: str, **extra) -> set[str]:
-        self.gender = gender
-        self.number = number
-        self.case = case
-        self.word = cast(set[str], self.forms[number][gender][case])
+    def apply_features(self, **features) -> set[str]:
+        # Store all provided features
+        if "type" in features:
+            self.type = features["type"]
+        if "person" in features:
+            self.person = features["person"]
+        if "gender" in features:
+            self.gender = features["gender"]
+        if "number" in features:
+            self.number = features["number"]
+        if "case" in features:
+            self.case = features["case"]
+
+        # For pronouns, lemma IS the word (no declension)
+        self.word = {self.lemma}
         return self.word
 
 

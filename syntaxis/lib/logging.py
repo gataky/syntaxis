@@ -8,18 +8,19 @@ from time import time
 from typing import Any, Callable, TypeVar, cast
 
 # Type variable for decorator
-F = TypeVar('F', bound=Callable[..., Any])
+F = TypeVar("F", bound=Callable[..., Any])
 
 
 # ANSI color codes for terminal output
 class Colors:
     """ANSI color codes for colored logging."""
-    RED = '\033[91m'
-    YELLOW = '\033[93m'
-    CYAN = '\033[96m'
-    GRAY = '\033[90m'
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
+
+    RED = "\033[91m"
+    YELLOW = "\033[93m"
+    CYAN = "\033[96m"
+    GRAY = "\033[90m"
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
 
 
 class ColoredFormatter(logging.Formatter):
@@ -41,17 +42,20 @@ class ColoredFormatter(logging.Formatter):
         if self._use_colors:
             # Add color to level name
             levelname = record.levelname
-            color = self.LEVEL_COLORS.get(record.levelno, '')
+            color = self.LEVEL_COLORS.get(record.levelno, "")
             record.levelname = f"{color}{levelname}{Colors.RESET}"
 
         result = super().format(record)
 
         # Reset levelname for subsequent formatters
-        record.levelname = record.levelname.replace(Colors.RESET, '').replace(
-            Colors.GRAY, ''
-        ).replace(Colors.CYAN, '').replace(Colors.YELLOW, '').replace(
-            Colors.RED, ''
-        ).replace(Colors.BOLD, '')
+        record.levelname = (
+            record.levelname.replace(Colors.RESET, "")
+            .replace(Colors.GRAY, "")
+            .replace(Colors.CYAN, "")
+            .replace(Colors.YELLOW, "")
+            .replace(Colors.RED, "")
+            .replace(Colors.BOLD, "")
+        )
 
         return result
 
@@ -65,7 +69,7 @@ def setup_logging() -> None:
     Call this once at application startup.
     """
     # Get log level from environment variable
-    level_name = os.environ.get('SYNTAXIS_LOG_LEVEL', 'INFO').upper()
+    level_name = os.environ.get("SYNTAXIS_LOG_LEVEL", "INFO").upper()
     level = getattr(logging, level_name, logging.INFO)
 
     # Create console handler
@@ -74,7 +78,7 @@ def setup_logging() -> None:
 
     # Create formatter with colors
     formatter = ColoredFormatter(
-        '%(levelname)s [%(name)s:%(funcName)s:%(lineno)d] %(message)s'
+        "%(levelname)s [%(name)s:%(funcName)s:%(lineno)d] %(message)s"
     )
     handler.setFormatter(formatter)
 
@@ -121,15 +125,17 @@ def log_calls(func: F) -> F:
             return result
     """
     # Skip logging for common dunder methods to reduce noise
-    skip_methods = {'__init__', '__str__', '__repr__', '__eq__', '__hash__'}
+    skip_methods = {"__init__", "__str__", "__repr__", "__eq__", "__hash__"}
     if func.__name__ in skip_methods:
         return func
 
     # Check if function is async
     import inspect
+
     is_coroutine = inspect.iscoroutinefunction(func)
 
     if is_coroutine:
+
         @wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             logger = logging.getLogger(func.__module__)
@@ -148,7 +154,9 @@ def log_calls(func: F) -> F:
 
                 # Log exit with return value and timing
                 result_repr = _truncate(result)
-                logger.debug(f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)")
+                logger.debug(
+                    f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)"
+                )
 
                 return result
             except Exception as e:
@@ -160,6 +168,7 @@ def log_calls(func: F) -> F:
 
         return cast(F, async_wrapper)
     else:
+
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             logger = logging.getLogger(func.__module__)
@@ -178,7 +187,9 @@ def log_calls(func: F) -> F:
 
                 # Log exit with return value and timing
                 result_repr = _truncate(result)
-                logger.debug(f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)")
+                logger.debug(
+                    f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)"
+                )
 
                 return result
             except Exception as e:

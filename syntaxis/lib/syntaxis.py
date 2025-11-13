@@ -186,7 +186,9 @@ class Syntaxis:
                 # Get word from database
                 lexical = self.database.get_random_word(token.lexical, **feature_dict)
                 if lexical:
-                    logger.debug(f"Selected word '{lexical.lemma}' for token {token.lexical}")
+                    logger.debug(
+                        f"Selected word '{lexical.lemma}' for token {token.lexical}"
+                    )
                 lexicals.append(lexical)
 
         return lexicals

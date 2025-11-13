@@ -259,6 +259,15 @@ def test_get_lexical_schema(client):
     assert "voice" in data["lexicals"]["verb"]["required"]
     assert "person" in data["lexicals"]["verb"]["required"]
 
+    # Verify pronoun requirements (type required, others optional)
+    assert "pronoun" in data["lexicals"]
+    assert "type" in data["lexicals"]["pronoun"]["required"]
+    assert "optional" in data["lexicals"]["pronoun"]
+    assert "case" in data["lexicals"]["pronoun"]["optional"]
+    assert "person" in data["lexicals"]["pronoun"]["optional"]
+    assert "number" in data["lexicals"]["pronoun"]["optional"]
+    assert "gender" in data["lexicals"]["pronoun"]["optional"]
+
     # Verify invariable lexicals
     assert "adverb" in data["lexicals"]
     assert data["lexicals"]["adverb"]["required"] == []
@@ -306,6 +315,16 @@ def test_get_features(client):
     assert "sec" in data["person"]
     assert "ter" in data["person"]
 
+    # Verify type features (for pronouns)
+    assert "type" in data
+    assert "personal_strong" in data["type"]
+    assert "personal_weak" in data["type"]
+    assert "demonstrative" in data["type"]
+    assert "interrogative" in data["type"]
+    assert "possessive" in data["type"]
+    assert "relative" in data["type"]
+    assert "indefinite" in data["type"]
+
 
 def test_lexical_schema_and_features_consistency(client):
     """Test that schema required features match available features."""
@@ -315,12 +334,14 @@ def test_lexical_schema_and_features_consistency(client):
     schema = schema_response.json()["lexicals"]
     features = features_response.json()
 
-    # Collect all required feature categories
-    required_categories = set()
+    # Collect all required and optional feature categories
+    all_categories = set()
     for lexical_info in schema.values():
-        required_categories.update(lexical_info["required"])
+        all_categories.update(lexical_info["required"])
+        if "optional" in lexical_info:
+            all_categories.update(lexical_info["optional"])
 
-    # Verify all required categories have feature definitions
-    for category in required_categories:
-        assert category in features, f"Category {category} required but not in features"
+    # Verify all categories have feature definitions
+    for category in all_categories:
+        assert category in features, f"Category {category} required/optional but not in features"
         assert len(features[category]) > 0, f"Category {category} has no values"

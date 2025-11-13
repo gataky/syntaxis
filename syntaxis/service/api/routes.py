@@ -81,14 +81,13 @@ async def get_lexical_schema():
             c.VERB: {"required": [c.TENSE, c.VOICE, c.PERSON, c.NUMBER]},
             c.ADJECTIVE: {"required": [c.CASE, c.GENDER, c.NUMBER]},
             c.ARTICLE: {"required": [c.CASE, c.GENDER, c.NUMBER]},
-            c.PRONOUN: {"required": [c.CASE, c.PERSON, c.NUMBER]},
+            c.PRONOUN: {"required": [c.TYPE], "optional": [c.CASE, c.PERSON, c.NUMBER, c.GENDER]},
             c.ADVERB: {"required": []},
             c.PREPOSITION: {"required": []},
             c.CONJUNCTION: {"required": []},
-            c.NUMERAL: {"required": []}
+            c.NUMERAL: {"required": []},
         }
     }
-    logger.info("GET /lexicals/schema - 200 OK")
     return schema
 
 
@@ -109,7 +108,7 @@ async def get_features():
         c.NUMBER: sorted(c.NUMBER_VALUES),
         c.TENSE: sorted(c.TENSE_VALUES),
         c.VOICE: sorted(c.VOICE_VALUES),
-        c.PERSON: sorted(c.PERSON_VALUES)
+        c.PERSON: sorted(c.PERSON_VALUES),
+        c.TYPE: sorted(c.PRONOUN_TYPES),
     }
-    logger.info("GET /features - 200 OK")
     return features

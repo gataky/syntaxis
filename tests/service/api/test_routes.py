@@ -56,14 +56,17 @@ async def test_generate_endpoint_template_parse_error(mock_service):
 
 @pytest.mark.asyncio
 async def test_generate_endpoint_no_matching_words(mock_service):
-    """Generate endpoint returns 500 when no words match."""
+    """Generate endpoint returns 400 when no words match."""
     request = GenerateRequest(template="[noun:nom:masc:sg]")
 
     # Simulate no matching words
     mock_service.generate_from_template.side_effect = ValueError("No words found")
 
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(HTTPException) as exc_info:
         await generate(request=request, service=mock_service)
+
+    assert exc_info.value.status_code == 400
+    assert "No words found" in exc_info.value.detail
 
 
 @pytest.mark.asyncio
@@ -345,3 +348,17 @@ def test_lexical_schema_and_features_consistency(client):
     for category in all_categories:
         assert category in features, f"Category {category} required/optional but not in features"
         assert len(features[category]) > 0, f"Category {category} has no values"
+
+
+def test_invalid_feature_combination_returns_error(client):
+    """Test that invalid feature combinations return clear error message."""
+    # personal_weak pronouns don't exist in nominative case
+    response = client.post(
+        "/api/v1/generate",
+        json={"template": "(pronoun)@{personal_weak:nom:ter:pl:masc}"}
+    )
+
+    assert response.status_code == 400
+    data = response.json()
+    assert "No pronoun found matching features" in data["detail"]
+    assert "personal_weak" in data["detail"] or "nom" in data["detail"]

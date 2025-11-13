@@ -54,13 +54,15 @@ async def generate(
     except ValueError as e:
         error_msg = str(e)
 
-        # Template parse errors return 400
-        if "template" in error_msg.lower() or "invalid" in error_msg.lower():
+        # Template parse errors and feature validation errors return 400
+        if ("template" in error_msg.lower() or
+            "invalid" in error_msg.lower() or
+            "no " in error_msg.lower() and "found" in error_msg.lower()):
             raise HTTPException(
                 status_code=400, detail=f"Invalid template: {error_msg}"
             )
 
-        # No matching words is unexpected - let Exception handler catch it
+        # Other ValueErrors are unexpected - let Exception handler catch it
         raise
 
 

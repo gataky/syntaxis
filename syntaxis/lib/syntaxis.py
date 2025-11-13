@@ -185,10 +185,18 @@ class Syntaxis:
 
                 # Get word from database
                 lexical = self.database.get_random_word(token.lexical, **feature_dict)
-                if lexical:
-                    logger.debug(
-                        f"Selected word '{lexical.lemma}' for token {token.lexical}"
+
+                if not lexical:
+                    # Build feature string for error message
+                    feature_str = ":".join([f.name for f in final_features])
+                    raise ValueError(
+                        f"No {token.lexical} found matching features [{feature_str}]. "
+                        f"This combination of features may not exist in the database."
                     )
+
+                logger.debug(
+                    f"Selected word '{lexical.lemma}' for token {token.lexical}"
+                )
                 lexicals.append(lexical)
 
         return lexicals

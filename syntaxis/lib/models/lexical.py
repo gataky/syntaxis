@@ -69,7 +69,7 @@ class Adjective(Lexical[types.Adjective]):
     Attributes:
         lemma: Dictionary form of the adjective (masculine nominative singular)
         forms: Nested dictionary structure containing all declined forms
-            Format: forms["adj"][number][gender][case] -> set[str]
+            Format: forms["adjective"][number][gender][case] -> set[str]
         word: The specific declined form after applying features
         translations: English translations of the lemma
 
@@ -83,7 +83,7 @@ class Adjective(Lexical[types.Adjective]):
         self.gender = gender
         self.number = number
         self.case = case
-        self.word = self.forms["adj"][number][gender][case]
+        self.word = self.forms[c.ADJECTIVE][number][gender][case]
         return self.word
 
 

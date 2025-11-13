@@ -326,7 +326,7 @@ class Database:
             List of feature dictionaries
         """
         features_list = []
-        for number, gender_dict in word.forms.get("adj", {}).items():
+        for number, gender_dict in word.forms.get(c.ADJECTIVE, {}).items():
             for gender, case_dict in gender_dict.items():
                 for case, form in case_dict.items():
                     if form:

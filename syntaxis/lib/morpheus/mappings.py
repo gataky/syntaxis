@@ -35,6 +35,9 @@ SYNTAXIS_TO_MGI = {
     # Aspect
     c.PERFECT: resources.PERF,
     c.IMPERFECT: resources.IMPERF,
+
+    c.ADJECTIVE: resources.ADJ,
+    c.ADVERB: resources.ADV
 }
 
 # Reverse mapping for translating mgi results back to syntaxis

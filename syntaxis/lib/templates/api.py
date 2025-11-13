@@ -70,7 +70,13 @@ class Template:
             raise TemplateParseError(f"Empty token: [{token_str}]")
 
         # Parse part of speech
-        lexical = LexicalMapper.get_lexical(parts[0])
+        try:
+            lexical = LexicalMapper.get_lexical(parts[0])
+        except ValueError:
+            raise TemplateParseError(
+                f"Unknown part of speech: {parts[0]}. "
+                f"Valid options: {sorted(c.LEXICAL_VALUES)}"
+            )
         if lexical not in c.LEXICAL_VALUES:
             raise TemplateParseError(
                 f"Unknown part of speech: {lexical}. "

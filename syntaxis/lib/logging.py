@@ -109,9 +109,15 @@ def log_calls(func: F) -> F:
 
     Args are truncated to 100 chars to prevent log spam.
 
+    Supports both sync and async functions.
+
     Usage:
         @log_calls
         def my_function(arg1, arg2):
+            return result
+
+        @log_calls
+        async def my_async_function(arg1, arg2):
             return result
     """
     # Skip logging for common dunder methods to reduce noise
@@ -119,32 +125,67 @@ def log_calls(func: F) -> F:
     if func.__name__ in skip_methods:
         return func
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
-        logger = logging.getLogger(func.__module__)
-        func_name = func.__qualname__
+    # Check if function is async
+    import inspect
+    is_coroutine = inspect.iscoroutinefunction(func)
 
-        # Log entry with arguments
-        args_repr = [_truncate(a) for a in args]
-        kwargs_repr = [f"{k}={_truncate(v)}" for k, v in kwargs.items()]
-        signature = ", ".join(args_repr + kwargs_repr)
-        logger.debug(f"→ {func_name}({signature})")
+    if is_coroutine:
+        @wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+            logger = logging.getLogger(func.__module__)
+            func_name = func.__qualname__
 
-        start_time = time()
-        try:
-            result = func(*args, **kwargs)
-            elapsed_ms = (time() - start_time) * 1000
+            # Log entry with arguments
+            args_repr = [_truncate(a) for a in args]
+            kwargs_repr = [f"{k}={_truncate(v)}" for k, v in kwargs.items()]
+            signature = ", ".join(args_repr + kwargs_repr)
+            logger.debug(f"→ {func_name}({signature})")
 
-            # Log exit with return value and timing
-            result_repr = _truncate(result)
-            logger.debug(f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)")
+            start_time = time()
+            try:
+                result = await func(*args, **kwargs)
+                elapsed_ms = (time() - start_time) * 1000
 
-            return result
-        except Exception as e:
-            elapsed_ms = (time() - start_time) * 1000
-            logger.error(
-                f"✗ {func_name} raised {type(e).__name__}: {e} ({elapsed_ms:.2f}ms)"
-            )
-            raise
+                # Log exit with return value and timing
+                result_repr = _truncate(result)
+                logger.debug(f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)")
 
-    return cast(F, wrapper)
+                return result
+            except Exception as e:
+                elapsed_ms = (time() - start_time) * 1000
+                logger.error(
+                    f"✗ {func_name} raised {type(e).__name__}: {e} ({elapsed_ms:.2f}ms)"
+                )
+                raise
+
+        return cast(F, async_wrapper)
+    else:
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            logger = logging.getLogger(func.__module__)
+            func_name = func.__qualname__
+
+            # Log entry with arguments
+            args_repr = [_truncate(a) for a in args]
+            kwargs_repr = [f"{k}={_truncate(v)}" for k, v in kwargs.items()]
+            signature = ", ".join(args_repr + kwargs_repr)
+            logger.debug(f"→ {func_name}({signature})")
+
+            start_time = time()
+            try:
+                result = func(*args, **kwargs)
+                elapsed_ms = (time() - start_time) * 1000
+
+                # Log exit with return value and timing
+                result_repr = _truncate(result)
+                logger.debug(f"← {func_name} returned {result_repr} ({elapsed_ms:.2f}ms)")
+
+                return result
+            except Exception as e:
+                elapsed_ms = (time() - start_time) * 1000
+                logger.error(
+                    f"✗ {func_name} raised {type(e).__name__}: {e} ({elapsed_ms:.2f}ms)"
+                )
+                raise
+
+        return cast(F, wrapper)

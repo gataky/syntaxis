@@ -1,10 +1,13 @@
 """Morpheus: Translation layer between modern_greek_inflexion and syntaxis."""
 
+import logging
 from typing import TypeVar, cast
 
 import modern_greek_inflexion as mgi
 
 from syntaxis.lib import constants as c
+
+logger = logging.getLogger(__name__)
 from syntaxis.lib.models.lexical import (
     Adjective,
     Adverb,

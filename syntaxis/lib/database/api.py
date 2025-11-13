@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 from typing import Any
 
@@ -6,6 +7,8 @@ from syntaxis.lib.models.lexical import Lexical
 from syntaxis.lib.morpheus import Morpheus
 
 from .schema import create_schema
+
+logger = logging.getLogger(__name__)
 
 
 class Database:

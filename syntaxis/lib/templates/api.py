@@ -1,10 +1,13 @@
 """Template parser for extracting token features from template strings."""
 
+import logging
 import re
 from typing import List
 
 from syntaxis.lib import constants as c
 from syntaxis.lib.templates.lexical_mapper import LexicalMapper
+
+logger = logging.getLogger(__name__)
 
 from .models import (
     ParsedTemplate,

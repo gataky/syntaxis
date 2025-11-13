@@ -1,6 +1,10 @@
 """Maps feature names to their grammatical categories"""
 
+import logging
+
 from syntaxis.lib import constants as c
+
+logger = logging.getLogger(__name__)
 
 
 class LexicalMapper:
@@ -32,6 +36,6 @@ class LexicalMapper:
                 f"Ambiguous lexical: {lexical_name}.  Conflicts with {conflicts}."
             )
 
-        print("LexicalMapper: ", lexical_name, valid_lexicals)
-        lexical_name = valid_lexicals.pop()
-        return lexical_name
+        full_lexical = valid_lexicals.pop()
+        logger.debug(f"Mapped lexical '{lexical_name}' to '{full_lexical}'")
+        return full_lexical

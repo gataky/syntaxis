@@ -16,38 +16,38 @@ def seed(conn: sqlite3.Connection) -> None:
     # Format: (lemma, type, gender, number, case, validation_status, english_translation)
     articles_with_translations = [
         # Definite Articles masculine
-        ("ο", c.DEFINITE, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.MASCULINE, c.SINGULAR, c.GENITIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.MASCULINE, c.SINGULAR, c.ACCUSATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.MASCULINE, c.PLURAL, c.NOMINATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.MASCULINE, c.PLURAL, c.GENITIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.MASCULINE, c.PLURAL, c.ACCUSATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.MASCULINE, c.SINGULAR, c.GENITIVE,   "validated", "the"),
+        ("ο",    c.DEFINITE,   c.MASCULINE, c.SINGULAR, c.ACCUSATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.MASCULINE, c.PLURAL,   c.NOMINATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.MASCULINE, c.PLURAL,   c.GENITIVE,   "validated", "the"),
+        ("ο",    c.DEFINITE,   c.MASCULINE, c.PLURAL,   c.ACCUSATIVE, "validated", "the"),
         # feminine
-        ("ο", c.DEFINITE, c.FEMININE, c.SINGULAR, c.NOMINATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.FEMININE, c.SINGULAR, c.GENITIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.FEMININE, c.SINGULAR, c.ACCUSATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.FEMININE, c.PLURAL, c.NOMINATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.FEMININE, c.PLURAL, c.GENITIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.FEMININE, c.PLURAL, c.ACCUSATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.FEMININE,  c.SINGULAR, c.GENITIVE,   "validated", "the"),
+        ("ο",    c.DEFINITE,   c.FEMININE,  c.SINGULAR, c.ACCUSATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.FEMININE,  c.PLURAL,   c.NOMINATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.FEMININE,  c.PLURAL,   c.GENITIVE,   "validated", "the"),
+        ("ο",    c.DEFINITE,   c.FEMININE,  c.PLURAL,   c.ACCUSATIVE, "validated", "the"),
         # neuter
-        ("ο", c.DEFINITE, c.NEUTER, c.SINGULAR, c.NOMINATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.NEUTER, c.SINGULAR, c.ACCUSATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.NEUTER, c.SINGULAR, c.GENITIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.NEUTER, c.PLURAL, c.NOMINATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.NEUTER, c.PLURAL, c.ACCUSATIVE, "validated", "the"),
-        ("ο", c.DEFINITE, c.NEUTER, c.PLURAL, c.GENITIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.NEUTER,    c.SINGULAR, c.ACCUSATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.NEUTER,    c.SINGULAR, c.GENITIVE,   "validated", "the"),
+        ("ο",    c.DEFINITE,   c.NEUTER,    c.PLURAL,   c.NOMINATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.NEUTER,    c.PLURAL,   c.ACCUSATIVE, "validated", "the"),
+        ("ο",    c.DEFINITE,   c.NEUTER,    c.PLURAL,   c.GENITIVE,   "validated", "the"),
         # Indefinite Articles masculine
         ("ένας", c.INDEFINITE, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated", "a"),
-        ("ένας", c.INDEFINITE, c.MASCULINE, c.SINGULAR, c.GENITIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.MASCULINE, c.SINGULAR, c.GENITIVE,   "validated", "a"),
         ("ένας", c.INDEFINITE, c.MASCULINE, c.SINGULAR, c.ACCUSATIVE, "validated", "a"),
         # feminine
-        ("ένας", c.INDEFINITE, c.FEMININE, c.SINGULAR, c.NOMINATIVE, "validated", "a"),
-        ("ένας", c.INDEFINITE, c.FEMININE, c.SINGULAR, c.ACCUSATIVE, "validated", "a"),
-        ("ένας", c.INDEFINITE, c.FEMININE, c.SINGULAR, c.GENITIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.FEMININE,  c.SINGULAR, c.ACCUSATIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.FEMININE,  c.SINGULAR, c.GENITIVE,   "validated", "a"),
         # neuter
-        ("ένας", c.INDEFINITE, c.NEUTER, c.SINGULAR, c.NOMINATIVE, "validated", "a"),
-        ("ένας", c.INDEFINITE, c.NEUTER, c.SINGULAR, c.ACCUSATIVE, "validated", "a"),
-        ("ένας", c.INDEFINITE, c.NEUTER, c.SINGULAR, c.GENITIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.NEUTER,    c.SINGULAR, c.ACCUSATIVE, "validated", "a"),
+        ("ένας", c.INDEFINITE, c.NEUTER,    c.SINGULAR, c.GENITIVE,   "validated", "a"),
     ]
 
     # Extract article data for greek_articles table

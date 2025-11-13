@@ -55,9 +55,12 @@ async def generate(
         error_msg = str(e)
 
         # Template parse errors and feature validation errors return 400
-        if ("template" in error_msg.lower() or
-            "invalid" in error_msg.lower() or
-            "no " in error_msg.lower() and "found" in error_msg.lower()):
+        if (
+            "template" in error_msg.lower()
+            or "invalid" in error_msg.lower()
+            or "no " in error_msg.lower()
+            and "found" in error_msg.lower()
+        ):
             raise HTTPException(
                 status_code=400, detail=f"Invalid template: {error_msg}"
             )
@@ -83,7 +86,10 @@ async def get_lexical_schema():
             c.VERB: {"required": [c.TENSE, c.VOICE, c.PERSON, c.NUMBER]},
             c.ADJECTIVE: {"required": [c.CASE, c.GENDER, c.NUMBER]},
             c.ARTICLE: {"required": [c.CASE, c.GENDER, c.NUMBER]},
-            c.PRONOUN: {"required": [c.TYPE], "optional": [c.CASE, c.PERSON, c.NUMBER, c.GENDER]},
+            c.PRONOUN: {
+                "required": [c.TYPE],
+                "optional": [c.CASE, c.PERSON, c.NUMBER, c.GENDER],
+            },
             c.ADVERB: {"required": []},
             c.PREPOSITION: {"required": []},
             c.CONJUNCTION: {"required": []},

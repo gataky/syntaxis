@@ -346,7 +346,9 @@ def test_lexical_schema_and_features_consistency(client):
 
     # Verify all categories have feature definitions
     for category in all_categories:
-        assert category in features, f"Category {category} required/optional but not in features"
+        assert (
+            category in features
+        ), f"Category {category} required/optional but not in features"
         assert len(features[category]) > 0, f"Category {category} has no values"
 
 
@@ -355,7 +357,7 @@ def test_invalid_feature_combination_returns_error(client):
     # personal_weak pronouns don't exist in nominative case
     response = client.post(
         "/api/v1/generate",
-        json={"template": "(pronoun)@{personal_weak:nom:ter:pl:masc}"}
+        json={"template": "(pronoun)@{personal_weak:nom:ter:pl:masc}"},
     )
 
     assert response.status_code == 400

@@ -71,7 +71,8 @@ class Morpheus:
         mgi_forms = mgi_class(lemma).all()
         syntaxis_forms = cast(dict, translate_forms(mgi_forms))
         lexical_name = lexical_class.__name__.lower()
-        return lexical_class(lexical_name, lemma, syntaxis_forms)
+        lexical = lexical_class(lexical_name, lemma, syntaxis_forms)
+        return lexical
 
     @staticmethod
     def adjective(lemma: str) -> Adjective:

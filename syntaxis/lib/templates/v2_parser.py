@@ -4,6 +4,7 @@ import re
 
 from syntaxis.lib.templates.ast import Feature, Group, POSToken, TemplateAST
 from syntaxis.lib.templates.feature_mapper import FeatureMapper
+from syntaxis.lib.templates.lexical_mapper import LexicalMapper
 
 
 class V2Parser:
@@ -100,7 +101,8 @@ class V2Parser:
             else:
                 direct_features = []
 
-            tokens.append(POSToken(lexical=lexical, direct_features=direct_features))
+            sanitized_lexical = LexicalMapper.get_lexical(lexical)
+            tokens.append(POSToken(lexical=sanitized_lexical, direct_features=direct_features))
 
         return tokens
 

@@ -9,13 +9,13 @@ LEMMA = "lemma"
 # Lexical constants (using template-friendly abbreviations)
 NOUN = "noun"
 VERB = "verb"
-ADJECTIVE = "adj"
-ADVERB = "adv"
+ADJECTIVE = "adjective"
+ADVERB = "adverb"
 ARTICLE = "article"
 PRONOUN = "pronoun"
 NUMERAL = "numeral"
-PREPOSITION = "prep"
-CONJUNCTION = "conj"
+PREPOSITION = "preposition"
+CONJUNCTION = "conjunction"
 LEXICAL_VALUES = {
     NOUN,
     VERB,

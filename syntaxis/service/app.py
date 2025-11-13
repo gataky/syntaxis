@@ -1,20 +1,17 @@
 """FastAPI application setup and configuration."""
 
 import logging
-import sys
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from syntaxis.lib.logging import setup_logging
 from syntaxis.service.api.routes import router
 
-# Configure logging to stdout with uvicorn-style format
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s:     %(name)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
+# Initialize logging before service starts
+setup_logging()
+
 log = logging.getLogger("syntaxis.service")
 
 # Create FastAPI application

@@ -5,6 +5,10 @@ import typer
 
 from syntaxis.lib import constants as c
 from syntaxis.lib.database import Database, seeds
+from syntaxis.lib.logging import setup_logging
+
+# Initialize logging before CLI runs
+setup_logging()
 
 app = typer.Typer()
 

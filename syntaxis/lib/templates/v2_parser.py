@@ -1,16 +1,21 @@
 """V2 template parser - handles grouping syntax with references"""
 
+import logging
 import re
 
+from syntaxis.lib.logging import log_calls
 from syntaxis.lib.templates.ast import Feature, Group, POSToken, TemplateAST
 from syntaxis.lib.templates.feature_mapper import FeatureMapper
 from syntaxis.lib.templates.lexical_mapper import LexicalMapper
+
+logger = logging.getLogger(__name__)
 
 
 class V2Parser:
     """Parser for V2 template syntax: (lexical1 lexical2)@{features}"""
 
     @classmethod
+    @log_calls
     def parse(cls, template_str: str) -> TemplateAST:
         """Parse a V2 template string into an AST
 

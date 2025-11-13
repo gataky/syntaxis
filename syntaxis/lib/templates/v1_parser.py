@@ -1,14 +1,20 @@
 """V1 template parser - handles bracket syntax [lexical:features]"""
 
+import logging
+
+from syntaxis.lib.logging import log_calls
 from syntaxis.lib.templates.api import Template
 from syntaxis.lib.templates.ast import Feature, Group, POSToken, TemplateAST
 from syntaxis.lib.templates.feature_mapper import FeatureMapper
+
+logger = logging.getLogger(__name__)
 
 
 class V1Parser:
     """Parser for V1 template syntax: [lexical:feature1:feature2:...]"""
 
     @classmethod
+    @log_calls
     def parse(cls, template_str: str) -> TemplateAST:
         """Parse a V1 template string into an AST
 

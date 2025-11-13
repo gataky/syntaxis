@@ -5,6 +5,7 @@ import re
 from typing import List
 
 from syntaxis.lib import constants as c
+from syntaxis.lib.logging import log_calls
 from syntaxis.lib.templates.lexical_mapper import LexicalMapper
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,7 @@ class Template:
     # Regex pattern to match tokens in format [lexical:feature:feature:...]
     TOKEN_PATTERN = re.compile(r"\[([^\]]+)\]")
 
+    @log_calls
     def parse(self, template: str) -> ParsedTemplate:
         """Parse a template string into a ParsedTemplate object.
 
@@ -54,8 +56,10 @@ class Template:
             token = self._parse_token(match)
             tokens.append(token)
 
+        logger.info(f"Successfully parsed template with {len(tokens)} tokens")
         return ParsedTemplate(raw_template=template, tokens=tokens)
 
+    @log_calls
     def _parse_token(self, token_str: str) -> Token:
         """Parse a single token string into a TokenFeatures object.
 

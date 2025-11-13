@@ -74,7 +74,7 @@ def setup_logging() -> None:
 
     # Create formatter with colors
     formatter = ColoredFormatter(
-        '[%(asctime)s] %(levelname)s [%(name)s:%(funcName)s:%(lineno)d] %(message)s'
+        '%(levelname)s [%(name)s:%(funcName)s:%(lineno)d] %(message)s'
     )
     handler.setFormatter(formatter)
 

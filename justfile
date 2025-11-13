@@ -22,3 +22,6 @@ fresh:
 
 dev:
     uvicorn syntaxis:app --reload --port 5000
+
+web:
+    cd client && npm run dev

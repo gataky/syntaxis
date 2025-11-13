@@ -237,3 +237,90 @@ class TestV2TemplateRoutes:
 
         assert exc_info.value.status_code == 400
         assert "Invalid template" in exc_info.value.detail
+
+
+def test_get_lexical_schema(client):
+    """Test GET /api/v1/lexicals/schema endpoint."""
+    response = client.get("/api/v1/lexicals/schema")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert "lexicals" in data
+    assert "noun" in data["lexicals"]
+    assert "required" in data["lexicals"]["noun"]
+    assert "case" in data["lexicals"]["noun"]["required"]
+    assert "gender" in data["lexicals"]["noun"]["required"]
+    assert "number" in data["lexicals"]["noun"]["required"]
+
+    # Verify verb requirements
+    assert "verb" in data["lexicals"]
+    assert "tense" in data["lexicals"]["verb"]["required"]
+    assert "voice" in data["lexicals"]["verb"]["required"]
+    assert "person" in data["lexicals"]["verb"]["required"]
+
+    # Verify invariable lexicals
+    assert "adverb" in data["lexicals"]
+    assert data["lexicals"]["adverb"]["required"] == []
+
+
+def test_get_features(client):
+    """Test GET /api/v1/features endpoint."""
+    response = client.get("/api/v1/features")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Verify case features
+    assert "case" in data
+    assert "nom" in data["case"]
+    assert "acc" in data["case"]
+    assert "gen" in data["case"]
+    assert "voc" in data["case"]
+
+    # Verify gender features
+    assert "gender" in data
+    assert "masc" in data["gender"]
+    assert "fem" in data["gender"]
+    assert "neut" in data["gender"]
+
+    # Verify number features
+    assert "number" in data
+    assert "sg" in data["number"]
+    assert "pl" in data["number"]
+
+    # Verify tense features
+    assert "tense" in data
+    assert "present" in data["tense"]
+    assert "aorist" in data["tense"]
+    assert "paratatikos" in data["tense"]
+
+    # Verify voice features
+    assert "voice" in data
+    assert "active" in data["voice"]
+    assert "passive" in data["voice"]
+
+    # Verify person features
+    assert "person" in data
+    assert "pri" in data["person"]
+    assert "sec" in data["person"]
+    assert "ter" in data["person"]
+
+
+def test_lexical_schema_and_features_consistency(client):
+    """Test that schema required features match available features."""
+    schema_response = client.get("/api/v1/lexicals/schema")
+    features_response = client.get("/api/v1/features")
+
+    schema = schema_response.json()["lexicals"]
+    features = features_response.json()
+
+    # Collect all required feature categories
+    required_categories = set()
+    for lexical_info in schema.values():
+        required_categories.update(lexical_info["required"])
+
+    # Verify all required categories have feature definitions
+    for category in required_categories:
+        assert category in features, f"Category {category} required but not in features"
+        assert len(features[category]) > 0, f"Category {category} has no values"

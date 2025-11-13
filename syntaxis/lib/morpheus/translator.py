@@ -1,8 +1,15 @@
 """Translation logic for forms dictionaries."""
 
+import logging
+
+from syntaxis.lib.logging import log_calls
+
 from .mappings import MGI_TO_SYNTAXIS
 
+logger = logging.getLogger(__name__)
 
+
+@log_calls
 def translate_forms(forms: dict | set) -> dict | set:
     """Recursively translate mgi forms dictionary to syntaxis constants.
 

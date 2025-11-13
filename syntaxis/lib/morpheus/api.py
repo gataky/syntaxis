@@ -6,6 +6,7 @@ from typing import TypeVar, cast
 import modern_greek_inflexion as mgi
 
 from syntaxis.lib import constants as c
+from syntaxis.lib.logging import log_calls
 
 logger = logging.getLogger(__name__)
 from syntaxis.lib.models.lexical import (
@@ -33,6 +34,7 @@ class Morpheus:
     """
 
     @staticmethod
+    @log_calls
     def create(lemma: str, lexical: str) -> T:
         """Generic method to create any lexical type from lemma.
 
@@ -64,6 +66,7 @@ class Morpheus:
         return method_map[lexical](lemma)
 
     @staticmethod
+    @log_calls
     def _get_inflected_forms(lemma: str, lexical_class: type[T]) -> T:
         """Generic method to get inflected forms for any part of speech.
 
@@ -73,6 +76,7 @@ class Morpheus:
         mgi_class = getattr(mgi, lexical_class.__name__)
         mgi_forms = mgi_class(lemma).all()
         syntaxis_forms = cast(dict, translate_forms(mgi_forms))
+        logger.debug(f"Translated MGI forms for '{lemma}' ({lexical_class.__name__})")
         lexical_name = lexical_class.__name__.lower()
         lexical = lexical_class(lexical_name, lemma, syntaxis_forms)
         return lexical

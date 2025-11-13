@@ -4,6 +4,7 @@ import re
 from typing import List
 
 from syntaxis.lib import constants as c
+from syntaxis.lib.templates.lexical_mapper import LexicalMapper
 
 from .models import (
     ParsedTemplate,
@@ -69,7 +70,7 @@ class Template:
             raise TemplateParseError(f"Empty token: [{token_str}]")
 
         # Parse part of speech
-        lexical = parts[0]
+        lexical = LexicalMapper.get_lexical(parts[0])
         if lexical not in c.LEXICAL_VALUES:
             raise TemplateParseError(
                 f"Unknown part of speech: {lexical}. "

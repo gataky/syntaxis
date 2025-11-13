@@ -94,14 +94,11 @@ class Database:
             LIMIT 1
         """
 
-        print(query)
-
         # Parameters must be in the order they appear in the query:
         # 1. Subquery parameter (lexical) comes first
         # 2. WHERE clause parameters come after
         params = [lexical] + where_params
 
-        print(params)
 
         row = cursor.execute(query, params).fetchone()
         if not row:

@@ -27,5 +27,15 @@ export default {
       }
       throw new Error(errorMessage); // Throw a new Error with a user-friendly message
     }
+  },
+
+  async getLexicalSchema() {
+    const response = await axios.get(`${API_BASE_URL}/lexicals/schema`);
+    return response.data;
+  },
+
+  async getFeatures() {
+    const response = await axios.get(`${API_BASE_URL}/features`);
+    return response.data;
   }
 };

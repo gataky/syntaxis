@@ -12,6 +12,9 @@
               <li class="nav-item">
                 <router-link class="nav-link" to="/exercise/translation">Translation Exercise</router-link>
               </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/builder">Template Builder</router-link>
+              </li>
             </ul>
           </div>
         </div>

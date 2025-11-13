@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import TranslationExerciseView from '../views/TranslationExerciseView.vue'
+import TemplateBuilderView from '../views/TemplateBuilderView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/exercise/translation',
       name: 'translation',
       component: TranslationExerciseView
+    },
+    {
+      path: '/builder',
+      name: 'builder',
+      component: TemplateBuilderView
     }
   ]
 })

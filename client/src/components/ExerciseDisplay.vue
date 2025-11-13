@@ -1,20 +1,43 @@
 <template>
   <div class="exercise-display mt-4">
-    <div class="card">
+    <div class="card mb-4">
       <div class="card-header">
         Template: <code>{{ template }}</code>
       </div>
-      <div class="card-body">
-        <div class="row text-center mb-3">
-          <div v-for="(lexical, index) in lexicals" :key="index" class="col">
-            <strong>{{ lexical.features.lexical }}</strong>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+      <div
+        v-for="(lexical, index) in lexicals"
+        :key="index"
+        class="word-card card text-center"
+      >
+        <div class="card-body">
+          <!-- Feature at top (number: sg/pl) -->
+          <div class="feature-badge mb-3">
+            <span class="badge bg-secondary">{{ lexical.features.number || 'N/A' }}</span>
           </div>
-        </div>
-        <div class="row text-center mb-3">
-          <div v-for="(lexical, index) in lexicals" :key="index" class="col">
-            <!-- Placeholder for Word component -->
-            <p>{{ lexical.translations[0] }}</p>
-            <p class="text-muted">({{ lexical.word[0] }})</p>
+
+          <!-- English translation(s) -->
+          <div class="translation mb-3">
+            <div v-for="(trans, tIndex) in lexical.translations" :key="tIndex" class="translation-word">
+              {{ trans }}
+            </div>
+          </div>
+
+          <!-- Greek word (hidden/blurred, click to reveal) -->
+          <div class="greek-word">
+            <div
+              v-if="!revealed[index]"
+              class="greek-hidden"
+              @click="revealWord(index)"
+            >
+              <span class="blurred">{{ lexical.word[0] }}</span>
+              <div class="click-hint">Click to reveal</div>
+            </div>
+            <div v-else class="greek-revealed">
+              {{ lexical.word[0] }}
+            </div>
           </div>
         </div>
       </div>
@@ -34,10 +57,102 @@ export default {
       type: Array,
       required: true
     }
+  },
+  data() {
+    return {
+      revealed: {}
+    }
+  },
+  methods: {
+    revealWord(index) {
+      this.revealed[index] = true
+      // Force reactivity update
+      this.revealed = { ...this.revealed }
+    }
+  },
+  watch: {
+    lexicals() {
+      // Reset revealed state when lexicals change (new exercise)
+      this.revealed = {}
+    }
   }
 }
 </script>
 
 <style scoped>
-/* Add component-specific styles here */
+.word-card {
+  width: 200px;
+  min-height: 250px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.word-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.feature-badge {
+  font-size: 0.9rem;
+}
+
+.translation {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.translation-word {
+  margin: 0.25rem 0;
+}
+
+.greek-word {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #dee2e6;
+}
+
+.greek-hidden {
+  cursor: pointer;
+  user-select: none;
+}
+
+.greek-hidden:hover {
+  opacity: 0.8;
+}
+
+.blurred {
+  filter: blur(8px);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #495057;
+}
+
+.click-hint {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+}
+
+.greek-revealed {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #0d6efd;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.gap-3 {
+  gap: 1rem;
+}
 </style>

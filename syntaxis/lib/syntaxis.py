@@ -1,6 +1,7 @@
 import logging
 
 from syntaxis.lib.database import Database
+from syntaxis.lib.logging import log_calls
 from syntaxis.lib.models.lexical import Lexical
 from syntaxis.lib.templates import Template
 from syntaxis.lib.templates.ast import Feature, Group, TemplateAST
@@ -69,6 +70,7 @@ class Syntaxis:
         self.database: Database = Database(db_path)
         self.template: Template = Template()
 
+    @log_calls
     def generate_sentence(self, template: str) -> list[Lexical]:
         """Generate a list of Greek words matching a grammatical template.
 
@@ -147,8 +149,12 @@ class Syntaxis:
             )
 
         # Generate sentence from AST
-        return self._generate_from_ast(ast)
+        result = self._generate_from_ast(ast)
+        sentence_text = " ".join(str(word) for word in result)
+        logger.info(f"Generated sentence: '{sentence_text}'")
+        return result
 
+    @log_calls
     def _generate_from_ast(self, ast: TemplateAST) -> list[Lexical]:
         """Generate lexicals from AST by resolving features and querying database
 
@@ -179,6 +185,8 @@ class Syntaxis:
 
                 # Get word from database
                 lexical = self.database.get_random_word(token.lexical, **feature_dict)
+                if lexical:
+                    logger.debug(f"Selected word '{lexical.lemma}' for token {token.lexical}")
                 lexicals.append(lexical)
 
         return lexicals

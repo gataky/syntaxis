@@ -1,14 +1,17 @@
 import csv
+import logging
 import os
 
 import typer
 
 from syntaxis.lib import constants as c
 from syntaxis.lib.database import Database, seeds
-from syntaxis.lib.logging import setup_logging
+from syntaxis.lib.logging import log_calls, setup_logging
 
 # Initialize logging before CLI runs
 setup_logging()
+
+logger = logging.getLogger(__name__)
 
 app = typer.Typer()
 
@@ -16,6 +19,7 @@ DEFAULT_DB_NAME = "syntaxis.db"
 
 
 @app.command()
+@log_calls
 def create_db(
     db_name: str = DEFAULT_DB_NAME, clear: bool = typer.Option(False, "--clear")
 ):
@@ -26,6 +30,7 @@ def create_db(
         os.remove(db_name)
         print(f"Existing database '{db_name}' removed.")
     Database(db_name)
+    logger.info(f"Created database '{db_name}'")
     print(f"Database '{db_name}' created.")
 
 

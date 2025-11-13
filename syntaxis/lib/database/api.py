@@ -1,8 +1,10 @@
 import logging
 import sqlite3
+from time import time
 from typing import Any
 
 from syntaxis.lib import constants as c
+from syntaxis.lib.logging import log_calls
 from syntaxis.lib.models.lexical import Lexical
 from syntaxis.lib.morpheus import Morpheus
 
@@ -38,6 +40,7 @@ class Database:
     # Storage methods
     # Random selection methods
 
+    @log_calls
     def get_random_word(self, lexical: str, **features: Any) -> Lexical | None:
         """Get a random word of the specified part of speech.
 
@@ -102,10 +105,16 @@ class Database:
         # 2. WHERE clause parameters come after
         params = [lexical] + where_params
 
-
+        logger.debug(f"Executing SQL with params: {params}")
+        start_time = time()
         row = cursor.execute(query, params).fetchone()
+        elapsed_ms = (time() - start_time) * 1000
+
         if not row:
+            logger.debug(f"Query returned no results ({elapsed_ms:.1f}ms)")
             return None
+
+        logger.debug(f"Query returned 1 row ({elapsed_ms:.1f}ms)")
 
         lex = self._create_word_from_row(row, lexical)
         lex.apply_features(**features)
@@ -371,6 +380,7 @@ class Database:
         """
         return [{}]
 
+    @log_calls
     def _extract_features_from_morpheus(
         self, word: Lexical, lexical: str
     ) -> list[dict[str, str | None]]:
@@ -391,16 +401,20 @@ class Database:
             ]
         """
         if lexical == c.NOUN:
-            return self._extract_noun_features(word)
+            features_list = self._extract_noun_features(word)
         elif lexical == c.VERB:
-            return self._extract_verb_features(word)
+            features_list = self._extract_verb_features(word)
         elif lexical in [c.ADJECTIVE, c.ARTICLE]:
-            return self._extract_adjective_features(word)
+            features_list = self._extract_adjective_features(word)
         elif lexical == c.PRONOUN:
-            return self._extract_pronoun_features(word)
+            features_list = self._extract_pronoun_features(word)
         elif lexical in [c.ADVERB, c.PREPOSITION, c.CONJUNCTION]:
-            return self._extract_simple_features()
-        return []
+            features_list = self._extract_simple_features()
+        else:
+            features_list = []
+
+        logger.debug(f"Extracted {len(features_list)} feature combinations for {lexical}")
+        return features_list
 
     def _validate_and_prepare_lemma(
         self, lemma: str, lexical: str, translations: list[str]
@@ -520,6 +534,7 @@ class Database:
             self._conn.rollback()
             raise
 
+    @log_calls
     def add_word(self, lemma: str, translations: list[str], lexical: str) -> Lexical:
         """Add a word to the lexicon with automatic feature extraction.
 
@@ -556,4 +571,6 @@ class Database:
         new_word = self._get_word_by_lemma(lemma, lexical)
         if not new_word:
             raise RuntimeError(f"Failed to retrieve newly added word '{lemma}'")
+
+        logger.info(f"Added word '{lemma}' ({lexical}) with {len(translations)} translations")
         return new_word

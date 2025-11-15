@@ -7,13 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from syntaxis.lib import constants as c
 from syntaxis.lib.logging import log_calls
 from syntaxis.lib.templates.api import TemplateParseError
-
-logger = logging.getLogger(__name__)
 from syntaxis.service.core.service import SyntaxisService
 from syntaxis.service.dependencies import get_service_dependency
 from syntaxis.service.schemas.requests import GenerateRequest
 from syntaxis.service.schemas.responses import GenerateResponse, LexicalResponse
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["generate"])
 
 

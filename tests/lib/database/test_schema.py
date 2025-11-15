@@ -1,5 +1,7 @@
 import sqlite3
 
+import pytest
+
 from syntaxis.lib.database.schema import create_schema
 
 
@@ -98,3 +100,53 @@ def test_schema_creates_greek_pronouns_with_bitmask_columns():
     assert columns["case"] == "TEXT"
     assert "person" in columns
     assert columns["person"] == "TEXT"
+
+
+def test_create_schema_creates_templates_table():
+    """Should create templates table with correct schema."""
+    conn = sqlite3.connect(":memory:")
+    create_schema(conn)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='templates'"
+    )
+    result = cursor.fetchone()
+
+    assert result is not None
+    assert result[0] == "templates"
+
+
+def test_templates_table_has_correct_columns():
+    """Should create templates table with id, template, created_at columns."""
+    conn = sqlite3.connect(":memory:")
+    create_schema(conn)
+
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA table_info(templates)")
+    columns = cursor.fetchall()
+
+    column_names = [col[1] for col in columns]
+    assert "id" in column_names
+    assert "template" in column_names
+    assert "created_at" in column_names
+
+
+def test_templates_table_unique_constraint_on_template():
+    """Should enforce UNIQUE constraint on template column."""
+    conn = sqlite3.connect(":memory:")
+    create_schema(conn)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO templates (template) VALUES (?)",
+        ("noun(case=nominative,gender=masculine,number=singular)",),
+    )
+    conn.commit()
+
+    # Try to insert duplicate
+    with pytest.raises(sqlite3.IntegrityError, match="UNIQUE constraint failed"):
+        cursor.execute(
+            "INSERT INTO templates (template) VALUES (?)",
+            ("noun(case=nominative,gender=masculine,number=singular)",),
+        )

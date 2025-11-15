@@ -151,4 +151,15 @@ def create_schema(conn: sqlite3.Connection) -> None:
     """
     )
 
+    # Templates table
+    _ = cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS templates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            template TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """
+    )
+
     conn.commit()

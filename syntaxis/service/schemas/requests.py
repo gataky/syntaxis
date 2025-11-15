@@ -16,3 +16,18 @@ class GenerateRequest(BaseModel):
         description="Greek grammar template with tokens like [noun:nom:masc:sg]",
         examples=["[article:nom:masc:sg] [noun:nom:masc:sg]"],
     )
+
+
+class SaveTemplateRequest(BaseModel):
+    """Request body for saving a template.
+
+    Attributes:
+        template: Template string to save
+    """
+
+    template: str = Field(
+        ...,
+        min_length=1,
+        description="Template string to save",
+        examples=["noun(case=nominative,gender=masculine,number=singular)"],
+    )

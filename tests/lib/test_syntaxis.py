@@ -324,13 +324,9 @@ class TestSyntaxisAPI:
         empty_db = Database()
         sx.database = empty_db
 
-        # With empty database, get_random_word returns None
-        result = sx.generate_sentence("[noun:nom:masc:sg]")
-
-        # Currently the API returns a list with None when no match found
-        # This test documents the current behavior (returns [None])
-        assert len(result) == 1
-        assert result[0] is None
+        # With empty database, should raise ValueError
+        with pytest.raises(ValueError, match="No noun found matching features"):
+            sx.generate_sentence("[noun:nom:masc:sg]")
 
     # Test return value properties
 
@@ -484,6 +480,7 @@ class TestFeatureOverrideWarnings:
 
         # Add sample nouns
         db.add_word(lemma="άνθρωπος", translations=["person"], lexical=c.NOUN)
+        db.add_word(lemma="γυναίκα", translations=["woman"], lexical=c.NOUN)
 
         # Add sample verbs
         db.add_word(lemma="βλέπω", translations=["see"], lexical=c.VERB)
@@ -530,3 +527,146 @@ class TestFeatureOverrideWarnings:
 
         # No warnings
         assert not any("overrides" in record.message for record in caplog.records)
+
+
+class TestWildcardResolution:
+    """Test suite for wildcard resolution functionality."""
+
+    @pytest.fixture
+    def syntaxis_instance(self):
+        """Create a minimal Syntaxis instance for testing."""
+        return Syntaxis()
+
+    def test_resolve_wildcard_gender(self, syntaxis_instance):
+        """Test that gender wildcard resolves to masc, fem, or neut."""
+        from syntaxis.lib.templates.ast import Feature
+
+        feature = Feature(name=c.GENDER_WILDCARD, category=c.GENDER)
+        wildcard_cache = {}
+
+        resolved = syntaxis_instance._resolve_wildcard(
+            feature, group_id=1, wildcard_cache=wildcard_cache
+        )
+
+        assert resolved.category == c.GENDER
+        assert resolved.name in {c.MASCULINE, c.FEMININE, c.NEUTER}
+        assert (1, c.GENDER) in wildcard_cache
+        assert wildcard_cache[(1, c.GENDER)] == resolved.name
+
+    def test_resolve_wildcard_number(self, syntaxis_instance):
+        """Test that number wildcard resolves to sg or pl."""
+        from syntaxis.lib.templates.ast import Feature
+
+        feature = Feature(name=c.NUMBER_WILDCARD, category=c.NUMBER)
+        wildcard_cache = {}
+
+        resolved = syntaxis_instance._resolve_wildcard(
+            feature, group_id=1, wildcard_cache=wildcard_cache
+        )
+
+        assert resolved.category == c.NUMBER
+        assert resolved.name in {c.SINGULAR, c.PLURAL}
+        assert (1, c.NUMBER) in wildcard_cache
+        assert wildcard_cache[(1, c.NUMBER)] == resolved.name
+
+    def test_resolve_wildcard_uses_cache(self, syntaxis_instance):
+        """Test that wildcard resolution uses cached value."""
+        from syntaxis.lib.templates.ast import Feature
+
+        feature = Feature(name=c.GENDER_WILDCARD, category=c.GENDER)
+        wildcard_cache = {(1, c.GENDER): c.FEMININE}
+
+        resolved = syntaxis_instance._resolve_wildcard(
+            feature, group_id=1, wildcard_cache=wildcard_cache
+        )
+
+        assert resolved.name == c.FEMININE  # Should use cached value, not random
+
+    def test_resolve_wildcard_different_groups_independent(self, syntaxis_instance):
+        """Test that different group IDs get independent random values."""
+        from syntaxis.lib.templates.ast import Feature
+
+        feature = Feature(name=c.GENDER_WILDCARD, category=c.GENDER)
+        wildcard_cache = {}
+
+        # Resolve for group 1
+        resolved1 = syntaxis_instance._resolve_wildcard(
+            feature, group_id=1, wildcard_cache=wildcard_cache
+        )
+
+        # Resolve for group 2 (different group_id)
+        resolved2 = syntaxis_instance._resolve_wildcard(
+            feature, group_id=2, wildcard_cache=wildcard_cache
+        )
+
+        # Both should be valid, but cache should have separate entries
+        assert (1, c.GENDER) in wildcard_cache
+        assert (2, c.GENDER) in wildcard_cache
+        # They might be the same by chance, but cache keys are different
+
+    def test_resolve_wildcard_non_wildcard_passthrough(self, syntaxis_instance):
+        """Test that non-wildcard features pass through unchanged."""
+        from syntaxis.lib.templates.ast import Feature
+
+        feature = Feature(name=c.NOMINATIVE, category=c.CASE)
+        wildcard_cache = {}
+
+        resolved = syntaxis_instance._resolve_wildcard(
+            feature, group_id=1, wildcard_cache=wildcard_cache
+        )
+
+        # Should return the feature unchanged
+        assert resolved.name == c.NOMINATIVE
+        assert resolved.category == c.CASE
+
+    def test_resolve_group_features_resolves_wildcards(self, syntaxis_instance):
+        """Test that _resolve_group_features resolves wildcard features."""
+        from syntaxis.lib.templates.ast import Group, POSToken, Feature
+
+        group = Group(
+            tokens=[POSToken(lexical="noun", direct_features=[])],
+            group_features=[
+                Feature(name="nom", category=c.CASE),
+                Feature(name=c.GENDER_WILDCARD, category=c.GENDER),
+                Feature(name="sg", category=c.NUMBER),
+            ],
+            reference_id=1,
+            references=None,
+        )
+
+        wildcard_cache = {}
+        resolved = syntaxis_instance._resolve_group_features(
+            group, all_groups=[group], wildcard_cache=wildcard_cache
+        )
+
+        # Should have 3 features, gender should be resolved
+        assert len(resolved) == 3
+        gender_feature = [f for f in resolved if f.category == c.GENDER][0]
+        assert gender_feature.name in {c.MASCULINE, c.FEMININE, c.NEUTER}
+        assert gender_feature.name != c.GENDER_WILDCARD  # Should be resolved
+
+    def test_resolve_group_features_preserves_non_wildcards(self, syntaxis_instance):
+        """Test that non-wildcard features pass through unchanged."""
+        from syntaxis.lib.templates.ast import Group, POSToken, Feature
+
+        group = Group(
+            tokens=[POSToken(lexical="noun", direct_features=[])],
+            group_features=[
+                Feature(name="nom", category=c.CASE),
+                Feature(name="masc", category=c.GENDER),
+                Feature(name="sg", category=c.NUMBER),
+            ],
+            reference_id=1,
+            references=None,
+        )
+
+        wildcard_cache = {}
+        resolved = syntaxis_instance._resolve_group_features(
+            group, all_groups=[group], wildcard_cache=wildcard_cache
+        )
+
+        # All features should be unchanged
+        assert len(resolved) == 3
+        assert any(f.name == "nom" for f in resolved)
+        assert any(f.name == "masc" for f in resolved)
+        assert any(f.name == "sg" for f in resolved)

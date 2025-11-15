@@ -38,6 +38,15 @@ export default {
       error: null,
     }
   },
+  mounted() {
+    // Check if template was passed via query params
+    const templateFromQuery = this.$route.query.template;
+    if (templateFromQuery) {
+      this.template = templateFromQuery;
+      // Auto-generate on load
+      this.generateExercise();
+    }
+  },
   methods: {
     async generateExercise() {
       this.error = null;

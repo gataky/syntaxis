@@ -13,9 +13,10 @@ def syntaxis_instance():
     # Create in-memory database
     db = Database()
 
-    # Add sample nouns
+    # Add sample nouns (masc, fem, neut for wildcard testing)
     db.add_word(lemma="άνθρωπος", translations=["person"], lexical=c.NOUN)
     db.add_word(lemma="γυναίκα", translations=["woman"], lexical=c.NOUN)
+    db.add_word(lemma="παιδί", translations=["child"], lexical=c.NOUN)
 
     # Add sample verbs
     db.add_word(lemma="βλέπω", translations=["see"], lexical=c.VERB)
@@ -101,3 +102,52 @@ class TestV1V2Equivalence:
         # Both should return same types
         assert type(result_v1[0]) == type(result_v2[0])
         assert type(result_v1[1]) == type(result_v2[1])
+
+
+class TestV2WildcardTemplates:
+    """Integration tests for wildcard template functionality."""
+
+    def test_gender_wildcard_generates_sentence(self, syntaxis_instance):
+        """V2: Template with gender wildcard should generate successfully"""
+        template = "(article noun)@{nom:gender:sg}"
+
+        result = syntaxis_instance.generate_sentence(template)
+
+        assert len(result) == 2
+        from syntaxis.lib.models.lexical import Article, Noun
+
+        assert isinstance(result[0], Article)
+        assert isinstance(result[1], Noun)
+
+    def test_number_wildcard_generates_sentence(self, syntaxis_instance):
+        """V2: Template with number wildcard should generate successfully"""
+        template = "(article noun)@{nom:masc:number}"
+
+        result = syntaxis_instance.generate_sentence(template)
+
+        assert len(result) == 2
+
+    def test_both_wildcards_generates_sentence(self, syntaxis_instance):
+        """V2: Template with both gender and number wildcards should generate"""
+        template = "(article noun)@{nom:gender:number}"
+
+        result = syntaxis_instance.generate_sentence(template)
+
+        assert len(result) == 2
+
+    def test_wildcard_variety_across_generations(self, syntaxis_instance):
+        """V2: Multiple generations should produce varied results (probabilistic test)"""
+        template = "(noun)@{nom:gender:sg}"
+
+        # Generate multiple times and collect genders
+        results = []
+        for _ in range(20):
+            result = syntaxis_instance.generate_sentence(template)
+            # Check the gender by examining the lemma (άνθρωπος is masc, γυναίκα is fem)
+            lemma = result[0].lemma
+            results.append(lemma)
+
+        # With 20 generations, we should see at least some variety
+        # (This could fail by chance but is very unlikely)
+        unique_lemmas = set(results)
+        assert len(unique_lemmas) > 1, "Expected variety in wildcard generations"

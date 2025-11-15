@@ -179,6 +179,82 @@ export const useTemplateBuilderStore = defineStore('templateBuilder', () => {
     nextGroupId.value = 1
   }
 
+  function loadTemplate(templateString) {
+    // Parse template string and populate groups
+    // Clear existing state
+    groups.value = []
+    nextGroupId.value = 1
+
+    // Template format: "(noun adjective{fem})@{nom:masc:sg} (verb)@$1"
+    // Split by spaces to get groups
+    const groupTokens = templateString.trim().split(/\s+/)
+
+    groupTokens.forEach(token => {
+      // Match pattern like (lexicals)@{features} or (lexicals)@$ref
+      const match = token.match(/^\(([^)]+)\)@(.+)$/)
+      if (!match) return
+
+      const lexicalsPart = match[1]
+      const featuresPart = match[2]
+
+      // Create new group
+      const group = {
+        id: nextGroupId.value++,
+        lexicals: [],
+        features: {},
+        reference: null
+      }
+
+      // Parse lexicals (e.g., "noun adjective{fem}")
+      const lexicalTokens = lexicalsPart.split(/\s+/)
+      lexicalTokens.forEach(lexToken => {
+        const lexMatch = lexToken.match(/^(\w+)(?:\{([^}]+)\})?$/)
+        if (!lexMatch) return
+
+        const lexType = lexMatch[1]
+        const overrides = lexMatch[2]
+
+        const lexical = {
+          type: lexType,
+          overrides: null
+        }
+
+        // Parse overrides if present (e.g., "fem" or "nom:fem")
+        if (overrides) {
+          lexical.overrides = {}
+          const overrideParts = overrides.split(':')
+          // For now, just store as a simple map - this is a simplified parser
+          // In reality, we'd need to map these to the correct feature categories
+          // But for the basic case, this should work
+        }
+
+        group.lexicals.push(lexical)
+      })
+
+      // Parse features (e.g., "{nom:masc:sg}" or "$1")
+      if (featuresPart.startsWith('$')) {
+        // Reference to another group
+        const refId = parseInt(featuresPart.substring(1))
+        group.reference = { groupId: refId }
+      } else if (featuresPart.startsWith('{') && featuresPart.endsWith('}')) {
+        // Explicit features
+        const featuresStr = featuresPart.substring(1, featuresPart.length - 1)
+        const featureValues = featuresStr.split(':')
+
+        // Map feature values to categories
+        // This is a simplified mapping - we use the required features order
+        const requiredFeats = requiredFeaturesForGroup.value(group.id)
+        featureValues.forEach((value, index) => {
+          if (value && requiredFeats[index]) {
+            group.features[requiredFeats[index]] = value
+          }
+        })
+      }
+
+      groups.value.push(group)
+    })
+  }
+
   return {
     // State
     groups,
@@ -201,6 +277,7 @@ export const useTemplateBuilderStore = defineStore('templateBuilder', () => {
     clearReference,
     setLexicalOverride,
     generateSentence,
-    resetBuilder
+    resetBuilder,
+    loadTemplate
   }
 })

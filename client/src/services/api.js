@@ -37,5 +37,59 @@ export default {
   async getFeatures() {
     const response = await axios.get(`${API_BASE_URL}/features`);
     return response.data;
+  },
+
+  async saveTemplate(template) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/templates`, { template });
+      return response.data;
+    } catch (error) {
+      console.error('Error saving template:', error);
+      let errorMessage = 'Failed to save template.';
+      if (error.response) {
+        if (error.response.status === 409) {
+          errorMessage = 'This template has already been saved.';
+        } else {
+          errorMessage = error.response.data.detail || errorMessage;
+        }
+      }
+      throw new Error(errorMessage);
+    }
+  },
+
+  async listTemplates() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/templates`);
+      return response.data;
+    } catch (error) {
+      console.error('Error listing templates:', error);
+      throw new Error('Failed to load templates.');
+    }
+  },
+
+  async getTemplate(id) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/templates/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting template:', error);
+      if (error.response?.status === 404) {
+        throw new Error('Template not found.');
+      }
+      throw new Error('Failed to load template.');
+    }
+  },
+
+  async deleteTemplate(id) {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/templates/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting template:', error);
+      if (error.response?.status === 404) {
+        throw new Error('Template not found.');
+      }
+      throw new Error('Failed to delete template.');
+    }
   }
 };

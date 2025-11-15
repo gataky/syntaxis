@@ -1,6 +1,11 @@
 <template>
   <div class="container mt-4">
-    <h1 class="mb-4">Template Builder</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Template Builder</h1>
+      <button type="button" class="btn btn-outline-info" @click="showHelp = true">
+        <span class="me-1">?</span> Syntax Help
+      </button>
+    </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="alert alert-info">
@@ -11,6 +16,12 @@
     <div v-if="store.error" class="alert alert-danger alert-dismissible fade show" role="alert">
       <strong>Error:</strong> {{ store.error }}
       <button type="button" class="btn-close" @click="store.error = null"></button>
+    </div>
+
+    <!-- Success Display -->
+    <div v-if="saveSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Success:</strong> {{ saveSuccess }}
+      <button type="button" class="btn-close" @click="saveSuccess = null"></button>
     </div>
 
     <!-- Main Content -->
@@ -87,7 +98,7 @@
                         :key="value"
                         :value="value"
                       >
-                        {{ value }}
+                        {{ formatFeatureValue(value, category) }}
                       </option>
                     </select>
                   </div>
@@ -181,7 +192,7 @@
                   :key="value"
                   :value="value"
                 >
-                  {{ value }}
+                  {{ formatFeatureValue(value, category) }}
                 </option>
               </select>
             </div>
@@ -208,7 +219,7 @@
                   :key="value"
                   :value="value"
                 >
-                  {{ value }}
+                  {{ formatFeatureValue(value, category) }}
                 </option>
               </select>
             </div>
@@ -249,6 +260,14 @@
         @click="handleGenerate"
       >
         Generate Sentence
+      </button>
+      <button
+        type="button"
+        class="btn btn-success ms-2"
+        :disabled="!store.generatedTemplate"
+        @click="handleSave"
+      >
+        Save Template
       </button>
 
       <!-- Generated Result -->
@@ -292,21 +311,129 @@
         </div>
       </div>
     </div>
+
+    <!-- Help Modal -->
+    <div
+      v-if="showHelp"
+      class="modal fade show d-block"
+      tabindex="-1"
+      style="background-color: rgba(0, 0, 0, 0.5);"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Template Syntax Cheat Sheet</h5>
+            <button type="button" class="btn-close" @click="showHelp = false"></button>
+          </div>
+          <div class="modal-body">
+            <h6 class="fw-bold">Template Format</h6>
+            <p class="mb-3">
+              <code>(lexical lexical)@{features}</code> or <code>(lexical)@$groupId</code>
+            </p>
+
+            <h6 class="fw-bold">Lexical Types</h6>
+            <ul class="mb-3">
+              <li><code>noun</code> - Nouns (requires: case, gender, number)</li>
+              <li><code>verb</code> - Verbs (requires: tense, voice, person, number)</li>
+              <li><code>adjective</code> - Adjectives (requires: case, gender, number)</li>
+              <li><code>article</code> - Articles (requires: case, gender, number)</li>
+              <li><code>pronoun</code> - Pronouns (requires: type; optional: case, person, number, gender)</li>
+              <li><code>adverb</code> - Adverbs (no features required)</li>
+              <li><code>preposition</code> - Prepositions (no features required)</li>
+              <li><code>conjunction</code> - Conjunctions (no features required)</li>
+            </ul>
+
+            <h6 class="fw-bold">Feature Values</h6>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>Case:</strong> nominative, genitive, accusative, vocative<br>
+                <strong>Gender:</strong> masculine, feminine, neuter, <span class="badge bg-warning text-dark">⚡ wildcard</span><br>
+                <strong>Number:</strong> singular, plural, <span class="badge bg-warning text-dark">⚡ wildcard</span>
+              </div>
+              <div class="col-md-6">
+                <strong>Tense:</strong> present, past, future<br>
+                <strong>Voice:</strong> active, passive<br>
+                <strong>Person:</strong> first, second, third
+              </div>
+            </div>
+
+            <div class="alert alert-info mb-3">
+              <strong>⚡ Wildcards:</strong> Select "Wildcard (Random)" for gender or number to generate varied sentences.
+              Each generation will randomly choose a different value (e.g., masculine, feminine, or neuter for gender).
+            </div>
+
+            <h6 class="fw-bold">Examples</h6>
+            <div class="mb-2">
+              <strong>Simple noun phrase:</strong><br>
+              <code>(article noun)@{nominative:masculine:singular}</code>
+            </div>
+            <div class="mb-2">
+              <strong>With adjective:</strong><br>
+              <code>(article adjective noun)@{nominative:feminine:singular}</code>
+            </div>
+            <div class="mb-2">
+              <strong>Complete sentence:</strong><br>
+              <code>(article noun)@{nominative:masculine:singular} (verb)@{present:active:third:singular}</code>
+            </div>
+            <div class="mb-2">
+              <strong>With agreement (reference):</strong><br>
+              <code>(article noun)@{nominative:masculine:singular} (adjective)@$1</code><br>
+              <small class="text-muted">The adjective inherits features from group 1</small>
+            </div>
+            <div class="mb-2">
+              <strong>Override individual features:</strong><br>
+              <code>(article noun adjective{feminine})@{nominative:masculine:singular}</code><br>
+              <small class="text-muted">Adjective overrides gender to feminine</small>
+            </div>
+            <div class="mb-2">
+              <strong>⚡ With wildcards:</strong><br>
+              <code>(article noun)@{nominative:gender:singular}</code><br>
+              <small class="text-muted">Generates different genders each time - great for practice!</small>
+            </div>
+
+            <h6 class="fw-bold mt-3">Tips</h6>
+            <ul class="mb-0">
+              <li>Use the UI above to build templates visually</li>
+              <li>Features must match the order shown for each lexical type</li>
+              <li>References ($1, $2, etc.) must point to earlier groups</li>
+              <li>Overrides let you specify different features for individual lexicals within a group</li>
+              <li><strong>⚡ Use wildcards</strong> for gender or number to practice with varied sentence structures</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="showHelp = false">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useTemplateBuilderStore } from '../stores/templateBuilder'
+import api from '../services/api'
 
+const router = useRouter()
 const store = useTemplateBuilderStore()
 const loading = ref(true)
 const selectedLexicals = ref({})
 const generatedResult = ref(null)
+const saveSuccess = ref(null)
+const showHelp = ref(false)
 
 onMounted(async () => {
   try {
     await store.fetchMetadata()
+
+    // Check if we have a template to load from query params
+    const templateFromQuery = router.currentRoute.value.query.template
+    if (templateFromQuery) {
+      store.loadTemplate(templateFromQuery)
+    }
   } catch (err) {
     console.error('Failed to load metadata:', err)
   } finally {
@@ -371,11 +498,36 @@ function updateOverride(groupId, lexicalIndex, category, value) {
   store.setLexicalOverride(groupId, lexicalIndex, newOverrides)
 }
 
+function formatFeatureValue(value, category) {
+  // Check if this is a wildcard for gender or number
+  if (category === 'gender' && value === 'gender') {
+    return '⚡ Wildcard (Random)'
+  }
+  if (category === 'number' && value === 'number') {
+    return '⚡ Wildcard (Random)'
+  }
+  // Return the value as-is for non-wildcards
+  return value
+}
+
 async function handleGenerate() {
   try {
     generatedResult.value = await store.generateSentence()
   } catch (err) {
     console.error('Generation failed:', err)
+  }
+}
+
+async function handleSave() {
+  try {
+    const result = await api.saveTemplate(store.generatedTemplate)
+    saveSuccess.value = `Template saved with ID ${result.id}`
+    setTimeout(() => {
+      saveSuccess.value = null
+    }, 3000)
+  } catch (err) {
+    store.error = err.message
+    console.error('Failed to save template:', err)
   }
 }
 </script>

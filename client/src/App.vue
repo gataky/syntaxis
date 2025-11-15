@@ -15,6 +15,9 @@
               <li class="nav-item">
                 <router-link class="nav-link" to="/builder">Template Builder</router-link>
               </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/templates">Saved Templates</router-link>
+              </li>
             </ul>
           </div>
         </div>

@@ -1,5 +1,7 @@
 import logging
+import random
 
+from syntaxis.lib import constants as c
 from syntaxis.lib.database import Database
 from syntaxis.lib.logging import log_calls
 from syntaxis.lib.models.lexical import Lexical
@@ -148,18 +150,24 @@ class Syntaxis:
                 f"got '{template[0]}'"
             )
 
-        # Generate sentence from AST
-        result = self._generate_from_ast(ast)
+        # Create wildcard cache for this generation
+        wildcard_cache = {}
+
+        # Generate sentence from AST with wildcard support
+        result = self._generate_from_ast(ast, wildcard_cache)
         sentence_text = " ".join(str(word) for word in result)
         logger.info(f"Generated sentence: '{sentence_text}'")
         return result
 
     @log_calls
-    def _generate_from_ast(self, ast: TemplateAST) -> list[Lexical]:
+    def _generate_from_ast(
+        self, ast: TemplateAST, wildcard_cache: dict
+    ) -> list[Lexical]:
         """Generate lexicals from AST by resolving features and querying database
 
         Args:
             ast: Parsed template AST
+            wildcard_cache: Wildcard resolution cache for this generation
 
         Returns:
             List of Lexical objects with inflected forms
@@ -167,8 +175,10 @@ class Syntaxis:
         lexicals = []
 
         for group in ast.groups:
-            # Resolve group features (handle references)
-            resolved_group_features = self._resolve_group_features(group, ast.groups)
+            # Resolve group features (handle references and wildcards)
+            resolved_group_features = self._resolve_group_features(
+                group, ast.groups, wildcard_cache
+            )
 
             # Generate lexical for each token in group
             for token in group.tokens:
@@ -202,29 +212,41 @@ class Syntaxis:
         return lexicals
 
     def _resolve_group_features(
-        self, group: Group, all_groups: list[Group]
+        self, group: Group, all_groups: list[Group], wildcard_cache: dict
     ) -> list[Feature]:
-        """Resolve group features, following references if present
+        """Resolve group features, handling references and wildcards.
 
         Args:
             group: The group to resolve features for
             all_groups: All groups in the template (for reference lookup)
+            wildcard_cache: Wildcard resolution cache for this generation
 
         Returns:
-            List of resolved features
+            List of fully resolved Feature objects (no wildcards)
         """
-        if group.references is None:
-            # No reference, just return group features
-            return group.group_features.copy()
+        # Get base features (from group or reference)
+        if group.references:
+            referenced_group = all_groups[group.references - 1]
+            features = self._resolve_group_features(
+                referenced_group, all_groups, wildcard_cache
+            )
+            # Merge in current group features
+            features = self._merge_features(features, group.group_features)
+        else:
+            features = group.group_features
 
-        # Find referenced group
-        referenced_group = all_groups[group.references - 1]  # Convert to 0-indexed
+        # Resolve any wildcards
+        resolved_features = []
+        for feature in features:
+            if feature.name in {c.GENDER_WILDCARD, c.NUMBER_WILDCARD}:
+                resolved = self._resolve_wildcard(
+                    feature, group.reference_id, wildcard_cache
+                )
+                resolved_features.append(resolved)
+            else:
+                resolved_features.append(feature)
 
-        # Start with referenced group's features (recursively resolve)
-        features = self._resolve_group_features(referenced_group, all_groups)
-
-        # Merge in current group features (override by category)
-        return self._merge_features(features, group.group_features)
+        return resolved_features
 
     def _merge_features(
         self,
@@ -258,3 +280,39 @@ class Syntaxis:
             merged[feature.category] = feature
 
         return list(merged.values())
+
+    def _resolve_wildcard(
+        self, feature: Feature, group_id: int, wildcard_cache: dict
+    ) -> Feature:
+        """Resolves a wildcard feature to a random concrete value.
+
+        Uses cache key (group_id, category) to ensure consistency within generation.
+
+        Args:
+            feature: Feature object with name="gender" or name="number"
+            group_id: The group's reference_id for cache keying
+            wildcard_cache: Dictionary mapping (group_id, category) to resolved values
+
+        Returns:
+            New Feature with randomly selected concrete value
+        """
+        cache_key = (group_id, feature.category)
+
+        if cache_key in wildcard_cache:
+            # Already resolved for this group/category
+            return Feature(name=wildcard_cache[cache_key], category=feature.category)
+
+        # Determine possible values based on category
+        if feature.category == c.GENDER:
+            possible_values = [c.MASCULINE, c.FEMININE, c.NEUTER]
+        elif feature.category == c.NUMBER:
+            possible_values = [c.SINGULAR, c.PLURAL]
+        else:
+            # Not a wildcard we handle, return original
+            return feature
+
+        # Randomly select and cache
+        selected = random.choice(possible_values)
+        wildcard_cache[cache_key] = selected
+
+        return Feature(name=selected, category=feature.category)

@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from syntaxis.lib.logging import setup_logging
-from syntaxis.service.api.routes import router
+from syntaxis.service.api import generation, metadata, templates
 
 # Initialize logging before service starts
 setup_logging()
@@ -54,7 +54,9 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 
 # Register routers
-app.include_router(router)
+app.include_router(generation.router)
+app.include_router(metadata.router)
+app.include_router(templates.router)
 
 
 @app.get("/health", tags=["health"])

@@ -60,3 +60,35 @@ class GenerateResponse(BaseModel):
         ...,
         description="Generated lexicals matching the template",
     )
+
+
+class TemplateResponse(BaseModel):
+    """Response model for a template.
+
+    Attributes:
+        id: Template ID
+        template: Template string
+        created_at: Timestamp when created
+    """
+
+    id: int = Field(..., description="Template ID", examples=[1])
+    template: str = Field(
+        ...,
+        description="Template string",
+        examples=["noun(case=nominative,gender=masculine,number=singular)"],
+    )
+    created_at: str = Field(
+        ..., description="ISO 8601 timestamp", examples=["2025-11-15 10:30:00"]
+    )
+
+
+class DeleteTemplateResponse(BaseModel):
+    """Response model for template deletion.
+
+    Attributes:
+        message: Success message
+    """
+
+    message: str = Field(
+        ..., description="Success message", examples=["Template deleted successfully"]
+    )

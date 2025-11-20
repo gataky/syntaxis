@@ -45,7 +45,7 @@ class TestV1ParserFeatures:
 
     def test_parse_all_case_features(self):
         """Should parse all case features"""
-        for case in ["nom", "gene", "acc", "voc"]:
+        for case in ["nom", "gen", "acc", "voc"]:
             template_str = f"[noun:{case}:masc:sg]"
             result = V1Parser.parse(template_str)
             feature_names = [f.name for f in result.groups[0].group_features]

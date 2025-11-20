@@ -7,14 +7,14 @@ def test_gender_wildcard_constant():
     """Test that GENDER_WILDCARD is defined and has correct value."""
     from syntaxis.lib.constants import GENDER_WILDCARD, GENDER
 
-    assert GENDER_WILDCARD == "gender*"
+    assert GENDER_WILDCARD == "*gender*"
 
 
 def test_number_wildcard_constant():
     """Test that NUMBER_WILDCARD is defined and has correct value."""
     from syntaxis.lib.constants import NUMBER_WILDCARD, NUMBER
 
-    assert NUMBER_WILDCARD == "number*"
+    assert NUMBER_WILDCARD == "*number*"
 
 
 def test_gender_values_includes_wildcard():

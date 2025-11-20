@@ -387,7 +387,7 @@
             </div>
             <div class="mb-2">
               <strong>⚡ With wildcards:</strong><br>
-              <code>(article noun)@{nominative:gender:singular}</code><br>
+              <code>(article noun)@{nom:*gender*:sg}</code><br>
               <small class="text-muted">Generates different genders each time - great for practice!</small>
             </div>
 
@@ -499,11 +499,14 @@ function updateOverride(groupId, lexicalIndex, category, value) {
 }
 
 function formatFeatureValue(value, category) {
-  // Check if this is a wildcard for gender or number
-  if (category === 'gender' && value === 'gender') {
+  // Check if this is a wildcard for gender, number, or person
+  if (category === 'gender' && value === '*gender*') {
     return '⚡ Wildcard (Random)'
   }
-  if (category === 'number' && value === 'number') {
+  if (category === 'number' && value === '*number*') {
+    return '⚡ Wildcard (Random)'
+  }
+  if (category === 'person' && value === '*person*') {
     return '⚡ Wildcard (Random)'
   }
   // Return the value as-is for non-wildcards

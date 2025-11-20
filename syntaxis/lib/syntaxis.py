@@ -238,7 +238,7 @@ class Syntaxis:
         # Resolve any wildcards
         resolved_features = []
         for feature in features:
-            if f"{feature.name}*" in c.WILDCARD_FEATURES:
+            if feature.name in c.WILDCARD_FEATURES:
                 resolved = self._resolve_wildcard(
                     feature, group.reference_id, wildcard_cache
                 )

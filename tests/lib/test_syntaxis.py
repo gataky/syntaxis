@@ -642,8 +642,8 @@ class TestWildcardResolution:
         # Should have 3 features, gender should be resolved
         assert len(resolved) == 3
         gender_feature = [f for f in resolved if f.category == c.GENDER][0]
-        assert gender_feature.name in {c.MASCULINE, c.FEMININE, c.NEUTER, c.GENDER_WILDCARD}
-        assert gender_feature.name == c.GENDER_WILDCARD  # Should be resolved
+        # Wildcard should be resolved to a concrete value
+        assert gender_feature.name in {c.MASCULINE, c.FEMININE, c.NEUTER}
 
     def test_resolve_group_features_preserves_non_wildcards(self, syntaxis_instance):
         """Test that non-wildcard features pass through unchanged."""

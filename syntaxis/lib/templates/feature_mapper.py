@@ -19,6 +19,11 @@ class FeatureMapper:
         Raises:
             ValueError: If feature name is not recognized
         """
+        # First check for exact match
+        if feature_name in c.FEATURE_CATEGORIES:
+            return feature_name, c.FEATURE_CATEGORIES[feature_name]
+
+        # If no exact match, look for prefix matches
         valid_features: list[str] = []
         for k in c.FEATURE_CATEGORIES.keys():
             if k.startswith(feature_name):
@@ -33,7 +38,5 @@ class FeatureMapper:
             )
 
         feature_name = valid_features[0]
-        if feature_name.endswith("*"):
-            feature_name = feature_name[:-1]
-
+        # Wildcards are now in *name* format, no stripping needed
         return feature_name, c.FEATURE_CATEGORIES[feature_name]

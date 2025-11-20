@@ -33,4 +33,7 @@ class FeatureMapper:
             )
 
         feature_name = valid_features[0]
+        if feature_name.endswith("*"):
+            feature_name = feature_name[:-1]
+
         return feature_name, c.FEATURE_CATEGORIES[feature_name]

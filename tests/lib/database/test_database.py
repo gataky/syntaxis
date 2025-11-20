@@ -144,17 +144,6 @@ def test_get_random_word_returns_none_when_no_match():
     assert result is None
 
 
-def test_get_random_word_raises_error_for_invalid_feature():
-    """Should raise ValueError for invalid feature."""
-    manager = Database()
-
-    with pytest.raises(ValueError) as exc_info:
-        manager.get_random_word(c.NOUN, tense="invalid")
-
-    assert "Invalid features" in str(exc_info.value)
-    assert "tense" in str(exc_info.value)
-
-
 def test_add_word_raises_error_for_empty_translations():
     """Should raise ValueError when translations list is empty."""
     manager = Database()

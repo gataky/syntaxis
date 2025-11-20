@@ -40,6 +40,7 @@ TYPE = "type"
 LEXICAL_FEATURES = {GENDER, NUMBER, CASE, TENSE, VOICE, MOOD, PERSON, TYPE}
 
 
+
 # Pronoun types
 PERSONAL_STRONG = "personal_strong"
 PERSONAL_WEAK = "personal_weak"
@@ -64,13 +65,13 @@ PRONOUN_TYPES = {
 MASCULINE = "masc"
 FEMININE = "fem"
 NEUTER = "neut"
-GENDER_WILDCARD = GENDER  # Wildcard for random gender selection
+GENDER_WILDCARD = f"*{GENDER}*"  # Wildcard for random gender selection
 GENDER_VALUES = {MASCULINE, FEMININE, NEUTER, GENDER_WILDCARD}
 
 # Number constants (MGI abbreviations)
 SINGULAR = "sg"
 PLURAL = "pl"
-NUMBER_WILDCARD = NUMBER  # Wildcard for random number selection
+NUMBER_WILDCARD = f"*{NUMBER}*"  # Wildcard for random number selection
 NUMBER_VALUES = {SINGULAR, PLURAL, NUMBER_WILDCARD}
 
 # Case constants (MGI abbreviations)
@@ -102,11 +103,14 @@ MOOD_VALUES = {INDICATIVE, IMPERATIVE}
 FIRST = "pri"
 SECOND = "sec"
 THIRD = "ter"
-PERSON_VALUES = {FIRST, SECOND, THIRD}
+PERSON_WILDCARD = f"*{PERSON}*"
+PERSON_VALUES = {FIRST, SECOND, THIRD, PERSON_WILDCARD}
 
 # Aspect constants (MGI abbreviations)
 PERFECT = "perf"
 IMPERFECT = "imperf"
+
+WILDCARD_FEATURES = {GENDER_WILDCARD, NUMBER_WILDCARD, PERSON_WILDCARD}
 
 # Feature category mappings from design document
 FEATURE_CATEGORIES = {
@@ -119,10 +123,12 @@ FEATURE_CATEGORIES = {
     MASCULINE: GENDER,
     FEMININE: GENDER,
     NEUTER: GENDER,
+    GENDER: GENDER,
     GENDER_WILDCARD: GENDER,
     # Number
     SINGULAR: NUMBER,
     PLURAL: NUMBER,
+    NUMBER: NUMBER,
     NUMBER_WILDCARD: NUMBER,
     # Tense
     PRESENT: TENSE,
@@ -135,6 +141,9 @@ FEATURE_CATEGORIES = {
     FIRST: PERSON,
     SECOND: PERSON,
     THIRD: PERSON,
+    PERSON: PERSON,
+    PERSON_WILDCARD: PERSON,
+    # Pronoun
     PERSONAL_STRONG: TYPE,
     PERSONAL_WEAK: TYPE,
     DEMONSTRATIVE: TYPE,
@@ -146,12 +155,13 @@ FEATURE_CATEGORIES = {
 }
 
 VALID_CASE_FEATURES = {
-    NOUN: {GENDER, NUMBER, CASE},
-    VERB: {TENSE, VOICE, MOOD, NUMBER, PERSON, CASE},
-    ADJECTIVE: {GENDER, NUMBER, CASE},
-    ARTICLE: {GENDER, NUMBER, CASE},
-    PRONOUN: {GENDER, NUMBER, CASE, PERSON, TYPE},
-    ADVERB: set(),
+    NOUN:      {NUMBER, CASE, GENDER,                                  },
+    ADJECTIVE: {NUMBER, CASE, GENDER,                                  },
+    ARTICLE:   {NUMBER, CASE, GENDER,                                  },
+    PRONOUN:   {NUMBER, CASE, GENDER, PERSON, TYPE,                    },
+    VERB:      {NUMBER, CASE,         PERSON,       TENSE, VOICE, MOOD,},
+
+    ADVERB:      set(),
     PREPOSITION: set(),
     CONJUNCTION: set(),
 }
@@ -192,14 +202,19 @@ LEXICAL_TO_TABLE_MAP = {
     CONJUNCTION: TABLE_CONJUNCTION,
 }
 
+VALIDATION_STATUS = "validation_status"
+
+_table = "table"
+_fields = "fields"
+
 LEXICAL_CONFIG = {
     NOUN: {
-        "table": TABLE_NOUN,
-        "fields": [LEMMA, GENDER, NUMBER, CASE, "validation_status"],
+        _table: TABLE_NOUN,
+        _fields: [LEMMA, GENDER, NUMBER, CASE, VALIDATION_STATUS],
     },
     VERB: {
-        "table": TABLE_VERB,
-        "fields": [
+        _table: TABLE_VERB,
+        _fields: [
             LEMMA,
             "verb_group",
             TENSE,
@@ -208,39 +223,39 @@ LEXICAL_CONFIG = {
             NUMBER,
             PERSON,
             CASE,
-            "validation_status",
+            VALIDATION_STATUS,
         ],
     },
     ADJECTIVE: {
-        "table": TABLE_ADJECTIVE,
-        "fields": [LEMMA, GENDER, NUMBER, CASE, "validation_status"],
+        _table: TABLE_ADJECTIVE,
+        _fields: [LEMMA, GENDER, NUMBER, CASE, VALIDATION_STATUS],
     },
     ARTICLE: {
-        "table": TABLE_ARTICLE,
-        "fields": [LEMMA, TYPE, GENDER, NUMBER, CASE, "validation_status"],
+        _table: TABLE_ARTICLE,
+        _fields: [LEMMA, TYPE, GENDER, NUMBER, CASE, VALIDATION_STATUS],
     },
     PRONOUN: {
-        "table": TABLE_PRONOUN,
-        "fields": [
+        _table: TABLE_PRONOUN,
+        _fields: [
             LEMMA,
             TYPE,
             PERSON,
             GENDER,
             NUMBER,
             CASE,
-            "validation_status",
+            VALIDATION_STATUS,
         ],
     },
     ADVERB: {
-        "table": TABLE_ADVERB,
-        "fields": [LEMMA, "validation_status"],
+        _table: TABLE_ADVERB,
+        _fields: [LEMMA, VALIDATION_STATUS],
     },
     PREPOSITION: {
-        "table": TABLE_PREPOSITION,
-        "fields": [LEMMA, "validation_status"],
+        _table: TABLE_PREPOSITION,
+        _fields: [LEMMA, VALIDATION_STATUS],
     },
     CONJUNCTION: {
-        "table": TABLE_CONJUNCTION,
-        "fields": [LEMMA, "validation_status"],
+        _table: TABLE_CONJUNCTION,
+        _fields: [LEMMA, VALIDATION_STATUS],
     },
 }

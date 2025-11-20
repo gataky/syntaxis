@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 from fastapi import HTTPException
 
-from syntaxis.service.api.routes import generate
+from syntaxis.service.api.generation import generate
 from syntaxis.service.core.service import SyntaxisService
 from syntaxis.service.schemas.requests import GenerateRequest
 

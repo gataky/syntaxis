@@ -16,13 +16,26 @@ def seed(conn: sqlite3.Connection) -> None:
     # Format: (lemma, type, person, gender, number, case, validation_status, [english_translations])
     pronouns_with_translations = [
         # Personal Strong Pronouns - Nominative
-        ( "εγώ",     c.PERSONAL_STRONG, c.FIRST,  None,        c.SINGULAR, c.NOMINATIVE, "validated", ["I"]),
-        ( "εσύ",     c.PERSONAL_STRONG, c.SECOND, None,        c.SINGULAR, c.NOMINATIVE, "validated", ["you"]),
+        ( "εγώ",     c.PERSONAL_STRONG, c.FIRST,  c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated", ["I"]),
+        ( "εγώ",     c.PERSONAL_STRONG, c.FIRST,  c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated", ["I"]),
+        ( "εγώ",     c.PERSONAL_STRONG, c.FIRST,  c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated", ["I"]),
+
+        ( "εσύ",     c.PERSONAL_STRONG, c.SECOND, c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated", ["you"]),
+        ( "εσύ",     c.PERSONAL_STRONG, c.SECOND, c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated", ["you"]),
+        ( "εσύ",     c.PERSONAL_STRONG, c.SECOND, c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated", ["you"]),
+
         ( "αυτός",   c.PERSONAL_STRONG, c.THIRD,  c.MASCULINE, c.SINGULAR, c.NOMINATIVE, "validated", ["he", "it"]),
         ( "αυτή",    c.PERSONAL_STRONG, c.THIRD,  c.FEMININE,  c.SINGULAR, c.NOMINATIVE, "validated", ["she", "it"]),
         ( "αυτό",    c.PERSONAL_STRONG, c.THIRD,  c.NEUTER,    c.SINGULAR, c.NOMINATIVE, "validated", ["it"]),
-        ( "εμείς",   c.PERSONAL_STRONG, c.FIRST,  None,        c.PLURAL,   c.NOMINATIVE, "validated", ["we"]),
-        ( "εσείς",   c.PERSONAL_STRONG, c.SECOND, None,        c.PLURAL,   c.NOMINATIVE, "validated", ["you"]),
+
+        ( "εμείς",   c.PERSONAL_STRONG, c.FIRST,  c.MASCULINE, c.PLURAL,   c.NOMINATIVE, "validated", ["we"]),
+        ( "εμείς",   c.PERSONAL_STRONG, c.FIRST,  c.FEMININE,  c.PLURAL,   c.NOMINATIVE, "validated", ["we"]),
+        ( "εμείς",   c.PERSONAL_STRONG, c.FIRST,  c.NEUTER,    c.PLURAL,   c.NOMINATIVE, "validated", ["we"]),
+
+        ( "εσείς",   c.PERSONAL_STRONG, c.SECOND, c.MASCULINE, c.PLURAL,   c.NOMINATIVE, "validated", ["you"]),
+        ( "εσείς",   c.PERSONAL_STRONG, c.SECOND, c.FEMININE,  c.PLURAL,   c.NOMINATIVE, "validated", ["you"]),
+        ( "εσείς",   c.PERSONAL_STRONG, c.SECOND, c.NEUTER,    c.PLURAL,   c.NOMINATIVE, "validated", ["you"]),
+
         ( "αυτοί",   c.PERSONAL_STRONG, c.THIRD,  c.MASCULINE, c.PLURAL,   c.NOMINATIVE, "validated", ["they"]),
         ( "αυτές",   c.PERSONAL_STRONG, c.THIRD,  c.FEMININE,  c.PLURAL,   c.NOMINATIVE, "validated", ["they"]),
         ( "αυτά",    c.PERSONAL_STRONG, c.THIRD,  c.NEUTER,    c.PLURAL,   c.NOMINATIVE, "validated", ["they"]),
@@ -33,7 +46,9 @@ def seed(conn: sqlite3.Connection) -> None:
         ( "της",     c.PERSONAL_WEAK,   c.THIRD,  c.FEMININE,  c.SINGULAR, c.GENITIVE,   "validated", ["her", "hers", "it"]),
         ( "μας",     c.PERSONAL_WEAK,   c.FIRST,  None,        c.PLURAL,   c.GENITIVE,   "validated", ["us", "our"]),
         ( "σας",     c.PERSONAL_WEAK,   c.SECOND, None,        c.PLURAL,   c.GENITIVE,   "validated", ["you", "your"]),
-        ( "τους",    c.PERSONAL_WEAK,   c.THIRD,  None,        c.PLURAL,   c.GENITIVE,   "validated", ["them", "their"]),
+        ( "τους",    c.PERSONAL_WEAK,   c.THIRD,  c.MASCULINE, c.PLURAL,   c.GENITIVE,   "validated", ["them", "their"]),
+        ( "τους",    c.PERSONAL_WEAK,   c.THIRD,  c.FEMININE,  c.PLURAL,   c.GENITIVE,   "validated", ["them", "their"]),
+        ( "τους",    c.PERSONAL_WEAK,   c.THIRD,  c.NEUTER,    c.PLURAL,   c.GENITIVE,   "validated", ["them", "their"]),
         # Personal Weak Pronouns - Accusative
         ( "με",      c.PERSONAL_WEAK,   c.FIRST,  None,        c.SINGULAR, c.ACCUSATIVE, "validated", ["me"]),
         ( "σε",      c.PERSONAL_WEAK,   c.SECOND, None,        c.SINGULAR, c.ACCUSATIVE, "validated", ["you"]),

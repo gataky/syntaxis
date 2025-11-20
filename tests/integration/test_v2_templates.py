@@ -109,7 +109,7 @@ class TestV2WildcardTemplates:
 
     def test_gender_wildcard_generates_sentence(self, syntaxis_instance):
         """V2: Template with gender wildcard should generate successfully"""
-        template = "(article noun)@{nom:gender:sg}"
+        template = "(article noun)@{nom:gender*:sg}"
 
         result = syntaxis_instance.generate_sentence(template)
 
@@ -121,7 +121,7 @@ class TestV2WildcardTemplates:
 
     def test_number_wildcard_generates_sentence(self, syntaxis_instance):
         """V2: Template with number wildcard should generate successfully"""
-        template = "(article noun)@{nom:masc:number}"
+        template = "(article noun)@{nom:masc:number*}"
 
         result = syntaxis_instance.generate_sentence(template)
 
@@ -129,7 +129,7 @@ class TestV2WildcardTemplates:
 
     def test_both_wildcards_generates_sentence(self, syntaxis_instance):
         """V2: Template with both gender and number wildcards should generate"""
-        template = "(article noun)@{nom:gender:number}"
+        template = "(article noun)@{nom:gender*:number*}"
 
         result = syntaxis_instance.generate_sentence(template)
 
@@ -137,7 +137,7 @@ class TestV2WildcardTemplates:
 
     def test_wildcard_variety_across_generations(self, syntaxis_instance):
         """V2: Multiple generations should produce varied results (probabilistic test)"""
-        template = "(noun)@{nom:gender:sg}"
+        template = "(noun)@{nom:gender*:sg}"
 
         # Generate multiple times and collect genders
         results = []

@@ -238,7 +238,7 @@ class Syntaxis:
         # Resolve any wildcards
         resolved_features = []
         for feature in features:
-            if feature.name in {c.GENDER_WILDCARD, c.NUMBER_WILDCARD}:
+            if f"{feature.name}*" in c.WILDCARD_FEATURES:
                 resolved = self._resolve_wildcard(
                     feature, group.reference_id, wildcard_cache
                 )
@@ -307,6 +307,8 @@ class Syntaxis:
             possible_values = [c.MASCULINE, c.FEMININE, c.NEUTER]
         elif feature.category == c.NUMBER:
             possible_values = [c.SINGULAR, c.PLURAL]
+        elif feature.category == c.PERSON:
+            possible_values = [c.FIRST, c.SECOND, c.THIRD]
         else:
             # Not a wildcard we handle, return original
             return feature

@@ -43,7 +43,7 @@ class Group:
 
     tokens: list[POSToken]
     group_features: list[Feature]
-    reference_id: Optional[int]
+    reference_id: int
     references: Optional[int]
 
 

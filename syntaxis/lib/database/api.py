@@ -61,14 +61,17 @@ class Database:
             Noun(lemma="άνθρωπος", ...)
         """
         # Validate features
-        valid_features = c.VALID_CASE_FEATURES.get(lexical, set())
-        invalid_features = set(features.keys()) - valid_features
+        lexical_features = c.VALID_CASE_FEATURES.get(lexical, set())
 
-        if invalid_features:
-            raise ValueError(
-                f"Invalid features {invalid_features} for {lexical}. "
-                + f"Valid features are: {valid_features}"
-            )
+        valid_features = {}
+        extra_features = set()
+        for feature, value in features.items():
+            if feature in lexical_features:
+                valid_features[feature] = value
+            else:
+                extra_features.add(feature)
+
+        logger.warn(f"Extra features found for {lexical}: {extra_features}")
 
         cursor = self._conn.cursor()
         table = c.LEXICAL_TO_TABLE_MAP[lexical]
@@ -77,7 +80,7 @@ class Database:
         conditions = []
         where_params: list[str] = []
 
-        for feature_name, feature_value in features.items():
+        for feature_name, feature_value in valid_features.items():
             # Use string constant directly and wrap in [] to allow us to use reserved
             # sqlite3 keys as columns.  Case in this example
             conditions.append(f"g.[{feature_name}] = ?")
@@ -117,6 +120,9 @@ class Database:
         logger.debug(f"Query returned 1 row ({elapsed_ms:.1f}ms)")
 
         lex = self._create_word_from_row(row, lexical)
+
+        print(features)
+        print(valid_features)
         lex.apply_features(**features)
         return lex
 

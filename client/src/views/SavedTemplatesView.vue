@@ -162,18 +162,39 @@ async function handleDelete() {
 
 <style scoped>
 .card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-color: var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
 }
 
 .table {
   margin-bottom: 0;
+  border-color: var(--bs-border-color);
+}
+
+.table thead th {
+  font-weight: bold;
+  border-bottom-width: 2px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--bs-dark);
 }
 
 code {
   font-size: 0.9rem;
-  color: #d63384;
-  background-color: #f8f9fa;
+  color: var(--bs-code-color);
+  background-color: var(--bs-dark);
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
+}
+
+.modal-content {
+  background-color: var(--bs-body-bg);
+  border-color: var(--bs-border-color);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--bs-border-color);
 }
 </style>

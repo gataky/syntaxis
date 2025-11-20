@@ -83,23 +83,25 @@ export default {
 .word-card {
   width: 200px;
   min-height: 250px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  border-color: var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .word-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .feature-badge {
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .translation {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #333;
+  color: var(--bs-body-color);
 }
 
 .translation-word {
@@ -109,7 +111,7 @@ export default {
 .greek-word {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 2px solid #dee2e6;
+  border-top: 2px solid var(--bs-border-color);
 }
 
 .greek-hidden {
@@ -125,19 +127,19 @@ export default {
   filter: blur(8px);
   font-size: 1.2rem;
   font-weight: bold;
-  color: #495057;
+  color: var(--bs-gray-500);
 }
 
 .click-hint {
   font-size: 0.75rem;
-  color: #6c757d;
+  color: var(--bs-gray-400);
   margin-top: 0.5rem;
 }
 
 .greek-revealed {
   font-size: 1.3rem;
   font-weight: bold;
-  color: #0d6efd;
+  color: var(--bs-primary);
   animation: fadeIn 0.3s ease-in;
 }
 

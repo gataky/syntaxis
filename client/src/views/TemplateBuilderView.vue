@@ -537,22 +537,30 @@ async function handleSave() {
 
 <style scoped>
 .card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-color: var(--bs-border-color);
 }
 
 .card-header {
-  background-color: #f8f9fa;
+  background-color: var(--bs-tertiary-bg);
   font-weight: 600;
 }
 
+pre {
+  background-color: var(--bs-dark);
+  color: var(--bs-light);
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
 pre code {
-  font-family: 'Courier New', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.95rem;
 }
 
 .badge {
   font-size: 0.85rem;
   padding: 0.35em 0.65em;
+  font-weight: bold;
 }
 
 .form-label {
@@ -562,5 +570,15 @@ pre code {
 
 .text-capitalize {
   text-transform: capitalize;
+}
+
+.modal-content {
+  background-color: var(--bs-body-bg);
+  border-color: var(--bs-border-color);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--bs-border-color);
 }
 </style>

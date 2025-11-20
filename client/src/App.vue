@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
-    <header class="my-4">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <header class="my-5">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <router-link class="navbar-brand" to="/">Syntaxis Greek Grammar</router-link>
           <div class="collapse navbar-collapse">
